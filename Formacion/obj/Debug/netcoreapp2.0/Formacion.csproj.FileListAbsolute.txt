@@ -1,0 +1,8 @@
+C:\Desarrollo\Formacion\Formacion\obj\Debug\netcoreapp2.0\Formacion.csproj.CoreCompileInputs.cache
+C:\Desarrollo\Formacion\Formacion\obj\Debug\netcoreapp2.0\Formacion.AssemblyInfoInputs.cache
+C:\Desarrollo\Formacion\Formacion\obj\Debug\netcoreapp2.0\Formacion.AssemblyInfo.cs
+C:\Desarrollo\Formacion\Formacion\bin\Debug\netcoreapp2.0\Formacion.deps.json
+C:\Desarrollo\Formacion\Formacion\bin\Debug\netcoreapp2.0\Formacion.dll
+C:\Desarrollo\Formacion\Formacion\bin\Debug\netcoreapp2.0\Formacion.pdb
+C:\Desarrollo\Formacion\Formacion\obj\Debug\netcoreapp2.0\Formacion.dll
+C:\Desarrollo\Formacion\Formacion\obj\Debug\netcoreapp2.0\Formacion.pdb
