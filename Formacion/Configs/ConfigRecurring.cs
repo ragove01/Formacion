@@ -1,4 +1,5 @@
-﻿using Formacion.Interfaces;
+﻿using Formacion.Enums;
+using Formacion.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;

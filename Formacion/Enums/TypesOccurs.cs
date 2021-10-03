@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Formacion
+namespace Formacion.Enums
 {
     public enum TypesOccurs
     {

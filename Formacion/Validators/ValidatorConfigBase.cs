@@ -1,12 +1,15 @@
 ﻿using Formacion.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Formacion
+namespace Formacion.Validators
 {
     public class ValidatorConfigBase : IConfigValidator
     {
+        private readonly ILimitsValidator validatorLimits;
+        public ValidatorConfigBase()
+        {
+            this.validatorLimits = new ValidatorLimits(); 
+        }
         public virtual void Validate(DateTime currentDate, IConfig config, ILimits limits)
         {
             if (config is null)
@@ -17,14 +20,9 @@ namespace Formacion
             {
                 throw new ApplicationException("Limits must have a value ");
             }
-            if(config.IsValid() == false)
-            {
-                throw new ApplicationException("wrong configuration "); 
-            }
-            if(limits.IsValid() == false)
-            {
-                throw new ApplicationException("wrong limits");
-            }
+            this.validatorLimits.Validate(limits);
+            
+            
             if(limits.EndDate.HasValue && limits.EndDate < currentDate)
             {
                 throw new ApplicationException("the end date cannot be earlier than the current date ");

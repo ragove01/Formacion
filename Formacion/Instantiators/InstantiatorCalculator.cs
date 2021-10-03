@@ -1,6 +1,6 @@
 ﻿using Formacion.Interfaces;
 using Formacion.Calculators;
-
+using Formacion.Enums;
 
 namespace Formacion.Instantiators
 {

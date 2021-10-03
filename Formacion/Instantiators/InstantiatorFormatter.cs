@@ -1,8 +1,7 @@
-﻿using Formacion.Formatters;
+﻿using Formacion.Enums;
+using Formacion.Formatters;
 using Formacion.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Formacion.Instantiators
 {
@@ -11,11 +10,11 @@ namespace Formacion.Instantiators
         
         public static IResultFormatter GetFormatter(IConfig config,ILimits limits)
         {
-            if(config is IConfigOnce)
+            if(config.Type == TypesSchedule.Once)
             {
                 return GetFormaterOnce((IConfigOnce)config, limits);
             }
-            if(config is IConfigRecurring)
+            if(config.Type == TypesSchedule.Recurring)
             {
                 return GetFormaterRecurring((IConfigRecurring)config, limits);
             }

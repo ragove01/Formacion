@@ -1,7 +1,7 @@
 ﻿using Formacion.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Formacion.Enums;
+
 
 namespace Formacion.Calculators
 {

@@ -1,72 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Formacion.Enums;
 using Formacion.Instantiators;
 using Formacion.Interfaces;
+using Formacion.Views;
 
 namespace Formacion
 {
     public class ScheluderGenerator
     {
-        private ICalculator calculator;
-        private ICollection<IResult> results;
-        private IResultFormatter formatter;
-
-        public ScheluderGenerator()
+       
+        public SchedulerResults Calculate(DateTime currentDate, SchedulerConfig LosDatos)
         {
-            this.results = null;
-            this.formatter = null;
+            IResultFormatter Formatter = Instantiators.InstantiatorFormatter.GetFormatter(LosDatos,LosDatos);
+            ICalculator Calculator = Instantiators.InstantiatorCalculator.GetCalculator(LosDatos.Type);
+            ICollection<IResult> TheResults = Calculator.Calulate(currentDate, LosDatos, LosDatos);
+            SchedulerResults Result = new SchedulerResults(Formatter);
+            Result.Results = TheResults.ToArray();
+            return Result;
         }
 
-        public IConfig GetConfig(TypesSchedule Type)
-        {
-            return InstantiatorConfiguratior.GetConfiguracion(Type);
-        }
-
-        public void Calculate(DateTime currentDate, IConfig config, ILimits limits)
-        {
-            this.formatter = Instantiators.InstantiatorFormatter.GetFormatter(config, limits);
-            ICalculator Calculator = Instantiators.InstantiatorCalculator.GetCalculator(config.Type);
-            this.results = Calculator.Calulate(currentDate, config, limits);
-
-        }
-
-        public DateTime? NextExecution
-        {
-            get
-            {
-                if(this.results == null)
-                {
-                    throw new ApplicationException("Scheluder not calculate"); 
-                }
-                return this.results.FirstOrDefault()?.NextExecution;
-            }
-        }
-        public IResult[] Results
-        {
-            get
-            {
-                if (this.results == null)
-                {
-                    throw new ApplicationException("Scheluder not calculate");
-                }
-                return this.results.ToArray(); 
-            }
-        }
-        
-        public string NextExecutionTimeString
-        {
-            get
-            {
-                if (this.results == null)
-                {
-                    throw new ApplicationException("Scheluder not calculate");
-                }
-                return this.formatter.Formatter(this.results.FirstOrDefault());
-            }
-        }
-
-
-
+     
     }
 }
