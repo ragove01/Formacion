@@ -11,11 +11,11 @@ namespace Formacion
     public class ScheluderGenerator
     {
        
-        public SchedulerResults Calculate(DateTime currentDate, SchedulerConfig LosDatos)
+        public SchedulerResults Calculate(DateTime currentDate, SchedulerConfig scheduleConfig)
         {
-            IResultFormatter Formatter = Instantiators.InstantiatorFormatter.GetFormatter(LosDatos,LosDatos);
-            ICalculator Calculator = Instantiators.InstantiatorCalculator.GetCalculator(LosDatos.Type);
-            ICollection<IResult> TheResults = Calculator.Calulate(currentDate, LosDatos, LosDatos);
+            IResultFormatter Formatter = Instantiators.InstantiatorFormatter.GetFormatter(scheduleConfig,scheduleConfig);
+            ICalculator Calculator = Instantiators.InstantiatorCalculator.GetCalculator(scheduleConfig.Type);
+            ICollection<IResult> TheResults = Calculator.Calulate(currentDate, scheduleConfig, scheduleConfig);
             SchedulerResults Result = new SchedulerResults(Formatter);
             Result.Results = TheResults.ToArray();
             return Result;
