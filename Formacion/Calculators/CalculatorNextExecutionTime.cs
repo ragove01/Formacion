@@ -1,81 +1,32 @@
 ﻿using Formacion.Interfaces;
 using System;
 using Formacion.Enums;
-using Formacion.Configs;
-using Formacion.Extensions;
-using System.Collections.Generic;
-using Formacion.Views;
+
 
 namespace Formacion.Calculators
 {
-    public class CalculatorNextExecutionTime
+    public class CalculatorNextExecutionTime : ICalculatorNextExecutionTime
     {
-        private readonly SchedulerConfig config;
-        private readonly ConfigDailyFrecuency configDailyFrecuenci;
-        private readonly ConfigWeekly configWeekly;
-        
-        
+        private readonly TypesOccurs type;
 
-       
-
-        public CalculatorNextExecutionTime(SchedulerConfig TheConfig)
+        public CalculatorNextExecutionTime(TypesOccurs TheType)
         {
-            this.config = TheConfig;
-            this.configDailyFrecuenci = TheConfig.DailyFrecuenci??new ConfigDailyFrecuency() { Frecuenci = TypesOccursDailyFrecuency.Once };
-            this.configWeekly = config.Weekly;
+            this.type = TheType;
+        }
+        public TypesOccurs Type => this.type;
+
+        public DateTime GetNext(DateTime NextTime)
+        {
             
-          
-        }
-  
-        public DateTime GetNext(DateTime dateCalc)
-        {
-
-            if (this.configWeekly == null)
+            if(this.Type == TypesOccurs.Weekly)
             {
-                return this.GetNextDateNotWeeklyConfiguration(dateCalc);
+                return NextTime.AddDays(7); 
             }
-
-            return this.CalculateNextDateTimeOnce(dateCalc);
-
-
-        }
-
-
-        private DateTime GetNextDateNotWeeklyConfiguration(DateTime dateCalc)
-        {
-            DateTime NextDate = new CalculatorNextExecutionTimeDailyFrecuency(this.configDailyFrecuenci).GetNextTime(dateCalc);
-            if(NextDate > dateCalc)
+            if(this.Type == TypesOccurs.Monthly)
             {
-                return NextDate;
+                return NextTime.AddMonths(1); 
             }
-            if (this.config.Occurs == TypesOccurs.Weekly)
-            {
-                return GetTimesDate(dateCalc.AddDays(7).Date);
-            }
-            if (this.config.Occurs == TypesOccurs.Monthly)
-            {
-                return GetTimesDate(dateCalc.AddMonths(1).Date);
-            }
-            return GetTimesDate(dateCalc.AddDays(1).Date);
+            return NextTime.AddDays(1);
         }
-
-        private DateTime GetTimesDate(DateTime dayCalc)
-        {
-            return new CalculatorNextExecutionTimeDailyFrecuency(this.configDailyFrecuenci).GetNextTime(dayCalc);
-           
-        }
-
-        private DateTime CalculateNextDateTimeOnce(DateTime day)
-        {
-            return new CalculatorNextExecutionTimeWeekly(this.config).CalculateNextDate(day);
-            
-
-        }
-
-      
-
-        
-
     }
 }
-;

@@ -1,7 +1,5 @@
-﻿using Formacion.Configs;
-using Formacion.Interfaces;
+﻿using Formacion.Interfaces;
 using Formacion.Validators;
-using Formacion.Views;
 using System;
 using System.Collections.Generic;
 
@@ -9,34 +7,39 @@ namespace Formacion.Calculators
 {
     public class CalculatorRecurring : CalculatorBase
     {
+        private ICalculatorNextExecutionTime calculatorNexExecution;
         
         public CalculatorRecurring() : base(new ValidatorConfigRecurring())
         {
-            
-        }
-        public override DateTime Calculate(DateTime currentDate, SchedulerConfig config)
-        {
 
-            this.ValidatePrivate(currentDate,config);
+        }
+        public override ICollection<IResult> Calulate(DateTime currentDate, IConfig config, ILimits limits)
+        {
+            this.calculatorNexExecution = new CalculatorNextExecutionTime(((IConfigRecurring)config).Occurs); 
+            this.Validate(currentDate, config, limits);
             if (config.Active == false)
             {
-                return currentDate;
+                return null; 
             }
-            return this.CalculatePrivate(currentDate, config);
- 
+            List<IResult> ReturnValue = new List<IResult>();
+            DateTime NextDate = currentDate < limits.StartDate ? limits.StartDate:currentDate;
+            NextDate = this.calculatorNexExecution.GetNext(NextDate);
+            for (int Index = 0; Index < ((IConfigRecurring)config).NumberOccurs
+                && this.Continue(NextDate, limits.EndDate); Index++)
+            {
+                ReturnValue.Add(new Result(limits.StartDate, NextDate));
+                NextDate = this.calculatorNexExecution.GetNext(NextDate);
+            }
+            return ReturnValue;
         }
-
-        private void ValidatePrivate(DateTime currentDate, SchedulerConfig config)
+        
+        private bool Continue(DateTime CurrentDate, DateTime? EndDate)
         {
-            
-            this.Validate(currentDate, config);
+            if(EndDate.HasValue == false)
+            {
+                return true;
+            }
+            return CurrentDate < EndDate.Value;
         }
-
-        private DateTime CalculatePrivate(DateTime currentDate, SchedulerConfig config)
-        {
-
-            return new CalculatorNextExecutionTime(config).GetNext(currentDate);
-        }
-   
     }
 }

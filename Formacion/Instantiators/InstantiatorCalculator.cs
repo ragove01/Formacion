@@ -6,7 +6,7 @@ namespace Formacion.Instantiators
 {
     public class InstantiatorCalculator
     {
-        public static CalculatorBase GetCalculator(TypesSchedule Type)
+        public static ICalculator GetCalculator(TypesSchedule Type)
         {
             if(Type == TypesSchedule.Recurring)
             {

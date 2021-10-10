@@ -1,5 +1,4 @@
-﻿using Formacion.Formatters;
-using Formacion.Interfaces;
+﻿using Formacion.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,28 +8,33 @@ namespace Formacion.Views
 {
     public class SchedulerResults
     {
-        private readonly FormatterBase formatter;
-        public SchedulerResults(FormatterBase TheFormatter)
+        private readonly IResultFormatter formatter;
+        public SchedulerResults(IResultFormatter TheFormatter)
         {
             this.formatter = TheFormatter;
         }
-
-       
-      
+        public IResult[] Results { get; set; }
         public string NextExecutionTimeString
         {
             get
             {
-                if (this.NextExecution.HasValue == false)
+                if (this.Results == null || this.Results.Length == 0)
                 {
                     throw new ApplicationException("Scheluder not calculate");
                 }
-                return this.formatter.Formatter(this.NextExecution.Value);
+                return this.formatter.Formatter(this.Results.FirstOrDefault());
             }
         }
         public DateTime? NextExecution
         {
-            get;set;
+            get
+            {
+                if (this.Results == null)
+                {
+                    throw new ApplicationException("Scheluder not calculate");
+                }
+                return this.Results.FirstOrDefault()?.NextExecution;
+            }
         }
     }
 }

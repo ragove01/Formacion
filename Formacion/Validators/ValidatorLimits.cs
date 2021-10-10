@@ -3,16 +3,12 @@ using System;
 
 namespace Formacion.Validators
 {
-    public class ValidatorLimits 
+    public class ValidatorLimits : ILimitsValidator
     {
-        public void Validate(DateTime startDate, DateTime? endDate)
+        public void Validate(ILimits limits)
         {
-            if(startDate == DateTime.MaxValue)
-            {
-                throw new ApplicationException("Start Date is invalid");
-            }
-            if(endDate.HasValue &&
-                endDate < startDate)
+            if(limits.EndDate.HasValue &&
+                limits.EndDate < limits.StartDate)
             {
                 throw new ApplicationException("End date must be great than start date ");
             }

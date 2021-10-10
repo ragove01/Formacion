@@ -1,30 +1,29 @@
 ﻿using Formacion.Interfaces;
-using Formacion.Views;
 using System;
 
 namespace Formacion.Validators
 {
     public class ValidatorConfigBase : IConfigValidator
     {
-        private readonly ValidatorLimits validatorLimits;
+        private readonly ILimitsValidator validatorLimits;
         public ValidatorConfigBase()
         {
             this.validatorLimits = new ValidatorLimits(); 
         }
-        public virtual void Validate(DateTime currentDate, SchedulerConfig config)
+        public virtual void Validate(DateTime currentDate, IConfig config, ILimits limits)
         {
             if (config is null)
             {
                 throw new ApplicationException("Config must have a value ");
             }
-            if(currentDate == DateTime.MaxValue)
+            if (limits is null)
             {
-                throw new ApplicationException("The current date is invalid");
+                throw new ApplicationException("Limits must have a value ");
             }
-            this.validatorLimits.Validate(config.StartDate, config.EndDate);
+            this.validatorLimits.Validate(limits);
             
             
-            if(config.EndDate.HasValue && config.EndDate < currentDate)
+            if(limits.EndDate.HasValue && limits.EndDate < currentDate)
             {
                 throw new ApplicationException("the end date cannot be earlier than the current date ");
             }

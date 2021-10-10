@@ -1,7 +1,6 @@
 ﻿using Formacion.Enums;
 using Formacion.Formatters;
 using Formacion.Interfaces;
-using Formacion.Views;
 using System;
 
 namespace Formacion.Instantiators
@@ -9,28 +8,28 @@ namespace Formacion.Instantiators
     public class InstantiatorFormatter
     {
         
-        public static FormatterBase GetFormatter(SchedulerConfig config)
+        public static IResultFormatter GetFormatter(IConfig config,ILimits limits)
         {
             if(config.Type == TypesSchedule.Once)
             {
-                return GetFormaterOnce(config);
+                return GetFormaterOnce((IConfigOnce)config, limits);
             }
             if(config.Type == TypesSchedule.Recurring)
             {
-                return GetFormaterRecurring(config);
+                return GetFormaterRecurring((IConfigRecurring)config, limits);
             }
             throw new ApplicationException("Formatter not implemented");
         }
-        private static FormatterBase GetFormaterOnce(SchedulerConfig config)
+        private static IResultFormatter GetFormaterOnce(IConfigOnce config, ILimits limits)
         {
             
-                return new FormatterOnce(config);
+                return new FormatterOnce(config, limits);
            
         }
-        private static FormatterBase GetFormaterRecurring(SchedulerConfig config)
+        private static IResultFormatter GetFormaterRecurring(IConfigRecurring config, ILimits limits)
         {
 
-            return new FormatterRecurring(config);
+            return new FormatterRecurring(config, limits);
 
         }
     }

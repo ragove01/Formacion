@@ -1,11 +1,10 @@
 ﻿using Formacion.Interfaces;
-using Formacion.Views;
 using System;
 using System.Collections.Generic;
 
 namespace Formacion.Calculators
 {
-    public class CalculatorBase 
+    public class CalculatorBase : ICalculator
     {
         private readonly IConfigValidator validator;
         public IConfigValidator Validator => validator;
@@ -13,17 +12,17 @@ namespace Formacion.Calculators
         {
             this.validator = theValidator;
         }
-        public virtual DateTime Calculate(DateTime currentDate, SchedulerConfig config)
+        public virtual ICollection<IResult> Calulate(DateTime currentDate, IConfig config, ILimits limits)
         {
             throw new NotFiniteNumberException();
         }
-        protected virtual void Validate(DateTime currentDate, SchedulerConfig config)
+        protected virtual void Validate(DateTime currentDate, IConfig config,ILimits limits)
         {
             if(this.Validator == null)
             {
                 throw new ApplicationException("Validator must have a value");
             }
-            this.Validator.Validate(currentDate, config);
+            this.Validator.Validate(currentDate, config, limits);
         }
     }
 }
