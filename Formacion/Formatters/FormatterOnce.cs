@@ -1,24 +1,20 @@
-﻿using Formacion.Interfaces;
+﻿using Formacion.Views;
+using System;
 
 namespace Formacion.Formatters
 {
-    public class FormatterOnce : IResultFormatter
+    public class FormatterOnce: FormatterBase
     {
-        private readonly IConfigOnce config;
-        private readonly ILimits limits;
-        public FormatterOnce(IConfigOnce TheConfig, ILimits TheLimits)
+
+        public FormatterOnce(SchedulerConfig TheConfig):base(TheConfig)
         {
-            this.config = TheConfig;
-            this.limits = TheLimits;
+ 
         }
-        public IConfig Config => this.config;
 
-        public ILimits Limits => this.limits;
-
-        public string Formatter(IResult result)
+        public override string Formatter(DateTime nextExecution)
         {
-            return $"Occurs once. Schedule will be used on {result.NextExecution.ToString("dd/MM/yyyy")} at {result.NextExecution.ToString("HH:mm")}" +
-                $" starting on {result.StartDate.ToString("dd/MM/yyyy")}";
+            return $"Occurs once. Schedule will be used on {nextExecution.ToString("dd/MM/yyyy")} at {nextExecution.ToString("HH:mm")}" +
+                $" starting on {this.Config.StartDate.ToString("dd/MM/yyyy")}";
         }
     }
 }

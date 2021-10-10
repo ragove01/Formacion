@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Formacion.Enums;
 using Formacion.Instantiators;
-using Formacion.Interfaces;
 using Formacion.Views;
 
 namespace Formacion
@@ -13,13 +9,14 @@ namespace Formacion
        
         public SchedulerResults Calculate(DateTime currentDate, SchedulerConfig scheduleConfig)
         {
-            IResultFormatter Formatter = Instantiators.InstantiatorFormatter.GetFormatter(scheduleConfig,scheduleConfig);
-            ICalculator Calculator = Instantiators.InstantiatorCalculator.GetCalculator(scheduleConfig.Type);
-            ICollection<IResult> TheResults = Calculator.Calulate(currentDate, scheduleConfig, scheduleConfig);
-            SchedulerResults Result = new SchedulerResults(Formatter);
-            Result.Results = TheResults.ToArray();
-            return Result;
+            return new SchedulerResults(Instantiators.InstantiatorFormatter.GetFormatter(scheduleConfig))
+            {
+                NextExecution = InstantiatorCalculator.GetCalculator(scheduleConfig.Type).
+                    Calculate(currentDate, scheduleConfig)
+            };
         }
+
+        
 
      
     }
