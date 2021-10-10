@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Formacion.Views;
+using System;
 
 
 namespace Formacion.Interfaces
 {
     public interface IConfigValidator
     {
-        void Validate(DateTime currentDate, IConfig config, ILimits limits);
+        void Validate(DateTime currentDate, SchedulerConfig config);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Formacion.Interfaces;
 using Formacion.Validators;
+using Formacion.Views;
 using System;
 using System.Collections.Generic;
 
@@ -13,14 +14,11 @@ namespace Formacion.Calculators
         {
            
         }
-        public override ICollection<IResult> Calulate(DateTime currentDate,IConfig config, ILimits limits)
+        public override DateTime Calculate(DateTime currentDate,SchedulerConfig config)
         {
-            this.Validate(currentDate, config, limits);
-            if(config.Active == false)
-            {
-                return null;
-            }
-            return new IResult[]{ new Result(limits.StartDate,((IConfigOnce)config).DateTime.Value) };
+            this.Validate(currentDate, config);
+            
+            return config.DateTime.Value;
         }
     }
 }
