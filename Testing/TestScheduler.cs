@@ -734,6 +734,70 @@ namespace Testing
 
         }
 
+        [Fact]
+        public void Generator_frecuency_daly_weekly_config_max_value()
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            ConfigWeekly configWeekly = new ConfigWeekly()
+            {
+                Every = 2,
+                Monday = true,
+                Thursday = true,
+                Friday = true
+            };
+            TheConfig.Weekly = configWeekly;
+            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 2,
+                StartTime = new TimeSpan(4, 0, 0),
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Daily;
+            TheConfig.Active = true;
+            TheConfig.DailyFrecuenci = configDailyFrecuenci;
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            var TheGenerator = new ScheluderGenerator();
+            DateTime CurrentDate = DateTime.MaxValue;
+            var TheException = Assert.Throws<ApplicationException>(() => TheGenerator.Calculate(CurrentDate, TheConfig));
+            Assert.Equal("The current date is invalid", TheException.Message);
+           
+        }
+
+        [Fact]
+        public void Generator_frecuency_daly_weekly_config_day_great_end_date()
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            ConfigWeekly configWeekly = new ConfigWeekly()
+            {
+                Every = 2,
+                Monday = true,
+                Thursday = true,
+                Friday = true
+            };
+            TheConfig.Weekly = configWeekly;
+            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 2,
+                StartTime = new TimeSpan(4, 0, 0),
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Daily;
+            TheConfig.Active = true;
+            TheConfig.DailyFrecuenci = configDailyFrecuenci;
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            TheConfig.EndDate = new DateTime(2020, 12, 31);  
+            var TheGenerator = new ScheluderGenerator();
+            DateTime CurrentDate = new DateTime(2021,1,1);
+            var TheException = Assert.Throws<ApplicationException>(() => TheGenerator.Calculate(CurrentDate, TheConfig));
+            Assert.Equal("the end date cannot be earlier than the current date ", TheException.Message);
+
+        }
         #endregion
 
     }
