@@ -7,19 +7,21 @@ namespace Formacion.Instantiators
 {
     public class InstantiatorFormatter
     {
-        
+
         public static FormatterBase GetFormatter(SchedulerConfig config)
         {
-            if(config.Type == TypesSchedule.Once)
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+            if (config.Type == TypesSchedule.Once)
             {
                 return GetFormaterOnce(config);
             }
-            if(config.Type == TypesSchedule.Recurring)
-            {
-                return GetFormaterRecurring(config);
-            }
-            throw new ApplicationException("Formatter not implemented");
-        }
+
+            return GetFormaterRecurring(config);
+
+        } 
         private static FormatterBase GetFormaterOnce(SchedulerConfig config)
         {
             

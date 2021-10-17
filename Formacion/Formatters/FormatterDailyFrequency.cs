@@ -26,7 +26,7 @@ namespace Formacion.Formatters
 
         private string FormatterOnce()
         {
-            return $" occurs once at {this.Config.DailyFrecuenci.OnceTime.Value.ToString("hh:mm")}";
+            return $" occurs once at {this.Config.DailyFrecuenci.OnceTime.Value.ToString("hh\\:mm")}";
         }
         private string FormatterEvery()
         {

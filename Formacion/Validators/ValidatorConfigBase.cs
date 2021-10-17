@@ -1,4 +1,8 @@
-﻿using Formacion.Views;
+﻿using Formacion.Calculators;
+using Formacion.Configs;
+using Formacion.Enums;
+using Formacion.Extensions;
+using Formacion.Views;
 using System;
 
 namespace Formacion.Validators
@@ -23,10 +27,12 @@ namespace Formacion.Validators
             this.validatorLimits.Validate(config.StartDate, config.EndDate);
             
             
-            if(config.EndDate.HasValue && config.EndDate < currentDate)
+            if(CalculatorLastDateTimeCalc.GetLastDateTime(config) < currentDate)
             {
                 throw new ApplicationException("the end date cannot be earlier than the current date ");
             }
         }
+
+   
     }
 }

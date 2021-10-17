@@ -15,6 +15,15 @@ namespace Formacion.Extensions
             return dateTime.Add(DateTimeExtension.GetInterval(type, units));
         }
 
+        public static int GetIndexDayWeek(this DateTime dateTime)
+        {
+            if (dateTime.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return 6;
+            }
+            return (int)dateTime.DayOfWeek - 1;
+        }
+
         private static TimeSpan GetInterval(TypesUnitsDailyFrecuency type, int units)
         {
             switch (type)

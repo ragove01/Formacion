@@ -24,12 +24,12 @@ namespace Formacion.Formatters
 
         private bool HasConfig()
         {
-            return this.Config != null && this.Config.Weekly != null; 
+            return this.Config != null; 
         }
 
         private bool HasConfigWeekly()
         {
-            if(this.Config?.Weekly == null)
+            if(this.Config.Weekly == null)
             {
                 return false;
             }

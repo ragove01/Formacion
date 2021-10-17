@@ -1,4 +1,5 @@
 ﻿using Formacion.Configs;
+using Formacion.Extensions;
 using Formacion.Views;
 using System;
 
@@ -9,13 +10,13 @@ namespace Formacion.Calculators
         private readonly ConfigWeekly config;
         private readonly CalculatorNextExecutionTimeDailyFrecuency calculatorNextExecutionTimeDailyFrecuency;
         private readonly DateTime startDate;
-
-
+        private readonly DateTime endDate;
         public CalculatorNextExecutionTimeWeekly(SchedulerConfig TheConfig)
         {
             this.config = TheConfig.Weekly;
             this.calculatorNextExecutionTimeDailyFrecuency = new CalculatorNextExecutionTimeDailyFrecuency(TheConfig.DailyFrecuenci);
             this.startDate = TheConfig.StartDate;
+            this.endDate = CalculatorLastDateTimeCalc.GetLastDateTime(TheConfig);  
         }
 
      
@@ -51,10 +52,16 @@ namespace Formacion.Calculators
             {
                 return this.startDate;
             }
-            int Days = (CurrentDate - StartDateWeek).Days;
+            return GetFirstDayNextWeek(StartDateWeek, CurrentDate);
+            
+        }
+
+        private DateTime GetFirstDayNextWeek(DateTime StartDayCalculate, DateTime CurrentDate)
+        {
+            int Days = (CurrentDate - StartDayCalculate).Days;
             int Rest = 0;
             Days = Math.DivRem(Days, this.config.NumberDaysEvery, out Rest);
-            DateTime NextDate = StartDateWeek.AddDays(Days * this.config.NumberDaysEvery);
+            DateTime NextDate = StartDayCalculate.AddDays(Days * this.config.NumberDaysEvery);
             if (Rest > 6)
             {
                 NextDate = NextDate.AddDays(this.config.NumberDaysEvery);
@@ -65,7 +72,11 @@ namespace Formacion.Calculators
 
         private DateTime? GetNextDayInWeek(DateTime currentDate)
         {
-            int StartIndex = this.GetIndexDay(currentDate);
+            if(this.endDate < currentDate)
+            {
+                return null;
+            }
+            int StartIndex = currentDate.GetIndexDayWeek();
             for (int Index = StartIndex; Index < 7; Index++)
             {
                 if (this.config.SelectedDays[Index])
@@ -88,16 +99,6 @@ namespace Formacion.Calculators
             }
             return this.startDate.AddDays((((int)startDate.DayOfWeek) - 1) * -1); 
         }
-               
-        private int GetIndexDay(DateTime dateTime)
-        {
-            if(dateTime.DayOfWeek == DayOfWeek.Sunday)
-            {
-                return 6;
-            }
-            return (int)dateTime.DayOfWeek - 1;
-        }
-        
-   
+
     }
 }

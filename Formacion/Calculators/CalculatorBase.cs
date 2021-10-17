@@ -14,7 +14,7 @@ namespace Formacion.Calculators
         }
         public virtual DateTime Calculate(DateTime currentDate, SchedulerConfig config)
         {
-            throw new NotFiniteNumberException();
+            throw new NotImplementedException();
         }
         protected virtual void Validate(DateTime currentDate, SchedulerConfig config)
         {

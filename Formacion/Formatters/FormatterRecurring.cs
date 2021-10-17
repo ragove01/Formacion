@@ -16,7 +16,7 @@ namespace Formacion.Formatters
         public override string Formatter(DateTime nextExecutionTime)
         {
             return $"{this.FormatterReccurringPrivate(nextExecutionTime)}" +
-                $" starting on {this.Config.StartDate.ToString("dd/MM/yyyy")}";
+                $" starting on {this.Config.StartDate.ToString("d")}";
         }
 
         private string FormatterReccurringPrivate(DateTime nextExecutionTime)
@@ -29,8 +29,8 @@ namespace Formacion.Formatters
 
         private string FormatterNoConfigWeekly(DateTime nextExecutionTime)
         {
-            return $"Occurs every {(this.Config.NumberOccurs>1?" " + this.Config.NumberOccurs.ToString():string.Empty)}{this.Config.Occurs.ToString().ToLower()}{this.FormatterConfigDailyFrecuency(nextExecutionTime)}. " +
-                $"Schedule will be used on {nextExecutionTime.ToString("dd/MM/yyyy")} at {nextExecutionTime.ToString("HH:mm")}";
+            return $"Occurs every {(this.Config.NumberOccurs>1?this.Config.NumberOccurs.ToString() + " ":string.Empty)}{this.Config.Occurs.ToString().ToLower()}{this.FormatterConfigDailyFrecuency(nextExecutionTime)}. " +
+                $"Schedule will be used on {nextExecutionTime.ToString("d")} at {nextExecutionTime.ToString("HH:mm")}";
         }
 
         private string FormatterConfigWeekly(DateTime nextExecutionTime)
