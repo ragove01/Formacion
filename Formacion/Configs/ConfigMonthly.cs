@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Formacion.Configs
 {
-    public class ConfigMontly
+    public class ConfigMonthly
     {
         public TypesMontlyFrecuency Type { get; set; }
         public int? DayMonth { get; set; }

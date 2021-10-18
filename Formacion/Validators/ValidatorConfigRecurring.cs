@@ -36,6 +36,10 @@ namespace Formacion.Validators
             {
                 new ValidatorConfigWeekly().Validate(config.Weekly); 
             }
+            if(config.Monthly != null)
+            {
+                new ValidatorConfigMonthly().Validate(config.Monthly);
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Formacion.Calculators
         private readonly SchedulerConfig config;
         private readonly ConfigDailyFrecuency configDailyFrecuenci;
         private readonly ConfigWeekly configWeekly;
+        private readonly ConfigMonthly configMontly;
         
         
 
@@ -20,6 +21,7 @@ namespace Formacion.Calculators
             this.config = TheConfig;
             this.configDailyFrecuenci = TheConfig.DailyFrecuenci??new ConfigDailyFrecuency() { Frecuenci = TypesOccursDailyFrecuency.Once };
             this.configWeekly = config.Weekly;
+            this.configMontly = config.Monthly;
             
           
         }
@@ -27,12 +29,16 @@ namespace Formacion.Calculators
         public DateTime GetNext(DateTime dateCalc)
         {
 
-            if (this.configWeekly == null)
+            if (this.configWeekly == null && this.configMontly == null)
             {
                 return this.GetNextDateNotWeeklyConfiguration(dateCalc);
             }
+            if (this.configWeekly != null)
+            {
 
-            return this.CalculateNextDateTimeOnce(dateCalc);
+                return this.CalculateNextDateTimeOnce(dateCalc);
+            }
+            return this.CalculateNextDateTimeMonthly(dateCalc);
 
 
         }
@@ -69,10 +75,16 @@ namespace Formacion.Calculators
 
         }
 
-      
+        private DateTime CalculateNextDateTimeMonthly(DateTime day)
+        {
+            if (this.configMontly.Type == TypesMontlyFrecuency.Day)
+            {
+                return new CalculatorNextExecutionTimeMonthlyDay(this.config).CalculateNextDate(day);
+            }
 
-        
-
+            return new CalculatorNextExecutionTimeMonthlyEvery(this.config).CalculateNextDate(day);
+        }
+   
     }
 }
 ;

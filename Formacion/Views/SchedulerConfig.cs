@@ -16,7 +16,7 @@ namespace Formacion.Views
 
         public ConfigDailyFrecuency DailyFrecuenci { get; set; }
         public ConfigWeekly Weekly { get; set; }
-        public ConfigMontly Monthly { get; set; }
+        public ConfigMonthly Monthly { get; set; }
 
     }
 }

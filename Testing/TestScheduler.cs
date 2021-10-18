@@ -911,6 +911,88 @@ namespace Testing
         }
 
 
+        [Fact]
+        public void Validator_Formatter_Recurring_Monthly_Daily_Config()
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            ConfigMonthly configMonthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Day,
+                DayMonth = 1,
+                EveryNumberMonths = 3
+            };
+            
+            TheConfig.Monthly = configMonthly;
+            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 2,
+                StartTime = new TimeSpan(4, 0, 0),
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Daily;
+            TheConfig.Active = true;
+            TheConfig.DailyFrecuenci = configDailyFrecuenci;
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            var Formatter = InstantiatorFormatter.GetFormatter(TheConfig);
+            Assert.IsType<FormatterRecurring>(Formatter);
+
+            Assert.Equal($"Occurs the 1 of very 3 months ever 2 hours between 04:00 and 08:00. starting on {TheConfig.StartDate:d}",
+                Formatter.Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
+
+        }
+
+        [Fact]
+        public void Validator_Formatter_Monthly_no_Config()
+        {
+
+
+            Assert.Equal(string.Empty,
+                new FormatterMonthly(null).Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
+
+        }
+
+        [Fact]
+        public void Validator_Formatter_Weekly_scheduler_config_monthly_no_Config()
+        {
+
+            Assert.Equal(string.Empty,
+                new FormatterMonthly(new SchedulerConfig()).Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
+            Assert.Equal(string.Empty,
+                new FormatterMonthly(new SchedulerConfig()
+                {
+                    Monthly = new ConfigMonthly()
+                }).Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
+
+        }
+
+        [Fact]
+        public void Validator_Formatter_Recurring_Monthly_Config()
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            TheConfig.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Every,
+                TypesEvery = TypesEveryMonthly.First,
+                TypesDayEvery = TypesEveryDayMonthly.Thursday,
+                EveryNumberMonths = 3
+            };
+            
+
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Daily;
+            TheConfig.Active = true;
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            var Formatter = InstantiatorFormatter.GetFormatter(TheConfig);
+            Assert.IsType<FormatterRecurring>(Formatter);
+
+            Assert.Equal($"Occurs the first thursday of very 3 months. starting on {TheConfig.StartDate:d}",
+                Formatter.Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
+
+        }
+
         #endregion
 
         #region Generators
@@ -998,6 +1080,85 @@ namespace Testing
 
         }
 
+     
+
+        [Fact]
+        public void Generator_frecuency_daly_monthly_config_first_thursday()
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            TheConfig.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Every,
+                TypesEvery = TypesEveryMonthly.First,
+                TypesDayEvery = TypesEveryDayMonthly.Thursday,
+                EveryNumberMonths = 3
+            };
+            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 2,
+                StartTime = new TimeSpan(4, 0, 0),
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Daily;
+            TheConfig.Active = true;
+            TheConfig.DailyFrecuenci = configDailyFrecuenci;
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            var TheGenerator = new ScheluderGenerator();
+            DateTime CurrentDate = new DateTime(2020, 1, 1);
+            DateTime DateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
+            var Result = TheGenerator.Calculate(CurrentDate, TheConfig);
+            Assert.NotNull(Result);
+            Assert.NotNull(Result.NextExecution);
+            Assert.Equal(DateExpected, Result.NextExecution.Value);
+            Assert.Equal($"Occurs the first thursday of very 3 months ever 2 hours between 04:00 and 08:00. starting on {TheConfig.StartDate:d}", Result.NextExecutionTimeString);
+
+        }
+
+        [Theory]
+
+        [InlineData("01/01/2020", "05/01/2020 03:00:00")]
+        [InlineData("05/01/2020 03:00:00", "05/01/2020 04:00:00")]
+        [InlineData("05/01/2020 04:00:00", "05/01/2020 05:00:00")]
+        [InlineData("05/01/2020 05:00:00", "05/01/2020 06:00:00")]
+        [InlineData("05/01/2020 06:00:00", "02/02/2020 03:00:00")]
+        [InlineData("02/02/2020 03:00:00", "02/02/2020 04:00:00")]
+        public void Generator_frecuency_daly_monthly_second_Weekend_config(string DateCalculate, string DateEspected)
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            TheConfig.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Every,
+                TypesEvery = TypesEveryMonthly.Second,
+                TypesDayEvery = TypesEveryDayMonthly.Weekend,
+                EveryNumberMonths = 1
+            };
+            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 1,
+                StartTime = new TimeSpan(3, 0, 0),
+                EndTime = new TimeSpan(6, 0, 0)
+            };
+
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Daily;
+            TheConfig.Active = true;
+            TheConfig.DailyFrecuenci = configDailyFrecuenci;
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            var TheGenerator = new ScheluderGenerator();
+            DateTime CurrentDate = new DateTime(2020, 1, 1);
+            DateTime DateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
+            var Result = TheGenerator.Calculate(DateTime.Parse(DateCalculate), TheConfig);
+            Assert.NotNull(Result);
+            Assert.NotNull(Result.NextExecution);
+            Assert.Equal(DateTime.Parse(DateEspected), Result.NextExecution.Value);
+            
+        }
+
+
         #endregion
         #region test ValidatorConfigMonthly
         [Fact]
@@ -1010,7 +1171,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_day_no_day_value()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
 
@@ -1022,7 +1183,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_day_zero_day_value()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 0
@@ -1034,7 +1195,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_day_graet_30_day_value()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 32
@@ -1047,7 +1208,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_day_months_lees_zero_value()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 1
@@ -1059,7 +1220,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_day_months_great_12_value()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 1,
@@ -1074,7 +1235,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_day_ok()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 1,
@@ -1088,7 +1249,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_every_no_type_every()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every
             };
@@ -1100,7 +1261,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_every_months_lees_zero_value()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First,
@@ -1114,7 +1275,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_every_no_day_of_week()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First
@@ -1127,7 +1288,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_every_months_great_12_value()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First,
@@ -1142,7 +1303,7 @@ namespace Testing
         [Fact]
         public void ValidatorConfigMonthly_every_ok()
         {
-            ConfigMontly config = new ConfigMontly()
+            ConfigMonthly config = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First,
@@ -1167,7 +1328,7 @@ namespace Testing
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 1,
@@ -1194,7 +1355,7 @@ namespace Testing
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 1,
@@ -1228,7 +1389,7 @@ namespace Testing
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 1,
@@ -1261,7 +1422,7 @@ namespace Testing
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 1,
@@ -1280,6 +1441,8 @@ namespace Testing
         [InlineData("02/01/2020", "02/04/2020")]
         [InlineData("02/04/2020", "02/07/2020")]
         [InlineData("02/07/2020", "01/10/2020")]
+        [InlineData("01/10/2020", "07/01/2021")]
+        [InlineData("07/01/2021", "01/04/2021")]
         public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_start_date(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
@@ -1287,7 +1450,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
 
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First,
@@ -1322,7 +1485,7 @@ namespace Testing
                 EndTime = new TimeSpan(8, 0, 0)
             };
             TheConfig.DailyFrecuenci = configDailyFrecuenci;
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First,
@@ -1348,7 +1511,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
 
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First,
@@ -1383,7 +1546,7 @@ namespace Testing
                 EndTime = new TimeSpan(8, 0, 0)
             };
             TheConfig.DailyFrecuenci = configDailyFrecuenci;
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First,
@@ -1410,7 +1573,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
 
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First,
@@ -1437,7 +1600,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
 
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.Second,
@@ -1464,7 +1627,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
 
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.Third,
@@ -1492,7 +1655,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
 
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.Fourth,
@@ -1520,7 +1683,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
 
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.Last,
@@ -1548,7 +1711,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
 
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.First,
@@ -1576,7 +1739,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
 
-            TheConfig.Monthly = new ConfigMontly()
+            TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.Second,
@@ -1588,6 +1751,45 @@ namespace Testing
 
             DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
             Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+        }
+        #endregion
+        #region Test Auxiliar class
+        [Fact]
+        public void test_CalculatorLastDateTimeCalc()
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Monthly;
+            TheConfig.Active = true;
+
+            TheConfig.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Every,
+                TypesEvery = TypesEveryMonthly.Second,
+                TypesDayEvery = TypesEveryDayMonthly.Weekend,
+                EveryNumberMonths = 3
+            };
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            TheConfig.EndDate = new DateTime(2020, 12, 31);
+
+            Assert.Equal<DateTime>(TheConfig.EndDate.Value, CalculatorLastDateTimeCalc.GetLastDateTime(TheConfig));
+            TheConfig.DailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+            Assert.Equal<DateTime>(new DateTime(2020,12,31,8,0,0), CalculatorLastDateTimeCalc.GetLastDateTime(TheConfig));
+            TheConfig.DailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Once,
+                OnceTime = new TimeSpan(8, 0, 0)
+            };
+            Assert.Equal<DateTime>(new DateTime(2020, 12, 31, 8, 0, 0), CalculatorLastDateTimeCalc.GetLastDateTime(TheConfig));
+            TheConfig.DailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Once
+            };
+            Assert.Equal<DateTime>(new DateTime(2020, 12, 31, 0, 0, 0), CalculatorLastDateTimeCalc.GetLastDateTime(TheConfig));
         }
         #endregion
     }

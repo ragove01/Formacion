@@ -8,7 +8,7 @@ namespace Formacion.Validators
 {
     public class ValidatorConfigMonthly
     {
-        public void Validate(ConfigMontly configMontly)
+        public void Validate(ConfigMonthly configMontly)
         {
             if (configMontly == null)
             {
@@ -26,7 +26,7 @@ namespace Formacion.Validators
             this.ValidateNumberMonth(configMontly);
         }
 
-        private void ValidateConfigDay(ConfigMontly configMontly)
+        private void ValidateConfigDay(ConfigMonthly configMontly)
         {
             if (configMontly.DayMonth.HasValue == false)
             {
@@ -42,7 +42,7 @@ namespace Formacion.Validators
             }
         }
 
-        private void ValidateConfigEver(ConfigMontly configMontly)
+        private void ValidateConfigEver(ConfigMonthly configMontly)
         {
             if (configMontly.TypesEvery.HasValue == false)
             {
@@ -54,7 +54,7 @@ namespace Formacion.Validators
             }
 
         }
-        private void ValidateNumberMonth(ConfigMontly configMontly)
+        private void ValidateNumberMonth(ConfigMonthly configMontly)
         {
             if (configMontly.EveryNumberMonths < 1 || configMontly.EveryNumberMonths > 12)
             {

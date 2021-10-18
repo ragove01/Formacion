@@ -59,16 +59,7 @@ namespace Formacion.Calculators
             }
             return NumberMonth; 
         }
-        private DateTime GetFirstDayInitCalculo()
-        {
-            if(this.config.StartDate.Day > this.config.Monthly.DayMonth)
-            {
-                return this.SetDayMonth(new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1)
-                        .AddMonths(1));  
-            }
-            return this.SetDayMonth(new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1));
-        }
-
+       
         protected virtual DateTime SetDayMonth(DateTime Date)
         {
             throw new NotImplementedException();

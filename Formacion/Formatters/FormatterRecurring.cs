@@ -21,8 +21,15 @@ namespace Formacion.Formatters
 
         private string FormatterReccurringPrivate(DateTime nextExecutionTime)
         {
-            return this.Config.Weekly == null ? this.FormatterNoConfigWeekly(nextExecutionTime) :
-                    this.FormatterConfigWeekly(nextExecutionTime);
+            if(this.Config.Weekly != null)
+            {
+                return this.FormatterConfigWeekly(nextExecutionTime);
+            }
+            if(this.Config.Monthly != null)
+            {
+                return this.FormatterConfigMonthly(nextExecutionTime);
+            }
+            return this.FormatterNoConfigWeekly(nextExecutionTime);
         }
 
 
@@ -37,10 +44,15 @@ namespace Formacion.Formatters
         {
             return $"{new FormatterWeekly(this.Config).Formatter(nextExecutionTime)}{this.FormatterConfigDailyFrecuency(nextExecutionTime)}.";
         }
+
+        private string FormatterConfigMonthly(DateTime nextExecutionTime)
+        {
+            return $"{new FormatterMonthly(this.Config).Formatter(nextExecutionTime)}{this.FormatterConfigDailyFrecuency(nextExecutionTime)}.";
+        }
         private string FormatterConfigDailyFrecuency(DateTime nextExecutionTime)
         {
             return new FormatterDailyFrequency(this.Config).Formatter(nextExecutionTime);  
         }
-
+       
     }
 }
