@@ -1465,7 +1465,34 @@ namespace Testing
         }
 
         [Theory]
-       
+        [InlineData("01/01/2020", "30/01/2020")]
+        [InlineData("30/01/2020", "30/04/2020")]
+        [InlineData("30/04/2020", "30/07/2020")]
+        [InlineData("30/07/2020", "29/10/2020")]
+        [InlineData("29/10/2020", "28/01/2021")]
+        [InlineData("28/01/2021", "29/04/2021")]
+        public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_last_date(string DateCalculate, string DateEspected)
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Monthly;
+            TheConfig.Active = true;
+
+            TheConfig.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Every,
+                TypesEvery = TypesEveryMonthly.Last,
+                TypesDayEvery = TypesEveryDayMonthly.Thursday,
+                EveryNumberMonths = 3
+            };
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
+
+            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
+            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+        }
+
+        [Theory]
         [InlineData("01/01/2020", "02/01/2020 04:00:00")]
         [InlineData("02/01/2020 04:00:00", "02/01/2020 06:00:00")]
         [InlineData("02/01/2020 06:00:00", "02/01/2020 08:00:00")]
@@ -1670,12 +1697,12 @@ namespace Testing
         }
 
         [Theory]
-        [InlineData("01/01/2020", "07/01/2020")]
-        [InlineData("07/01/2020", "07/04/2020")]
-        [InlineData("15/01/2020", "07/04/2020")]
-        [InlineData("07/04/2020", "07/07/2020")]
-        [InlineData("07/07/2020", "07/10/2020")]
-        [InlineData("07/10/2020", "07/01/2021")]
+        [InlineData("01/01/2020", "31/01/2020")]
+        [InlineData("31/01/2020", "30/04/2020")]
+        [InlineData("15/01/2020", "31/01/2020")]
+        [InlineData("30/04/2020", "31/07/2020")]
+        [InlineData("31/07/2020", "30/10/2020")]
+        [InlineData("30/10/2020", "29/01/2021")]
         public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_last_weekday_date(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
@@ -1743,6 +1770,34 @@ namespace Testing
             {
                 Type = TypesMontlyFrecuency.Every,
                 TypesEvery = TypesEveryMonthly.Second,
+                TypesDayEvery = TypesEveryDayMonthly.Weekend,
+                EveryNumberMonths = 3
+            };
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
+
+            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
+            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+        }
+
+        [Theory]
+        [InlineData("01/01/2020", "26/01/2020")]
+        [InlineData("26/01/2020", "26/04/2020")]
+        [InlineData("15/01/2020", "26/01/2020")]
+        [InlineData("26/04/2020", "26/07/2020")]
+        [InlineData("26/07/2020", "31/10/2020")]
+        [InlineData("31/10/2020", "31/01/2021")]
+        public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_last_weekend_date(string DateCalculate, string DateEspected)
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Monthly;
+            TheConfig.Active = true;
+
+            TheConfig.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Every,
+                TypesEvery = TypesEveryMonthly.Last,
                 TypesDayEvery = TypesEveryDayMonthly.Weekend,
                 EveryNumberMonths = 3
             };
