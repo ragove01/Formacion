@@ -7,3 +7,15 @@ C:\Desarrollo\Formacion\Formacion\bin\Debug\netcoreapp2.0\Formacion.pdb
 C:\Desarrollo\Formacion\Formacion\obj\Debug\netcoreapp2.0\Formacion.dll
 C:\Desarrollo\Formacion\Formacion\obj\Debug\netcoreapp2.0\Formacion.pdb
 C:\Desarrollo\Formacion\Formacion\obj\Debug\netcoreapp2.0\Formacion.csprojAssemblyReference.cache
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\bin\Debug\netcoreapp2.0\Formacion.deps.json
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\bin\Debug\netcoreapp2.0\Formacion.dll
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\bin\Debug\netcoreapp2.0\Formacion.pdb
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\obj\Debug\netcoreapp2.0\Formacion.csproj.AssemblyReference.cache
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\obj\Debug\netcoreapp2.0\Formacion.Formatters.Texts.resources
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\obj\Debug\netcoreapp2.0\Formacion.csproj.GenerateResource.cache
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\obj\Debug\netcoreapp2.0\Formacion.GeneratedMSBuildEditorConfig.editorconfig
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\obj\Debug\netcoreapp2.0\Formacion.AssemblyInfoInputs.cache
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\obj\Debug\netcoreapp2.0\Formacion.AssemblyInfo.cs
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\obj\Debug\netcoreapp2.0\Formacion.csproj.CoreCompileInputs.cache
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\obj\Debug\netcoreapp2.0\Formacion.dll
+C:\Desarrollo\Net\FormacionSemicrol\Formacion\obj\Debug\netcoreapp2.0\Formacion.pdb

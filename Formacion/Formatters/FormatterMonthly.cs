@@ -7,7 +7,7 @@ namespace Formacion.Formatters
 {
     public class FormatterMonthly : FormatterBase
     {
-        private static string[] dayOfWeekNames = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
+        
 
         public FormatterMonthly(SchedulerConfig TheConfig) : base(TheConfig)
         {

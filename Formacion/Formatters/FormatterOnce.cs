@@ -8,13 +8,15 @@ namespace Formacion.Formatters
 
         public FormatterOnce(SchedulerConfig TheConfig):base(TheConfig)
         {
- 
+
         }
 
         public override string Formatter(DateTime nextExecution)
         {
-            return $"Occurs once. Schedule will be used on {nextExecution.ToString("d")} at {nextExecution.ToString("HH:mm")}" +
-                $" starting on {this.Config.StartDate.ToString("d")}";
+            return string.Format(Texts.FormatterOnce_TextBase,
+                nextExecution.ToString("d"), nextExecution.ToString("HH:mm"), nextExecution.ToString("HH:mm"));
+            //return $"Occurs once. Schedule will be used on {nextExecution.ToString("d")} at {nextExecution.ToString("HH:mm")}" +
+            //    $" starting on {nextExecution.ToString("HH:mm")}";
         }
     }
 }

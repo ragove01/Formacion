@@ -5820,24 +5820,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\rafa\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\rafae\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Desarrollo\\Formacion\\Testing\\Testing.csproj",
+      "projectUniqueName": "C:\\Desarrollo\\Net\\FormacionSemicrol\\Testing\\Testing.csproj",
       "projectName": "Testing",
-      "projectPath": "C:\\Desarrollo\\Formacion\\Testing\\Testing.csproj",
-      "packagesPath": "C:\\Users\\rafa\\.nuget\\packages\\",
-      "outputPath": "C:\\Desarrollo\\Formacion\\Testing\\obj\\",
+      "projectPath": "C:\\Desarrollo\\Net\\FormacionSemicrol\\Testing\\Testing.csproj",
+      "packagesPath": "C:\\Users\\rafae\\.nuget\\packages\\",
+      "outputPath": "C:\\Desarrollo\\Net\\FormacionSemicrol\\Testing\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
       ],
       "configFilePaths": [
-        "C:\\Users\\rafa\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\rafae\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
@@ -5848,9 +5852,10 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
+          "targetAlias": "netcoreapp2.0",
           "projectReferences": {
-            "C:\\Desarrollo\\Formacion\\Formacion\\Formacion.csproj": {
-              "projectPath": "C:\\Desarrollo\\Formacion\\Formacion\\Formacion.csproj"
+            "C:\\Desarrollo\\Net\\FormacionSemicrol\\Formacion\\Formacion.csproj": {
+              "projectPath": "C:\\Desarrollo\\Net\\FormacionSemicrol\\Formacion\\Formacion.csproj"
             }
           }
         }
@@ -5863,6 +5868,7 @@
     },
     "frameworks": {
       "netcoreapp2.0": {
+        "targetAlias": "netcoreapp2.0",
         "dependencies": {
           "FluentAssertions.Extensions": {
             "target": "Package",
@@ -5873,6 +5879,7 @@
             "version": "[15.6.0, )"
           },
           "Microsoft.NETCore.App": {
+            "suppressParent": "All",
             "target": "Package",
             "version": "[2.0.0, )",
             "autoReferenced": true
@@ -5887,10 +5894,16 @@
           }
         },
         "imports": [
-          "net461"
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
         ],
         "assetTargetFallback": true,
-        "warn": true
+        "warn": true,
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
       }
     }
   }
