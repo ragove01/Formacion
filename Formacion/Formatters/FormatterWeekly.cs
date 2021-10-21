@@ -18,7 +18,8 @@ namespace Formacion.Formatters
         {
             if(!this.HasConfig()) { return string.Empty; }
             if(!this.HasConfigWeekly()) { return string.Empty; }
-            return $"Occurs every {this.Config.Weekly.Every.ToString()} weeks on " +  this.FormatterValue();
+            return string.Format(Texts.FormatterWeekly_TextBase, this.Config.Weekly.Every.ToString(), this.FormatterValue());
+                //$"Occurs every {this.Config.Weekly.Every.ToString()} weeks on " +  this.FormatterValue();
 
         }
 
@@ -50,12 +51,12 @@ namespace Formacion.Formatters
                 if (this.Config.Weekly.SelectedDays[Index])
                 {
                     LastPositionInsert = this.AppendString(stringBuilder,
-                                    dayOfWeekNames[Index]);
+                                    Texts.ResourceManager.GetString(FormatterWeekly.dayOfWeekNames[Index]));
                 }
             }
             if(LastPositionInsert > 0)
             {
-                stringBuilder.Replace(",", " and ", LastPositionInsert, 1);
+                stringBuilder.Replace(",", Texts.FormatterWeekly_TextAnd, LastPositionInsert, 1);
                 
             }
             return stringBuilder.ToString();  

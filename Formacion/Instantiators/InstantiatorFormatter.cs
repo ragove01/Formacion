@@ -10,10 +10,12 @@ namespace Formacion.Instantiators
 
         public static FormatterBase GetFormatter(SchedulerConfig config)
         {
+            
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
+          
             if (config.Type == TypesSchedule.Once)
             {
                 return GetFormaterOnce(config);
@@ -34,5 +36,7 @@ namespace Formacion.Instantiators
             return new FormatterRecurring(config);
 
         }
+
+       
     }
 }

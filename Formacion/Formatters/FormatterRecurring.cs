@@ -15,8 +15,9 @@ namespace Formacion.Formatters
 
         public override string Formatter(DateTime nextExecutionTime)
         {
-            return $"{this.FormatterReccurringPrivate(nextExecutionTime)}" +
-                $" starting on {this.Config.StartDate.ToString("d")}";
+            return string.Format(Texts.FormatterRecurring_TextBase,
+                this.FormatterReccurringPrivate(nextExecutionTime),
+                this.Config.StartDate.ToString("d"));
         }
 
         private string FormatterReccurringPrivate(DateTime nextExecutionTime)
@@ -36,22 +37,32 @@ namespace Formacion.Formatters
 
         private string FormatterNoConfigWeekly(DateTime nextExecutionTime)
         {
-            return $"Occurs every {(this.Config.NumberOccurs>1?this.Config.NumberOccurs.ToString() + " ":string.Empty)}{this.Config.Occurs.ToString().ToLower()}{this.FormatterConfigDailyFrecuency(nextExecutionTime)}. " +
-                $"Schedule will be used on {nextExecutionTime.ToString("d")} at {nextExecutionTime.ToString("HH:mm")}";
+            return string.Format(Texts.FormatterRecurring_TextNoConfigWeekly,
+                (this.Config.NumberOccurs > 1 ? this.Config.NumberOccurs.ToString() + " " : string.Empty),
+                this.Config.Occurs.ToString().ToLower(),
+                this.FormatterConfigDailyFrecuency(nextExecutionTime,true),
+                nextExecutionTime.ToString("d"), nextExecutionTime.ToString("HH:mm"));
+                //$"Occurs every {(this.Config.NumberOccurs>1?this.Config.NumberOccurs.ToString() + " ":string.Empty)}{this.Config.Occurs.ToString().ToLower()}{this.FormatterConfigDailyFrecuency(nextExecutionTime)}. " +
+                //$"Schedule will be used on {nextExecutionTime.ToString("d")} at {nextExecutionTime.ToString("HH:mm")}";
         }
 
         private string FormatterConfigWeekly(DateTime nextExecutionTime)
         {
-            return $"{new FormatterWeekly(this.Config).Formatter(nextExecutionTime)}{this.FormatterConfigDailyFrecuency(nextExecutionTime)}.";
+            return $"{new FormatterWeekly(this.Config).Formatter(nextExecutionTime)}{this.FormatterConfigDailyFrecuency(nextExecutionTime,false)}.";
         }
 
         private string FormatterConfigMonthly(DateTime nextExecutionTime)
         {
-            return $"{new FormatterMonthly(this.Config).Formatter(nextExecutionTime)}{this.FormatterConfigDailyFrecuency(nextExecutionTime)}.";
+            return $"{new FormatterMonthly(this.Config).Formatter(nextExecutionTime)}{this.FormatterConfigDailyFrecuency(nextExecutionTime,false)}.";
         }
-        private string FormatterConfigDailyFrecuency(DateTime nextExecutionTime)
+        private string FormatterConfigDailyFrecuency(DateTime nextExecutionTime, bool startWithWhiteSpace)
         {
-            return new FormatterDailyFrequency(this.Config).Formatter(nextExecutionTime);  
+            string valueReturn = new FormatterDailyFrequency(this.Config).Formatter(nextExecutionTime);
+            if(string.IsNullOrEmpty(valueReturn))
+            {
+                return string.Empty;
+            }
+            return $" {valueReturn}";  
         }
        
     }

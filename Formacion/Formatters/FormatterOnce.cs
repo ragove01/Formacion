@@ -14,7 +14,7 @@ namespace Formacion.Formatters
         public override string Formatter(DateTime nextExecution)
         {
             return string.Format(Texts.FormatterOnce_TextBase,
-                nextExecution.ToString("d"), nextExecution.ToString("HH:mm"), nextExecution.ToString("HH:mm"));
+                nextExecution.ToString("d"), nextExecution.ToString("HH:mm"), this.Config.StartDate.ToString("d"));
             //return $"Occurs once. Schedule will be used on {nextExecution.ToString("d")} at {nextExecution.ToString("HH:mm")}" +
             //    $" starting on {nextExecution.ToString("HH:mm")}";
         }

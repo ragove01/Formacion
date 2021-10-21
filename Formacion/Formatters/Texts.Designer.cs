@@ -61,7 +61,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Cada {0}{1} entre {2} y {3}.
+        ///   Busca una cadena traducida similar a cada {0} {1} entre {2} y {3}.
         /// </summary>
         public static string FormatterDailyFrecuency_TextEvery {
             get {
@@ -124,7 +124,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Ocurre cada {0}. El horario se utilizará el {1} a las {2}.
+        ///   Busca una cadena traducida similar a Ocurre cada {0}{1}{2}. El horario se utilizará el {3} a las {4}.
         /// </summary>
         public static string FormatterRecurring_TextNoConfigWeekly {
             get {
@@ -133,7 +133,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a y.
+        ///   Busca una cadena traducida similar a  y .
         /// </summary>
         public static string FormatterWeekly_TextAnd {
             get {
@@ -246,6 +246,33 @@ namespace Formacion.Formatters {
         public static string TypesEveyDayMonthly_WeekEndDay {
             get {
                 return ResourceManager.GetString("TypesEveyDayMonthly.WeekEndDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a horas.
+        /// </summary>
+        public static string TypeUnit_Hours {
+            get {
+                return ResourceManager.GetString("TypeUnit.Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a minutos.
+        /// </summary>
+        public static string TypeUnit_Minutes {
+            get {
+                return ResourceManager.GetString("TypeUnit.Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a segundos.
+        /// </summary>
+        public static string TypeUnit_Seconds {
+            get {
+                return ResourceManager.GetString("TypeUnit.Seconds", resourceCulture);
             }
         }
         

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FormatterDailyFrecuency.TextEvery" xml:space="preserve">
-    <value>Cada {0}{1} entre {2} y {3}</value>
+    <value>cada {0} {1} entre {2} y {3}</value>
   </data>
   <data name="FormatterDailyFrecuency.TextOnce" xml:space="preserve">
     <value>Ocurre una vez en {0}</value>
@@ -139,10 +139,10 @@
     <value>{0} comenzando el {1}</value>
   </data>
   <data name="FormatterRecurring.TextNoConfigWeekly" xml:space="preserve">
-    <value>Ocurre cada {0}. El horario se utilizará el {1} a las {2}</value>
+    <value>Ocurre cada {0}{1}{2}. El horario se utilizará el {3} a las {4}</value>
   </data>
   <data name="FormatterWeekly.TextAnd" xml:space="preserve">
-    <value>y</value>
+    <value> y </value>
   </data>
   <data name="FormatterWeekly.TextBase" xml:space="preserve">
     <value>Ocurre cada {0} semanas en {1}</value>
@@ -179,6 +179,15 @@
   </data>
   <data name="TypesEveyDayMonthly.WeekEndDay" xml:space="preserve">
     <value>fin de semana</value>
+  </data>
+  <data name="TypeUnit.Hours" xml:space="preserve">
+    <value>horas</value>
+  </data>
+  <data name="TypeUnit.Minutes" xml:space="preserve">
+    <value>minutos</value>
+  </data>
+  <data name="TypeUnit.Seconds" xml:space="preserve">
+    <value>segundos</value>
   </data>
   <data name="wednesday" xml:space="preserve">
     <value>miercoles</value>

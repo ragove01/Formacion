@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FormatterDailyFrecuency.TextEvery" xml:space="preserve">
-    <value>Occurs {0}{1} between {2} and {3}</value>
+    <value>ever {0} {1} between {2} and {3}</value>
   </data>
   <data name="FormatterDailyFrecuency.TextOnce" xml:space="preserve">
     <value>occurs once at {0}</value>
   </data>
   <data name="FormatterMonthly.TextBase" xml:space="preserve">
-    <value>Ocurrs {0} of very {1} months</value>
+    <value>Occurs {0} of very {1} months</value>
   </data>
   <data name="FormatterMonthly.TextTypeDay" xml:space="preserve">
     <value>the {0}</value>
@@ -139,13 +139,13 @@
     <value>{0} starting on {1}</value>
   </data>
   <data name="FormatterRecurring.TextNoConfigWeekly" xml:space="preserve">
-    <value>Ocurrs every {0}.  Schedule will be used on {1} at {2}</value>
+    <value>Occurs every {0}{1}{2}. Schedule will be used on {3} at {4}</value>
   </data>
   <data name="FormatterWeekly.TextAnd" xml:space="preserve">
-    <value>and</value>
+    <value> and </value>
   </data>
   <data name="FormatterWeekly.TextBase" xml:space="preserve">
-    <value>Ocurrs every {0} weeks on {1}</value>
+    <value>Occurs every {0} weeks on {1}</value>
   </data>
   <data name="friday" xml:space="preserve">
     <value>friday</value>
@@ -179,6 +179,15 @@
   </data>
   <data name="TypesEveyDayMonthly.WeekEndDay" xml:space="preserve">
     <value>weekendday</value>
+  </data>
+  <data name="TypeUnit.Hours" xml:space="preserve">
+    <value>hours</value>
+  </data>
+  <data name="TypeUnit.Minutes" xml:space="preserve">
+    <value>minutes</value>
+  </data>
+  <data name="TypeUnit.Seconds" xml:space="preserve">
+    <value>seconds</value>
   </data>
   <data name="wednesday" xml:space="preserve">
     <value>wednesday</value>

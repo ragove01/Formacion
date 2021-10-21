@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Formacion.Configs;
 using Formacion.Enums;
 
@@ -6,6 +7,10 @@ namespace Formacion.Views
 {
     public class SchedulerConfig 
     {
+        public SchedulerConfig()
+        {
+            this.Culture = CultureInfo.CurrentCulture;
+        }
         public TypesSchedule Type { get; set; }
         public bool Active { get; set; }
         public DateTime? DateTime { get; set; }
@@ -17,6 +22,7 @@ namespace Formacion.Views
         public ConfigDailyFrecuency DailyFrecuenci { get; set; }
         public ConfigWeekly Weekly { get; set; }
         public ConfigMonthly Monthly { get; set; }
+        public CultureInfo Culture { get; set; }
 
     }
 }
