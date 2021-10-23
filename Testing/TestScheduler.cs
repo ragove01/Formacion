@@ -6,6 +6,7 @@ using Formacion.Formatters;
 using Formacion.Instantiators;
 using Formacion.Validators;
 using Formacion.Views;
+using Formacion.Extensions;
 using System;
 using System.Globalization;
 using Xunit;
@@ -908,7 +909,7 @@ namespace Testing
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Daily;
             TheConfig.Active = true;
-            //TheConfig.DailyFrecuenci = configDailyFrecuenci;
+           
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             var Formatter = InstantiatorFormatter.GetFormatter(TheConfig);
             Assert.IsType<FormatterRecurring>(Formatter);
@@ -1142,7 +1143,7 @@ namespace Testing
         public void Generator_frecuency_daly_monthly_second_Weekend_config(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
-            TheConfig.Culture = CultureInfo.GetCultureInfo("en-GB");
+            TheConfig.Culture = CultureInfo.GetCultureInfo("en-US");
             TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
@@ -1166,10 +1167,10 @@ namespace Testing
             var TheGenerator = new ScheluderGenerator();
             DateTime CurrentDate = new DateTime(2020, 1, 1);
             DateTime DateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
-            var Result = TheGenerator.Calculate(DateTime.Parse(DateCalculate), TheConfig);
+            var Result = TheGenerator.Calculate(ParseSpanish(DateCalculate), TheConfig);
             Assert.NotNull(Result);
             Assert.NotNull(Result.NextExecution);
-            Assert.Equal(DateTime.Parse(DateEspected), Result.NextExecution.Value);
+            Assert.Equal(ParseSpanish(DateEspected), Result.NextExecution.Value);
             
         }
 
@@ -1353,8 +1354,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyDay(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
 
@@ -1380,8 +1381,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 2);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyDay(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1413,8 +1414,8 @@ namespace Testing
             };
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyDay(TheConfig);
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1425,6 +1426,7 @@ namespace Testing
         public void CalculatorRecurring_next_Monthly_config_on_day_Month_daily_config_start_date_greater(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
+            TheConfig.Culture = CultureInfo.GetCultureInfo("en-US");
 
             ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
             {
@@ -1446,8 +1448,8 @@ namespace Testing
             };
             TheConfig.StartDate = new DateTime(2020, 1, 2);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyDay(TheConfig);
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
 
@@ -1475,8 +1477,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1489,6 +1491,7 @@ namespace Testing
         public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_last_date(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
+            TheConfig.Culture = CultureInfo.GetCultureInfo("en-US");
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
@@ -1503,8 +1506,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1537,8 +1540,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1563,8 +1566,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 3);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1598,8 +1601,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 3);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1625,8 +1628,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
         [Theory]
         [InlineData("01/01/2020", "02/01/2020")]
@@ -1652,8 +1655,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
         [Theory]
         [InlineData("01/01/2020", "03/01/2020")]
@@ -1679,8 +1682,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1707,8 +1710,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1735,8 +1738,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1763,8 +1766,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1791,8 +1794,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
 
         [Theory]
@@ -1819,8 +1822,8 @@ namespace Testing
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
 
-            DateTime result = Calculator.CalculateNextDate(DateTime.Parse(DateCalculate));
-            Assert.Equal<DateTime>(DateTime.Parse(DateEspected), result);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
         #endregion
         #region Test Auxiliar class
@@ -1860,6 +1863,25 @@ namespace Testing
                 Frecuenci = TypesOccursDailyFrecuency.Once
             };
             Assert.Equal<DateTime>(new DateTime(2020, 12, 31, 0, 0, 0), CalculatorLastDateTimeCalc.GetLastDateTime(TheConfig));
+        }
+        #endregion
+
+        [Fact]
+        public void TextStringsEnums()
+        {
+            FormatterBase Formatter = new FormatterBase(new SchedulerConfig()
+            {
+                Culture = CultureInfo.GetCultureInfo("es-ES")
+            });
+            var TheException = Assert.Throws<ApplicationException>(() => Formatter.GetStringEnum("Hours"));
+            Assert.Equal("horas", Formatter.GetStringEnum(TypesUnitsDailyFrecuency.Hours));
+            Assert.Equal("minutos", Formatter.GetStringEnum(TypesUnitsDailyFrecuency.Minutes));
+        }
+
+        #region Auxiliar methods
+        public static DateTime ParseSpanish(string dateTimeString)
+        {
+            return DateTime.Parse(dateTimeString, CultureInfo.GetCultureInfo("es-ES").DateTimeFormat);
         }
         #endregion
     }

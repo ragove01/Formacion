@@ -19,7 +19,7 @@ namespace Formacion.Formatters
             if(!this.HasConfig()) { return string.Empty; }
             if(!this.HasConfigWeekly()) { return string.Empty; }
             return string.Format(Texts.FormatterWeekly_TextBase, this.Config.Weekly.Every.ToString(), this.FormatterValue());
-                //$"Occurs every {this.Config.Weekly.Every.ToString()} weeks on " +  this.FormatterValue();
+               
 
         }
 

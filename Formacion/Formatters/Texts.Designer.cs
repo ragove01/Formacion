@@ -205,38 +205,56 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a diario.
-        /// </summary>
-        public static string TypeOccurs_Daily {
-            get {
-                return ResourceManager.GetString("TypeOccurs.Daily", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a mensual.
-        /// </summary>
-        public static string TypeOccurs_Monthly {
-            get {
-                return ResourceManager.GetString("TypeOccurs.Monthly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a semanal.
-        /// </summary>
-        public static string TypeOccurs_Weekly {
-            get {
-                return ResourceManager.GetString("TypeOccurs.Weekly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a entre semana.
         /// </summary>
         public static string TypesEveryDayMonthly_Weekday {
             get {
                 return ResourceManager.GetString("TypesEveryDayMonthly.Weekday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a primero.
+        /// </summary>
+        public static string TypesEveryMonthly_First {
+            get {
+                return ResourceManager.GetString("TypesEveryMonthly.First", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a cuarto.
+        /// </summary>
+        public static string TypesEveryMonthly_Fourth {
+            get {
+                return ResourceManager.GetString("TypesEveryMonthly.Fourth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a último.
+        /// </summary>
+        public static string TypesEveryMonthly_Last {
+            get {
+                return ResourceManager.GetString("TypesEveryMonthly.Last", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a segundo.
+        /// </summary>
+        public static string TypesEveryMonthly_Second {
+            get {
+                return ResourceManager.GetString("TypesEveryMonthly.Second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a tercero.
+        /// </summary>
+        public static string TypesEveryMonthly_Third {
+            get {
+                return ResourceManager.GetString("TypesEveryMonthly.Third", resourceCulture);
             }
         }
         
@@ -250,29 +268,56 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a diario.
+        /// </summary>
+        public static string TypesOccurs_Daily {
+            get {
+                return ResourceManager.GetString("TypesOccurs.Daily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a mensual.
+        /// </summary>
+        public static string TypesOccurs_Monthly {
+            get {
+                return ResourceManager.GetString("TypesOccurs.Monthly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a semanal.
+        /// </summary>
+        public static string TypesOccurs_Weekly {
+            get {
+                return ResourceManager.GetString("TypesOccurs.Weekly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a horas.
         /// </summary>
-        public static string TypeUnit_Hours {
+        public static string TypesUnitsDailyFrecuency_Hours {
             get {
-                return ResourceManager.GetString("TypeUnit.Hours", resourceCulture);
+                return ResourceManager.GetString("TypesUnitsDailyFrecuency.Hours", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Busca una cadena traducida similar a minutos.
         /// </summary>
-        public static string TypeUnit_Minutes {
+        public static string TypesUnitsDailyFrecuency_Minutes {
             get {
-                return ResourceManager.GetString("TypeUnit.Minutes", resourceCulture);
+                return ResourceManager.GetString("TypesUnitsDailyFrecuency.Minutes", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Busca una cadena traducida similar a segundos.
         /// </summary>
-        public static string TypeUnit_Seconds {
+        public static string TypesUnitsDailyFrecuency_Seconds {
             get {
-                return ResourceManager.GetString("TypeUnit.Seconds", resourceCulture);
+                return ResourceManager.GetString("TypesUnitsDailyFrecuency.Seconds", resourceCulture);
             }
         }
         

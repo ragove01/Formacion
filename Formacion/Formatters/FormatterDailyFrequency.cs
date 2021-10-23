@@ -28,32 +28,17 @@ namespace Formacion.Formatters
         {
             return string.Format(Texts.FormatterDailyFrecuency_TextOnce,
                 this.Config.DailyFrecuenci.OnceTime.Value.ToString("hh\\:mm"));
-                //$" occurs once at {this.Config.DailyFrecuenci.OnceTime.Value.ToString("hh\\:mm")}";
+               
         }
         private string FormatterEvery()
         {
             return string.Format(Texts.FormatterDailyFrecuency_TextEvery,
                 this.Config.DailyFrecuenci.NumberOccurs,
-                this.GetTextTypeUnit(),
+                this.GetStringEnum(this.Config.DailyFrecuenci.TypeUnit),
                 this.Config.DailyFrecuenci.StartTime.Value.ToString("hh\\:mm"),
                 this.Config.DailyFrecuenci.EndTime.Value.ToString("hh\\:mm"));
-                
-                //$" ever {this.Config.DailyFrecuenci.NumberOccurs} {this.Config.DailyFrecuenci.TypeUnit.ToString().ToLower()}" +
-                //$" between {this.Config.DailyFrecuenci.StartTime.Value.ToString("hh\\:mm")} and" +
-                //$" {this.Config.DailyFrecuenci.EndTime.Value.ToString("hh\\:mm")}";
+ 
         }
 
-        private string GetTextTypeUnit()
-        {
-            switch(this.Config.DailyFrecuenci.TypeUnit)
-            {
-                case TypesUnitsDailyFrecuency.Hours:
-                    return Texts.TypeUnit_Hours;
-                case TypesUnitsDailyFrecuency.Minutes:
-                    return Texts.TypeUnit_Minutes;
-                    
-            }
-            return Texts.TypeUnit_Seconds;
-        }
     }
 }

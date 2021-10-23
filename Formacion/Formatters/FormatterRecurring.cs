@@ -39,11 +39,10 @@ namespace Formacion.Formatters
         {
             return string.Format(Texts.FormatterRecurring_TextNoConfigWeekly,
                 (this.Config.NumberOccurs > 1 ? this.Config.NumberOccurs.ToString() + " " : string.Empty),
-                this.Config.Occurs.ToString().ToLower(),
+                this.GetStringEnum(this.Config.Occurs),
                 this.FormatterConfigDailyFrecuency(nextExecutionTime,true),
                 nextExecutionTime.ToString("d"), nextExecutionTime.ToString("HH:mm"));
-                //$"Occurs every {(this.Config.NumberOccurs>1?this.Config.NumberOccurs.ToString() + " ":string.Empty)}{this.Config.Occurs.ToString().ToLower()}{this.FormatterConfigDailyFrecuency(nextExecutionTime)}. " +
-                //$"Schedule will be used on {nextExecutionTime.ToString("d")} at {nextExecutionTime.ToString("HH:mm")}";
+ 
         }
 
         private string FormatterConfigWeekly(DateTime nextExecutionTime)

@@ -31,5 +31,15 @@ namespace Formacion.Formatters
                 Thread.CurrentThread.CurrentUICulture = Culture;
             }
         }
+
+       
+        public string GetStringEnum(object value)
+        {
+            if (value.GetType().IsEnum == false)
+            {
+                throw new ApplicationException("the object isn't a enum value");
+            }
+            return Texts.ResourceManager.GetString($"{value.GetType().Name}.{value.ToString()}");
+        }
     }
 }

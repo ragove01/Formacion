@@ -1,4 +1,5 @@
-﻿using Formacion.Views;
+﻿using Formacion.Enums;
+using Formacion.Views;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,8 +21,6 @@ namespace Formacion.Formatters
             if (!this.HasConfigMonthly()) { return string.Empty; }
             return string.Format(
                 Texts.FormatterMonthly_TextBase, this.FormatterType(), this.Config.Monthly.EveryNumberMonths);
-                //$"Occurs {this.FormatterType()} of very {this.Config.Monthly.EveryNumberMonths} months";
-
         }
 
         private bool HasConfig()
@@ -52,14 +51,23 @@ namespace Formacion.Formatters
         private string FormatterTypeDay()
         {
             return string.Format(Texts.FormatterMonthly_TextTypeDay, this.Config.Monthly.DayMonth);
-                //$"the {this.Config.Monthly.DayMonth}";
+            
         }
         private string FormatterTypeEvery()
         {
             return string.Format(Texts.FormatterMonthly_TextTypeEvery,
-                this.Config.Monthly.TypesEvery.ToString().ToLower(),
-                this.Config.Monthly.TypesDayEvery.ToString().ToLower());
-                //$"the {this.Config.Monthly.TypesEvery.ToString().ToLower()} {this.Config.Monthly.TypesDayEvery.ToString().ToLower()}";
+                this.GetStringEnum(this.Config.Monthly.TypesEvery.Value),
+                this.GetStringEnumTypesDayEvery(this.Config.Monthly.TypesDayEvery.Value));
+        }
+
+        private string GetStringEnumTypesDayEvery(TypesEveryDayMonthly value)
+        {
+           if(value == TypesEveryDayMonthly.Weekday ||
+                value == TypesEveryDayMonthly.Weekend)
+            {
+                return this.GetStringEnum(value);
+            }
+            return Texts.ResourceManager.GetString(value.ToString().ToLower());
         }
        
     }

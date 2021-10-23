@@ -165,28 +165,43 @@
   <data name="tuesday" xml:space="preserve">
     <value>martes</value>
   </data>
-  <data name="TypeOccurs.Daily" xml:space="preserve">
-    <value>diario</value>
-  </data>
-  <data name="TypeOccurs.Monthly" xml:space="preserve">
-    <value>mensual</value>
-  </data>
-  <data name="TypeOccurs.Weekly" xml:space="preserve">
-    <value>semanal</value>
-  </data>
   <data name="TypesEveryDayMonthly.Weekday" xml:space="preserve">
     <value>entre semana</value>
+  </data>
+  <data name="TypesEveryMonthly.First" xml:space="preserve">
+    <value>primero</value>
+  </data>
+  <data name="TypesEveryMonthly.Fourth" xml:space="preserve">
+    <value>cuarto</value>
+  </data>
+  <data name="TypesEveryMonthly.Last" xml:space="preserve">
+    <value>último</value>
+  </data>
+  <data name="TypesEveryMonthly.Second" xml:space="preserve">
+    <value>segundo</value>
+  </data>
+  <data name="TypesEveryMonthly.Third" xml:space="preserve">
+    <value>tercero</value>
   </data>
   <data name="TypesEveyDayMonthly.WeekEndDay" xml:space="preserve">
     <value>fin de semana</value>
   </data>
-  <data name="TypeUnit.Hours" xml:space="preserve">
+  <data name="TypesOccurs.Daily" xml:space="preserve">
+    <value>diario</value>
+  </data>
+  <data name="TypesOccurs.Monthly" xml:space="preserve">
+    <value>mensual</value>
+  </data>
+  <data name="TypesOccurs.Weekly" xml:space="preserve">
+    <value>semanal</value>
+  </data>
+  <data name="TypesUnitsDailyFrecuency.Hours" xml:space="preserve">
     <value>horas</value>
   </data>
-  <data name="TypeUnit.Minutes" xml:space="preserve">
+  <data name="TypesUnitsDailyFrecuency.Minutes" xml:space="preserve">
     <value>minutos</value>
   </data>
-  <data name="TypeUnit.Seconds" xml:space="preserve">
+  <data name="TypesUnitsDailyFrecuency.Seconds" xml:space="preserve">
     <value>segundos</value>
   </data>
   <data name="wednesday" xml:space="preserve">

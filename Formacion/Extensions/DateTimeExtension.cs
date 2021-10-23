@@ -1,5 +1,6 @@
 ﻿using Formacion.Enums;
 using System;
+using System.Globalization;
 
 namespace Formacion.Extensions
 {
@@ -23,6 +24,7 @@ namespace Formacion.Extensions
             }
             return (int)dateTime.DayOfWeek - 1;
         }
+     
 
         private static TimeSpan GetInterval(TypesUnitsDailyFrecuency type, int units)
         {
@@ -35,5 +37,7 @@ namespace Formacion.Extensions
             }
             return new TimeSpan(0, 0, units);
         }
+
+
     }
 }
