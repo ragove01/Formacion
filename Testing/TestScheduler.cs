@@ -7,6 +7,7 @@ using Formacion.Instantiators;
 using Formacion.Validators;
 using Formacion.Views;
 using Formacion.Extensions;
+using Tx = Formacion.Validators.Texts;
 using System;
 using System.Globalization;
 using Xunit;
@@ -17,79 +18,73 @@ namespace Testing
     {
         #region Validations
         #region Validations config once
-
+        private static readonly DateTimeFormatInfo formaterDateTimeSpanish = CultureInfo.GetCultureInfo("es-ES").DateTimeFormat;
 
         [Fact]
         public void ValidatorConfigOnce_no_config_value()
         {
             ValidatorConfigOnce validator = new ValidatorConfigOnce();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(DateTime.Now, null));
-            Assert.Equal("Config must have a value ", TheException.Message);
+            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigBase_dateTime_Max_value()
         {
             ValidatorConfigBase validator = new ValidatorConfigBase();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(DateTime.MaxValue, new SchedulerConfig()));
-            Assert.Equal("The current date is invalid", TheException.Message);
+            Assert.Equal(Tx.CurrentDateInvalid, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigBase_start_dateTime_Max_value()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = DateTime.Now;
             schedulerData.StartDate = DateTime.MaxValue;
             ValidatorConfigBase validator = new ValidatorConfigBase();
-            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(CurrentDate, schedulerData));
-            Assert.Equal("Start Date is invalid", TheException.Message);
+            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(DateTime.Now, schedulerData));
+            Assert.Equal(Tx.StartDateInvalid, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigOnce_type_Config_incorrect()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = new DateTime(2020, 1, 4);
             schedulerData.StartDate = new DateTime(2020, 1, 1);
             ValidatorConfigOnce validator = new ValidatorConfigOnce();
             schedulerData.Type = TypesSchedule.Recurring;
-            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(CurrentDate, schedulerData));
-            Assert.Equal("wrong configuration ", TheException.Message);
+            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
+            Assert.Equal(Tx.WrongConfiguration, TheException.Message);
         }
 
         [Fact]
         public void ValidatorConfigOnce_date_time_has_value()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = new DateTime(2020, 1, 4);
             schedulerData.StartDate = new DateTime(2020, 1, 1);
             ValidatorConfigOnce validator = new ValidatorConfigOnce();
             schedulerData.Type = TypesSchedule.Once;
-            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(CurrentDate, schedulerData));
-            Assert.Equal("Date Time must have a value ", TheException.Message);
+            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
+            Assert.Equal(Tx.DateTimeMustHasValue, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigOnce_end_date_must_be_great_than_start_date()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = new DateTime(2020, 1, 4);
             schedulerData.StartDate = new DateTime(2020, 1, 1);
             ValidatorConfigOnce validator = new ValidatorConfigOnce();
             schedulerData.Type = TypesSchedule.Once;
             schedulerData.EndDate = new DateTime(2019, 12, 31);
-            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(CurrentDate, schedulerData));
-            Assert.Equal("End date must be great than start date ", TheException.Message);
+            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
+            Assert.Equal(Tx.EndDateGreatStartDate, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigOnce_ok()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = new DateTime(2020, 1, 4);
             schedulerData.StartDate = new DateTime(2020, 1, 1);
             ValidatorConfigOnce validator = new ValidatorConfigOnce();
             schedulerData.Type = TypesSchedule.Once;
-
             schedulerData.EndDate = null;
             schedulerData.DateTime = new DateTime(2020, 1, 4, 14, 0, 0);
-            validator.Validate(CurrentDate, schedulerData);
+            validator.Validate(new DateTime(2020, 1, 4), schedulerData);
         }
         #endregion
         #region validation config recurring
@@ -99,70 +94,62 @@ namespace Testing
 
             ValidatorConfigRecurring validator = new ValidatorConfigRecurring();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(DateTime.Now, null));
-            Assert.Equal("Config must have a value ", TheException.Message);
+            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigRecurring_type_Config_incorrect()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = new DateTime(2020, 1, 4);
-
-
             ValidatorConfigRecurring validator = new ValidatorConfigRecurring();
-            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(CurrentDate, schedulerData));
-            Assert.Equal("wrong configuration ", TheException.Message);
+            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
+            Assert.Equal(Tx.WrongConfiguration, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigRecurring_number_occurs_great_zero()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = new DateTime(2020, 1, 4);
             ValidatorConfigRecurring validator = new ValidatorConfigRecurring();
             schedulerData.Type = TypesSchedule.Recurring;
-            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(CurrentDate, schedulerData));
-            Assert.Equal("Número of occurs must be great than zero ", TheException.Message);
+            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
+            Assert.Equal(Tx.NumberMustGreaZero, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigRecurring_number_occurs_great_zero_with_start_date()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = new DateTime(2020, 1, 4);
             ValidatorConfigRecurring validator = new ValidatorConfigRecurring();
             schedulerData.Type = TypesSchedule.Recurring;
             schedulerData.StartDate = new DateTime(2020, 1, 1);
-            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(CurrentDate, schedulerData));
-            Assert.Equal("Número of occurs must be great than zero ", TheException.Message);
+            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
+            Assert.Equal(Tx.NumberMustGreaZero, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigRecurring_end_date_be_great_start_date()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = new DateTime(2020, 1, 4);
             ValidatorConfigRecurring validator = new ValidatorConfigRecurring();
             schedulerData.Type = TypesSchedule.Recurring;
             schedulerData.StartDate = new DateTime(2020, 1, 1);
             schedulerData.EndDate = new DateTime(2019, 12, 31);
-            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(CurrentDate, schedulerData));
-            Assert.Equal("End date must be great than start date ", TheException.Message);
+            var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
+            Assert.Equal(Tx.EndDateGreatStartDate, TheException.Message);
         }
         [Fact]
         public void ValidatorConfig_Recurring_ok()
         {
             SchedulerConfig schedulerData = new SchedulerConfig();
-            DateTime CurrentDate = new DateTime(2020, 1, 4);
             ValidatorConfigRecurring validator = new ValidatorConfigRecurring();
             schedulerData.Type = TypesSchedule.Recurring;
             schedulerData.StartDate = new DateTime(2020, 1, 1);
             schedulerData.EndDate = null;
             schedulerData.NumberOccurs = 1;
-            validator.Validate(CurrentDate, schedulerData);
+            validator.Validate(new DateTime(2020, 1, 4), schedulerData);
         }
-
         [Fact]
         public void ValidatorConfigDailyFrecuencyOnce_no_config()
         {
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(null));
-            Assert.Equal("Config must have a value ", TheException.Message);
+            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigDailyFrecuencyOnce_must_have_value()
@@ -172,9 +159,8 @@ namespace Testing
                 Frecuenci = TypesOccursDailyFrecuency.Once
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal("'Once at' must have a value", TheException.Message);
+            Assert.Equal(Tx.OnceAtValue, TheException.Message);
         }
-
         [Fact]
         public void ValidatorConfigDailyFrecuency_Once_OK()
         {
@@ -184,8 +170,8 @@ namespace Testing
                 OnceTime = new TimeSpan(0, 0, 0)
             };
             new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci);
-
         }
+       
 
         [Fact]
         public void ValidatorConfigDailyFrecuency_Every_number_occurs_less_zero()
@@ -196,8 +182,7 @@ namespace Testing
                 NumberOccurs = -1
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal("'Occurs every' must be greater or equal than zero", TheException.Message);
-
+            Assert.Equal(Tx.OccursGreatZero, TheException.Message);
         }
 
         [Fact]
@@ -209,8 +194,7 @@ namespace Testing
                 NumberOccurs = 1
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal("'Starting at' must have a value", TheException.Message);
-
+            Assert.Equal(Tx.StartingAtNotHasValue, TheException.Message);
         }
 
         [Fact]
@@ -223,7 +207,7 @@ namespace Testing
                 StartTime = new TimeSpan(1, 0, 0)
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal("'End at' must have a value", TheException.Message);
+            Assert.Equal(Tx.EndAtNotHasValue, TheException.Message);
 
         }
 
@@ -238,11 +222,9 @@ namespace Testing
                 EndTime = new TimeSpan(0, 0, 0)
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal("'End at' must be great than 'Starting at'", TheException.Message);
+            Assert.Equal(Tx.EndAtMinorStartingAt, TheException.Message);
 
         }
-
-
 
         [Fact]
         public void ValidatorConfigDailyFrecuency_Every_Ok()
@@ -255,15 +237,13 @@ namespace Testing
                 EndTime = new TimeSpan(2, 0, 0)
             };
             new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci);
-
-
         }
 
         [Fact]
         public void ValidatorConfigWeekly_no_config()
         {
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigWeekly().Validate(null));
-            Assert.Equal("Config must have a value ", TheException.Message);
+            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
         }
 
         [Fact]
@@ -274,8 +254,7 @@ namespace Testing
                 Every = 0
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigWeekly().Validate(configWeekly));
-            Assert.Equal("Weekly configuration: 'Every' muste be greater than zero", TheException.Message);
-
+            Assert.Equal(Tx.EveryMustGreatZero, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigWeekly_day_of_week_not_select()
@@ -285,8 +264,7 @@ namespace Testing
                 Every = 1
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigWeekly().Validate(configWeekly));
-            Assert.Equal("Weekly configuration: must select one or more days of the week", TheException.Message);
-
+            Assert.Equal(Tx.MustSelectDayWeek, TheException.Message);
         }
 
         [Fact]
@@ -298,7 +276,6 @@ namespace Testing
                 Monday = true
             };
             new ValidatorConfigWeekly().Validate(configWeekly);
-
         }
         #endregion
         #endregion
@@ -328,11 +305,7 @@ namespace Testing
             TheConfig.Active = true;
             TheConfig.NumberOccurs = 1;
             var Result = Calculator.Calculate(new DateTime(2020, 1, 4), TheConfig);
-
             Assert.Equal(new DateTime(2020, 1, 5), Result);
-
-
-
         }
 
         [Fact]
@@ -347,11 +320,7 @@ namespace Testing
             TheConfig.Active = false;
             TheConfig.NumberOccurs = 1;
             var Result = Calculator.Calculate(new DateTime(2020, 1, 4), TheConfig);
-
             Assert.Equal(new DateTime(2020, 1, 4), Result);
-
-
-
         }
 
         [Fact]
@@ -361,7 +330,6 @@ namespace Testing
             var Calculator = InstantiatorCalculator.GetCalculator(TypesSchedule.Recurring);
             Assert.IsType<CalculatorRecurring>(Calculator);
             TheConfig.Type = TypesSchedule.Recurring;
-
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             TheConfig.Active = true;
             TheConfig.NumberOccurs = 1;
@@ -373,15 +341,11 @@ namespace Testing
                 EndTime = new TimeSpan(16, 0, 0)
             };
             var Result = Calculator.Calculate(new DateTime(2020, 1, 4), TheConfig);
-
             Assert.Equal(new DateTime(2020, 1, 4, 8, 0, 0), Result);
             Result = Calculator.Calculate(Result, TheConfig);
             Assert.Equal(new DateTime(2020, 1, 4, 10, 0, 0), Result);
             Result = Calculator.Calculate(new DateTime(2020, 1, 4, 16, 0, 0, 1), TheConfig);
-
             Assert.Equal(new DateTime(2020, 1, 5, 8, 0, 0), Result);
-
-
         }
 
         [Fact]
@@ -394,8 +358,10 @@ namespace Testing
             };
             CalculatorNextExecutionTimeDailyFrecuency Calculator = new CalculatorNextExecutionTimeDailyFrecuency(configDailyFrecuenci);
             DateTime Date = Calculator.GetNextTime(new DateTime(2020, 1, 4));
-
             Assert.Equal<DateTime>(new DateTime(2020, 1, 4, 17, 0, 0), Date);
+            configDailyFrecuenci.OnceTime = null;
+            Date = Calculator.GetNextTime(new DateTime(2020, 1, 4));
+            Assert.Equal<DateTime>(new DateTime(2020, 1, 4, 0, 0, 0), Date);
         }
 
         [Fact]
@@ -408,7 +374,6 @@ namespace Testing
                 NumberOccurs = 2,
                 StartTime = new TimeSpan(4, 00, 00),
                 EndTime = new TimeSpan(8, 0, 0)
-
             };
             CalculatorNextExecutionTimeDailyFrecuency Calculator = new CalculatorNextExecutionTimeDailyFrecuency(configDailyFrecuenci);
             DateTime Date = Calculator.GetNextTime(new DateTime(2020, 1, 4));
@@ -418,8 +383,6 @@ namespace Testing
             Date = Calculator.GetNextTime(Date);
             Assert.Equal<DateTime>(new DateTime(2020, 1, 4, 8, 0, 0), Date);
         }
-
-
 
         [Fact]
         public void CalculatorRecurring_next_day_weekly_no_daily_frecuenci()
@@ -452,8 +415,6 @@ namespace Testing
             Assert.Equal<DateTime>(new DateTime(2020, 1, 31), result);
             result = Calculator.Calculate(result, TheConfig);
             Assert.Equal<DateTime>(new DateTime(2020, 2, 10), result);
-
-
         }
 
         [Fact]
@@ -534,6 +495,44 @@ namespace Testing
 
         [Fact]
         public void CalculatorRecurring_next_Monthly_time_no_weekly()
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+
+            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 2,
+                StartTime = new TimeSpan(4, 0, 0),
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Monthly;
+            TheConfig.Active = true;
+            TheConfig.DailyFrecuenci = configDailyFrecuenci;
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            CalculatorRecurring Calculator = new CalculatorRecurring();
+
+            DateTime result = Calculator.Calculate(new DateTime(2020, 1, 1), TheConfig);
+            Assert.Equal<DateTime>(result, new DateTime(2020, 1, 1, 4, 0, 0));
+            result = Calculator.Calculate(new DateTime(2020, 1, 7), TheConfig);
+            Assert.Equal<DateTime>(result, new DateTime(2020, 1, 7, 4, 0, 0));
+            result = Calculator.Calculate(new DateTime(2020, 1, 16), TheConfig);
+            Assert.Equal<DateTime>(result, new DateTime(2020, 1, 16, 4, 0, 0));
+            result = Calculator.Calculate(result, TheConfig);
+            Assert.Equal<DateTime>(result, new DateTime(2020, 1, 16, 6, 0, 0));
+            result = Calculator.Calculate(result, TheConfig);
+            Assert.Equal<DateTime>(result, new DateTime(2020, 1, 16, 8, 0, 0));
+            result = Calculator.Calculate(result, TheConfig);
+            Assert.Equal<DateTime>(result, new DateTime(2020, 2, 16, 4, 0, 0));
+            result = Calculator.Calculate(result, TheConfig);
+            Assert.Equal<DateTime>(result, new DateTime(2020, 2, 16, 6, 0, 0));
+
+
+        }
+
+        [Fact]
+        public void CalculatorRecurring_next_Monthly_day_time_no_weekly()
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
 
@@ -680,7 +679,7 @@ namespace Testing
                 StartTime = new TimeSpan(4, 0, 0),
                 EndTime = new TimeSpan(8, 0, 0)
             };
-
+            TheConfig.Culture = CultureInfo.GetCultureInfo("en-GB");
             TheConfig.Weekly = configWeekly;
             TheConfig.DailyFrecuenci = configDailyFrecuenci;
             TheConfig.Type = TypesSchedule.Recurring;
@@ -690,7 +689,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Weekly;
             CalculatorRecurring Calculator = new CalculatorRecurring();
             var TheException = Assert.Throws<ApplicationException>(() => Calculator.Calculate(new DateTime(2021, 1, 1), TheConfig));
-            Assert.Equal("the end date cannot be earlier than the current date ", TheException.Message);
+            Assert.Equal(Tx.EndDateAerlierCurrentDate, TheException.Message);
             DateTime result = Calculator.Calculate(new DateTime(2019, 1, 2), TheConfig);
             Assert.Equal<DateTime>(result, new DateTime(2020, 1, 2, 4, 0, 0));
 
@@ -712,7 +711,6 @@ namespace Testing
                 StartTime = new TimeSpan(4, 0, 0),
                 EndTime = new TimeSpan(8, 0, 0)
             };
-
             TheConfig.Weekly = configWeekly;
             TheConfig.DailyFrecuenci = configDailyFrecuenci;
             TheConfig.Type = TypesSchedule.Recurring;
@@ -722,8 +720,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Weekly;
             CalculatorRecurring Calculator = new CalculatorRecurring();
             var TheException = Assert.Throws<ApplicationException>(() => Calculator.Calculate(new DateTime(2020, 12, 31, 8, 0, 0), TheConfig));
-            Assert.Equal("Not next execution time", TheException.Message);
-
+            Assert.Equal(Tx.NotNextExecution, TheException.Message);
         }
         #endregion
         #region Test Formatters
@@ -731,9 +728,7 @@ namespace Testing
         [Fact]
         public void Validator_Formatter_No_config()
         {
-
             var TheException = Assert.Throws<ArgumentNullException>(() => InstantiatorFormatter.GetFormatter(null));
-
         }
         [Fact]
         public void Validator_Formatter_Once()
@@ -744,7 +739,6 @@ namespace Testing
             var Formatter = InstantiatorFormatter.GetFormatter(TheConfig);
             DateTime DateToFormat = new DateTime(2020, 1, 4, 14, 0, 0);
             Assert.IsType<FormatterOnce>(Formatter);
-
             Assert.Equal($"Occurs once. Schedule will be used on {DateToFormat:d} at 14:00 starting on {TheConfig.StartDate:d}",
                 Formatter.Formatter(DateToFormat));
         }
@@ -762,7 +756,6 @@ namespace Testing
             DateTime DateToFormat = new DateTime(2020, 1, 4, 14, 0, 0);
             Assert.Equal($"Occurs every daily. Schedule will be used on {DateToFormat:d} at 14:00 starting on {TheConfig.StartDate:d}",
                 Formatter.Formatter(DateToFormat));
-
         }
 
         [Fact]
@@ -778,7 +771,6 @@ namespace Testing
             DateTime DateToFormat = new DateTime(2020, 1, 4, 14, 0, 0);
             Assert.Equal($"Occurs every 3 daily. Schedule will be used on {DateToFormat:d} at 14:00 starting on {TheConfig.StartDate:d}",
                 Formatter.Formatter(DateToFormat));
-
         }
 
         [Fact]
@@ -793,7 +785,6 @@ namespace Testing
                 StartTime = new TimeSpan(4, 0, 0),
                 EndTime = new TimeSpan(8, 0, 0)
             };
-
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Daily;
             TheConfig.Active = true;
@@ -804,7 +795,6 @@ namespace Testing
             DateTime DateToFormat = new DateTime(2020, 1, 4, 4, 0, 0);
             Assert.Equal($"Occurs every daily ever 2 hours between 04:00 and 08:00. Schedule will be used on {DateToFormat:d} at 04:00 starting on {TheConfig.StartDate:d}",
                 Formatter.Formatter(DateToFormat));
-
         }
 
         [Fact]
@@ -818,7 +808,6 @@ namespace Testing
                 OnceTime = new TimeSpan(16, 0, 0),
                 NumberOccurs = 1
             };
-
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Daily;
             TheConfig.Active = true;
@@ -827,10 +816,8 @@ namespace Testing
             var Formatter = InstantiatorFormatter.GetFormatter(TheConfig);
             Assert.IsType<FormatterRecurring>(Formatter);
             DateTime DateToFormat = new DateTime(2020, 1, 4, 16, 0, 0);
-
             Assert.Equal($"Occurs every daily occurs once at 16:00. Schedule will be used on {DateToFormat:d} at 16:00 starting on {TheConfig.StartDate:d}",
                 Formatter.Formatter(DateToFormat));
-
         }
 
         [Fact]
@@ -871,17 +858,13 @@ namespace Testing
         public void Validator_Formatter_Weekly_no_Config()
         {
 
-
             Assert.Equal(string.Empty,
                 new FormatterWeekly(null).Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
-
         }
 
         [Fact]
         public void Validator_Formatter_Weekly_scheduler_config_weekly_no_Config()
         {
-
-
             Assert.Equal(string.Empty,
                 new FormatterWeekly(new SchedulerConfig()).Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
             Assert.Equal(string.Empty,
@@ -889,7 +872,6 @@ namespace Testing
                 {
                     Weekly = new ConfigWeekly()
                 }).Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
-
         }
 
         [Fact]
@@ -958,16 +940,13 @@ namespace Testing
         public void Validator_Formatter_Monthly_no_Config()
         {
 
-
             Assert.Equal(string.Empty,
                 new FormatterMonthly(null).Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
-
         }
 
         [Fact]
         public void Validator_Formatter_Weekly_scheduler_config_monthly_no_Config()
         {
-
             Assert.Equal(string.Empty,
                 new FormatterMonthly(new SchedulerConfig()).Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
             Assert.Equal(string.Empty,
@@ -975,7 +954,6 @@ namespace Testing
                 {
                     Monthly = new ConfigMonthly()
                 }).Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
-
         }
 
         [Fact]
@@ -991,7 +969,6 @@ namespace Testing
                 EveryNumberMonths = 3
             };
             
-
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Daily;
             TheConfig.Active = true;
@@ -1001,9 +978,7 @@ namespace Testing
 
             Assert.Equal($"Occurs the first thursday of very 3 months. starting on {TheConfig.StartDate:d}",
                 Formatter.Formatter(new DateTime(2020, 1, 4, 4, 0, 0)));
-
         }
-
         #endregion
 
         #region Generators
@@ -1029,11 +1004,15 @@ namespace Testing
 
 
         }
-        [Fact]
-        public void Generator_frecuency_daly_config_no_weekly_config()
+
+        [Theory]
+        [InlineData("en-GB", "Occurs every daily ever 2 hours between 04:00 and 08:00. Schedule will be used on 04/01/2020 at 04:00 starting on 01/01/2020")]
+        [InlineData("en-US", "Occurs every daily ever 2 hours between 04:00 and 08:00. Schedule will be used on 1/4/2020 at 04:00 starting on 1/1/2020")]
+        [InlineData("es-ES", "Ocurre cada día cada 2 horas entre las 04:00 y las 08:00. El horario se utilizará el 04/01/2020 a las 04:00 empezando el 01/01/2020")]
+        public void Generator_frecuency_daly_config_no_weekly_config(string culture, string textExpected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
-            TheConfig.Culture = CultureInfo.GetCultureInfo("en-GB");
+            TheConfig.Culture = CultureInfo.GetCultureInfo(culture);
             TheConfig.Type = TypesSchedule.Recurring;
 
             TheConfig.StartDate = new DateTime(2020, 1, 1);
@@ -1053,15 +1032,17 @@ namespace Testing
             Assert.NotNull(Result.NextExecution);
             DateTime DateExpected = new DateTime(2020, 1, 4, 4, 0, 0);
             Assert.Equal(DateExpected, Result.NextExecution.Value);
-            Assert.Equal($"Occurs every daily ever 2 hours between 04:00 and 08:00. Schedule will be used on {DateExpected:d} at 04:00 starting on {TheConfig.StartDate:d}", Result.NextExecutionTimeString);
-
+            Assert.Equal(textExpected, Result.NextExecutionTimeString);
         }
 
-        [Fact]
-        public void Generator_frecuency_daly_weekly_config()
+        [Theory]
+        [InlineData("en-GB", "Occurs every 2 weeks on monday, thursday and  friday ever 2 hours between 04:00 and 08:00. starting on 01/01/2020")]
+        [InlineData("en-US", "Occurs every 2 weeks on monday, thursday and  friday ever 2 hours between 04:00 and 08:00. starting on 1/1/2020")]
+        [InlineData("es-ES", "Ocurre cada 2 semanas en lunes, jueves y viernes cada 2 horas entre las 04:00 y las 08:00. empezando el 01/01/2020")]
+        public void Generator_frecuency_daly_weekly_config(string culture, string textExpected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
-            TheConfig.Culture = CultureInfo.GetCultureInfo("en-GB");
+            TheConfig.Culture = CultureInfo.GetCultureInfo(culture);
             ConfigWeekly configWeekly = new ConfigWeekly()
             {
                 Every = 2,
@@ -1090,17 +1071,17 @@ namespace Testing
             Assert.NotNull(Result);
             Assert.NotNull(Result.NextExecution);
             Assert.Equal(DateExpected, Result.NextExecution.Value);
-            Assert.Equal($"Occurs every 2 weeks on monday, thursday and  friday ever 2 hours between 04:00 and 08:00. starting on {TheConfig.StartDate:d}", Result.NextExecutionTimeString);
-
+            Assert.Equal(textExpected, Result.NextExecutionTimeString);
         }
 
-     
-
-        [Fact]
-        public void Generator_frecuency_daly_monthly_config_first_thursday()
+        [Theory]
+        [InlineData("en-GB", "Occurs the first thursday of very 3 months ever 2 hours between 04:00 and 08:00. starting on 01/01/2020")]
+        [InlineData("en-US", "Occurs the first thursday of very 3 months ever 2 hours between 04:00 and 08:00. starting on 1/1/2020")]
+        [InlineData("es-ES", "Ocurre el primer jueves cada 3 meses cada 2 horas entre las 04:00 y las 08:00. empezando el 01/01/2020")]
+        public void Generator_frecuency_daly_monthly_config_first_thursday(string culture, string textExpected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
-            TheConfig.Culture = CultureInfo.GetCultureInfo("en-GB");
+            TheConfig.Culture = CultureInfo.GetCultureInfo(culture);
             TheConfig.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
@@ -1128,12 +1109,10 @@ namespace Testing
             Assert.NotNull(Result);
             Assert.NotNull(Result.NextExecution);
             Assert.Equal(DateExpected, Result.NextExecution.Value);
-            Assert.Equal($"Occurs the first thursday of very 3 months ever 2 hours between 04:00 and 08:00. starting on {TheConfig.StartDate:d}", Result.NextExecutionTimeString);
-
+            Assert.Equal(textExpected, Result.NextExecutionTimeString);
         }
 
         [Theory]
-
         [InlineData("01/01/2020", "05/01/2020 03:00:00")]
         [InlineData("05/01/2020 03:00:00", "05/01/2020 04:00:00")]
         [InlineData("05/01/2020 04:00:00", "05/01/2020 05:00:00")]
@@ -1171,9 +1150,7 @@ namespace Testing
             Assert.NotNull(Result);
             Assert.NotNull(Result.NextExecution);
             Assert.Equal(ParseSpanish(DateEspected), Result.NextExecution.Value);
-            
         }
-
 
         #endregion
         #region test ValidatorConfigMonthly
@@ -1182,7 +1159,7 @@ namespace Testing
         {
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(null));
-            Assert.Equal("Config must have a value ", TheException.Message);
+            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigMonthly_day_no_day_value()
@@ -1194,7 +1171,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal("Montly configuration: must indicate a day of the month ", TheException.Message);
+            Assert.Equal(Tx.MustIndicateDayOfMonth, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigMonthly_day_zero_day_value()
@@ -1206,7 +1183,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal("Montly configuration: must indicate a day of the month great than zero ", TheException.Message);
+            Assert.Equal(Tx.MustIndicateDayGreatZero, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigMonthly_day_graet_30_day_value()
@@ -1218,7 +1195,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal("Montly configuration: must indicate a day of the month less or equal than 31 ", TheException.Message);
+            Assert.Equal(Tx.MustIndicateDayLes31, TheException.Message);
         }
 
         [Fact]
@@ -1231,7 +1208,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal("Montly configuration: month(s) must be between 1 and 12 ", TheException.Message);
+            Assert.Equal(Tx.MonthBeBetween1And12, TheException.Message);
         }
         [Fact]
         public void ValidatorConfigMonthly_day_months_great_12_value()
@@ -1245,7 +1222,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal("Montly configuration: month(s) must be between 1 and 12 ", TheException.Message);
+            Assert.Equal(Tx.MonthBeBetween1And12, TheException.Message);
         }
 
         [Fact]
@@ -1271,7 +1248,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal("Montly configuration: must indicate the type every day", TheException.Message);
+            Assert.Equal(Tx.MustIndicateTypeEveryDay, TheException.Message);
         }
 
         [Fact]
@@ -1285,7 +1262,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal("Montly configuration: month(s) must be between 1 and 12 ", TheException.Message);
+            Assert.Equal(Tx.MonthBeBetween1And12, TheException.Message);
         }
 
         [Fact]
@@ -1298,7 +1275,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal("Montly configuration: must indicate a type of day week ", TheException.Message);
+            Assert.Equal(Tx.MustIndicateTypeOfDayWeek, TheException.Message);
         }
 
         [Fact]
@@ -1313,7 +1290,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal("Montly configuration: month(s) must be between 1 and 12 ", TheException.Message);
+            Assert.Equal(Tx.MonthBeBetween1And12, TheException.Message);
         }
 
         [Fact]
@@ -1330,8 +1307,6 @@ namespace Testing
         }
         #endregion
         #region test Calculate Monthly
-
-
         [Theory]
         [InlineData("01/01/2020", "01/04/2020")]
         [InlineData("01/04/2020", "01/07/2020")]
@@ -1339,8 +1314,6 @@ namespace Testing
         public void CalculatorRecurring_next_Monthly_config_on_day_Month_no_daily_config(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
-
-
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
@@ -1356,8 +1329,38 @@ namespace Testing
 
             DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
             Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
+            CalculatorRecurring CalculatorRecurring = new CalculatorRecurring();
+            result = CalculatorRecurring.Calculate(ParseSpanish(DateCalculate), TheConfig);
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
+
         }
 
+        [Theory]
+        [InlineData("01/01/2020", "31/01/2020")]
+        [InlineData("31/01/2020", "01/05/2020")]
+        [InlineData("01/05/2020", "31/07/2020")]
+        [InlineData("31/07/2020", "31/10/2020")]
+        [InlineData("31/10/2020", "31/01/2021")]
+        public void CalculatorRecurring_next_Monthly_config_on_day_Month_31_no_daily_config_(string DateCalculate, string DateEspected)
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+
+
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Monthly;
+            TheConfig.Active = true;
+            TheConfig.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Day,
+                DayMonth = 31,
+                EveryNumberMonths = 3
+
+            };
+            TheConfig.StartDate = new DateTime(2020, 1, 1);
+            CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyDay(TheConfig);
+            DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
+            Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
+        }
 
         [Theory]
         [InlineData("01/01/2020", "01/02/2020")]
@@ -1366,8 +1369,6 @@ namespace Testing
         public void CalculatorRecurring_next_Monthly_config_on_day_Month_no_daily_config_start_date_great(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
-
-
             TheConfig.Type = TypesSchedule.Recurring;
             TheConfig.Occurs = TypesOccurs.Monthly;
             TheConfig.Active = true;
@@ -1410,7 +1411,6 @@ namespace Testing
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 1,
                 EveryNumberMonths = 3
-
             };
             TheConfig.StartDate = new DateTime(2020, 1, 1);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyDay(TheConfig);
@@ -1444,14 +1444,12 @@ namespace Testing
                 Type = TypesMontlyFrecuency.Day,
                 DayMonth = 1,
                 EveryNumberMonths = 3
-
             };
             TheConfig.StartDate = new DateTime(2020, 1, 2);
             CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyDay(TheConfig);
             DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
             Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
-
 
         [Theory]
         [InlineData("01/01/2020", "02/01/2020")]
@@ -1515,7 +1513,6 @@ namespace Testing
         [InlineData("02/01/2020 04:00:00", "02/01/2020 06:00:00")]
         [InlineData("02/01/2020 06:00:00", "02/01/2020 08:00:00")]
         [InlineData("02/01/2020 08:00:00", "02/04/2020 04:00:00")]
-
         public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_start_date_daily_config(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
@@ -1549,6 +1546,10 @@ namespace Testing
         [InlineData("06/02/2020", "07/05/2020")]
         [InlineData("07/05/2020", "06/08/2020")]
         [InlineData("06/07/2020", "06/08/2020")]
+        [InlineData("28/07/2020", "06/08/2020")]
+        [InlineData("29/07/2020", "06/08/2020")]
+        [InlineData("30/07/2020", "06/08/2020")]
+        [InlineData("31/07/2020", "06/08/2020")]
         public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_start_date_great(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
@@ -1571,12 +1572,10 @@ namespace Testing
         }
 
         [Theory]
-
         [InlineData("01/01/2020", "06/02/2020 04:00:00")]
         [InlineData("06/02/2020 04:00:00", "06/02/2020 06:00:00")]
         [InlineData("06/02/2020 06:00:00", "06/02/2020 08:00:00")]
         [InlineData("06/02/2020 08:00:00", "07/05/2020 04:00:00")]
-
         public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_start_date_daily_config_great(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
@@ -1631,6 +1630,27 @@ namespace Testing
             DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
             Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
+        [Fact]
+        public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_first_weekday_date_start_day_weekend()
+        {
+            SchedulerConfig TheConfig = new SchedulerConfig();
+            TheConfig.Type = TypesSchedule.Recurring;
+            TheConfig.Occurs = TypesOccurs.Monthly;
+            TheConfig.Active = true;
+                TheConfig.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Every,
+                TypesEvery = TypesEveryMonthly.First,
+                TypesDayEvery = TypesEveryDayMonthly.Weekday,
+                EveryNumberMonths = 3
+            };
+            TheConfig.StartDate = new DateTime(2021, 5, 1);
+            CalculatorNextExecutionTimeMonthly Calculator = new CalculatorNextExecutionTimeMonthlyEvery(TheConfig);
+
+            DateTime result = Calculator.CalculateNextDate(new DateTime(2021,4,1));
+            Assert.Equal<DateTime>(new DateTime(2021,5,3), result);
+        }
+
         [Theory]
         [InlineData("01/01/2020", "02/01/2020")]
         [InlineData("04/01/2020", "02/04/2020")]
@@ -1658,6 +1678,7 @@ namespace Testing
             DateTime result = Calculator.CalculateNextDate(ParseSpanish(DateCalculate));
             Assert.Equal<DateTime>(ParseSpanish(DateEspected), result);
         }
+
         [Theory]
         [InlineData("01/01/2020", "03/01/2020")]
         [InlineData("04/01/2020", "03/04/2020")]
@@ -1721,6 +1742,7 @@ namespace Testing
         [InlineData("30/04/2020", "31/07/2020")]
         [InlineData("31/07/2020", "30/10/2020")]
         [InlineData("30/10/2020", "29/01/2021")]
+        [InlineData("29/01/2021", "30/04/2021")]
         public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_last_weekday_date(string DateCalculate, string DateEspected)
         {
             SchedulerConfig TheConfig = new SchedulerConfig();
@@ -1878,10 +1900,32 @@ namespace Testing
             Assert.Equal("minutos", Formatter.GetStringEnum(TypesUnitsDailyFrecuency.Minutes));
         }
 
+        [Fact]
+        public void Test_DateTime_extensions()
+        {
+            DateTime DateToSet = new DateTime(2020, 1, 1);
+            DateTime DateCalc = DateToSet.AddInteval(TypesUnitsDailyFrecuency.Hours, 1);
+            Assert.Equal<DateTime>(new DateTime(2020, 1, 1, 1, 0, 0, 0), DateCalc);
+            DateCalc = DateToSet.AddInteval(TypesUnitsDailyFrecuency.Minutes, 1);
+            Assert.Equal<DateTime>(new DateTime(2020, 1, 1, 0,1, 0, 0), DateCalc);
+            DateCalc = DateToSet.AddInteval(TypesUnitsDailyFrecuency.Seconds, 1);
+            Assert.Equal<DateTime>(new DateTime(2020, 1, 1, 0, 0, 1, 0), DateCalc);
+        }
+        [Fact]
+        public void Test_ScheduleReuls()
+        {
+            
+            SchedulerResults result = new SchedulerResults(new FormatterBase(new SchedulerConfig()));
+            var TheException = Assert.Throws<ApplicationException>(() => result.NextExecutionTimeString);
+            Assert.Equal(Tx.NotCalculate,TheException.Message);
+            result.NextExecution = DateTime.Now;
+            var TheExceptionNotImplemented = Assert.Throws<NotImplementedException>(() => result.NextExecutionTimeString);
+        }
+
         #region Auxiliar methods
         public static DateTime ParseSpanish(string dateTimeString)
         {
-            return DateTime.Parse(dateTimeString, CultureInfo.GetCultureInfo("es-ES").DateTimeFormat);
+            return DateTime.Parse(dateTimeString, formaterDateTimeSpanish);
         }
         #endregion
     }

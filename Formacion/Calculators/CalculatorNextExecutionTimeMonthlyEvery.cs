@@ -55,7 +55,7 @@ namespace Formacion.Calculators
         private DateTime GetFirstDayInitCalculoWeekDay()
         {
             DateTime DateCalc = new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1);
-            if(DateCalc.GetIndexDayWeek() > 5)
+            if(DateCalc.GetIndexDayWeek() >= 5)
             {
                 return DateCalc.AddDays(7 - DateCalc.GetIndexDayWeek());
             }
@@ -183,28 +183,13 @@ namespace Formacion.Calculators
         private DateTime GetNextWeek(DateTime DateToCalc, DateTime DateCalculated)
         {
             DateToCalc = DateToCalc.AddDays((7 * (int)this.config.Monthly.TypesEvery));
-            if (DateCalculated.Month != DateToCalc.Month)
-            {
-                DateToCalc.AddDays(-7);
-            }
+          
             return DateToCalc;
         }
 
         private int GetIndexDayWeekConfig()
         {
-            if (this.config.Monthly.TypesDayEvery == TypesEveryDayMonthly.Weekend)
-            {
-                if (this.config.Monthly.TypesEvery == TypesEveryMonthly.First)
-                {
-                    return 5;
-                }
-                return 6;
-            }
-            if (this.config.Monthly.TypesDayEvery == TypesEveryDayMonthly.Weekday)
-            {
-                return (int)this.config.Monthly.TypesEvery;
-            }
-            return (int)this.config.Monthly.TypesDayEvery;
+           return (int)this.config.Monthly.TypesDayEvery;
         }
 
         private bool HasCalculateWeek()

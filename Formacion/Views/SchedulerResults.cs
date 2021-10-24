@@ -19,7 +19,7 @@ namespace Formacion.Views
             {
                 if (this.NextExecution.HasValue == false)
                 {
-                    throw new ApplicationException("Scheluder not calculate");
+                    throw new ApplicationException(Validators.Texts.NotCalculate);
                 }
                 return this.formatter.Formatter(this.NextExecution.Value);
             }

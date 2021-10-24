@@ -10,7 +10,7 @@ namespace Formacion.Validators
         {
             if(configDailyFrecuenci == null)
             {
-                throw new ApplicationException("Config must have a value ");
+                throw new ApplicationException(Texts.ConfigMustHasValue);
             }
             if(configDailyFrecuenci.Frecuenci == TypesOccursDailyFrecuency.Once)
             {
@@ -26,7 +26,7 @@ namespace Formacion.Validators
         {
             if(configDailyFrecuenci.OnceTime.HasValue == false)
             {
-                throw new ApplicationException("'Once at' must have a value"); 
+                throw new ApplicationException(Texts.OnceAtValue); 
             }
         }
 
@@ -34,7 +34,7 @@ namespace Formacion.Validators
         {
             if (configDailyFrecuenci.NumberOccurs < 0)
             {
-                throw new ApplicationException("'Occurs every' must be greater or equal than zero");
+                throw new ApplicationException(Texts.OccursGreatZero);
             }
             if (configDailyFrecuenci.NumberOccurs > 0)
             {
@@ -47,15 +47,15 @@ namespace Formacion.Validators
            
             if(configDailyFrecuenci.StartTime.HasValue == false)
             {
-                throw new ApplicationException("'Starting at' must have a value");
+                throw new ApplicationException(Texts.StartingAtNotHasValue);
             }
             if (configDailyFrecuenci.EndTime.HasValue == false)
             {
-                throw new ApplicationException("'End at' must have a value");
+                throw new ApplicationException(Texts.EndAtNotHasValue);
             }
             if(configDailyFrecuenci.StartTime.Value  > configDailyFrecuenci.EndTime.Value)
             {
-                throw new ApplicationException("'End at' must be great than 'Starting at'");
+                throw new ApplicationException(Texts.EndAtMinorStartingAt);
             }
         }
 

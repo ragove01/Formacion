@@ -61,7 +61,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a cada {0} {1} entre {2} y {3}.
+        ///   Busca una cadena traducida similar a cada {0} {1} entre las {2} y las {3}.
         /// </summary>
         public static string FormatterDailyFrecuency_TextEvery {
             get {
@@ -79,7 +79,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Ocurrs {0}  of very {1} mes.
+        ///   Busca una cadena traducida similar a Ocurre {0} cada {1} meses.
         /// </summary>
         public static string FormatterMonthly_TextBase {
             get {
@@ -115,7 +115,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a {0} comenzando el {1}.
+        ///   Busca una cadena traducida similar a {0} empezando el {1}.
         /// </summary>
         public static string FormatterRecurring_TextBase {
             get {
@@ -133,7 +133,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a  y .
+        ///   Busca una cadena traducida similar a  y.
         /// </summary>
         public static string FormatterWeekly_TextAnd {
             get {
@@ -214,7 +214,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a primero.
+        ///   Busca una cadena traducida similar a primer.
         /// </summary>
         public static string TypesEveryMonthly_First {
             get {
@@ -268,7 +268,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a diario.
+        ///   Busca una cadena traducida similar a día.
         /// </summary>
         public static string TypesOccurs_Daily {
             get {
@@ -277,7 +277,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a mensual.
+        ///   Busca una cadena traducida similar a mes.
         /// </summary>
         public static string TypesOccurs_Monthly {
             get {
@@ -286,7 +286,7 @@ namespace Formacion.Formatters {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a semanal.
+        ///   Busca una cadena traducida similar a semana.
         /// </summary>
         public static string TypesOccurs_Weekly {
             get {

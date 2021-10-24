@@ -18,18 +18,18 @@ namespace Formacion.Validators
         {
             if (config is null)
             {
-                throw new ApplicationException("Config must have a value ");
+                throw new ApplicationException(Texts.ConfigMustHasValue);
             }
             if(currentDate == DateTime.MaxValue)
             {
-                throw new ApplicationException("The current date is invalid");
+                throw new ApplicationException(Texts.CurrentDateInvalid);
             }
             this.validatorLimits.Validate(config.StartDate, config.EndDate);
             
             
             if(CalculatorLastDateTimeCalc.GetLastDateTime(config) < currentDate)
             {
-                throw new ApplicationException("the end date cannot be earlier than the current date ");
+                throw new ApplicationException(Texts.EndDateAerlierCurrentDate);
             }
         }
 

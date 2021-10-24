@@ -19,11 +19,11 @@ namespace Formacion.Validators
             base.Validate(currentDate, config);
             if (config.Type != TypesSchedule.Recurring)
             {
-                throw new ApplicationException("wrong configuration ");
+                throw new ApplicationException(Texts.WrongConfiguration);
             }
-            if (config.DailyFrecuenci == null && config.Weekly == null && config.NumberOccurs <= 0)
+            if (config.DailyFrecuenci == null && config.Weekly == null && config.Monthly == null && config.NumberOccurs <= 0)
             {
-                throw new ApplicationException("Número of occurs must be great than zero ");
+                throw new ApplicationException(Texts.NumberMustGreaZero);
             }
         }
         private void ValidateSchedulerConfig(SchedulerConfig config)

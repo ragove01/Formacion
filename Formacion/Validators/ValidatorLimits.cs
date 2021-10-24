@@ -8,12 +8,12 @@ namespace Formacion.Validators
         {
             if(startDate == DateTime.MaxValue)
             {
-                throw new ApplicationException("Start Date is invalid");
+                throw new ApplicationException(Texts.StartDateInvalid);
             }
             if(endDate.HasValue &&
                 endDate < startDate)
             {
-                throw new ApplicationException("End date must be great than start date ");
+                throw new ApplicationException(Texts.EndDateGreatStartDate);
             }
         }
     }

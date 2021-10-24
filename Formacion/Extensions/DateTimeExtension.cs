@@ -1,6 +1,5 @@
 ﻿using Formacion.Enums;
 using System;
-using System.Globalization;
 
 namespace Formacion.Extensions
 {

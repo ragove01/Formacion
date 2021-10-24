@@ -117,94 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FormatterDailyFrecuency.TextEvery" xml:space="preserve">
-    <value>cada {0} {1} entre las {2} y las {3}</value>
+  <data name="ConfigMustHasValue" xml:space="preserve">
+    <value>Config must have a value</value>
   </data>
-  <data name="FormatterDailyFrecuency.TextOnce" xml:space="preserve">
-    <value>Ocurre una vez en {0}</value>
+  <data name="CurrentDateInvalid" xml:space="preserve">
+    <value>The current date is invalid</value>
   </data>
-  <data name="FormatterMonthly.TextBase" xml:space="preserve">
-    <value>Ocurre {0} cada {1} meses</value>
+  <data name="DateTimeMustHasValue" xml:space="preserve">
+    <value>Date Time must have a value</value>
   </data>
-  <data name="FormatterMonthly.TextTypeDay" xml:space="preserve">
-    <value>el {0}</value>
+  <data name="EndAtMinorStartingAt" xml:space="preserve">
+    <value>'End at' must be great than 'Starting at'</value>
   </data>
-  <data name="FormatterMonthly.TextTypeEvery" xml:space="preserve">
-    <value>el {0} {1}</value>
+  <data name="EndAtNotHasValue" xml:space="preserve">
+    <value>'End at' must have a value</value>
   </data>
-  <data name="FormatterOnce.TextBase" xml:space="preserve">
-    <value>Ocurre una vez. El horario se utilizará el {0} a las {1} comenzando el {2}</value>
+  <data name="EndDateAerlierCurrentDate" xml:space="preserve">
+    <value>the end date cannot be earlier than the current date</value>
   </data>
-  <data name="FormatterRecurring.TextBase" xml:space="preserve">
-    <value>{0} empezando el {1}</value>
+  <data name="EndDateGreatStartDate" xml:space="preserve">
+    <value>End date must be great than start date</value>
   </data>
-  <data name="FormatterRecurring.TextNoConfigWeekly" xml:space="preserve">
-    <value>Ocurre cada {0}{1}{2}. El horario se utilizará el {3} a las {4}</value>
+  <data name="EveryMustGreatZero" xml:space="preserve">
+    <value>Weekly configuration: 'Every' must be greater than zero</value>
   </data>
-  <data name="FormatterWeekly.TextAnd" xml:space="preserve">
-    <value> y</value>
+  <data name="MonthBeBetween1And12" xml:space="preserve">
+    <value>Montly configuration: month(s) must be between 1 and 12</value>
   </data>
-  <data name="FormatterWeekly.TextBase" xml:space="preserve">
-    <value>Ocurre cada {0} semanas en {1}</value>
+  <data name="MustIndicateDayGreatZero" xml:space="preserve">
+    <value>Montly configuration: must indicate a day of the month great than zero</value>
   </data>
-  <data name="friday" xml:space="preserve">
-    <value>viernes</value>
+  <data name="MustIndicateDayLes31" xml:space="preserve">
+    <value>Montly configuration: must indicate a day of the month less or equal than 31</value>
   </data>
-  <data name="monday" xml:space="preserve">
-    <value>lunes</value>
+  <data name="MustIndicateDayOfMonth" xml:space="preserve">
+    <value>Montly configuration: must indicate a day of the month</value>
   </data>
-  <data name="saturday" xml:space="preserve">
-    <value>sabado</value>
+  <data name="MustIndicateTypeEveryDay" xml:space="preserve">
+    <value>Montly configuration: must indicate the type every day</value>
   </data>
-  <data name="sunday" xml:space="preserve">
-    <value>domingo</value>
+  <data name="MustIndicateTypeOfDayWeek" xml:space="preserve">
+    <value>Montly configuration: must indicate a type of day week</value>
   </data>
-  <data name="thursday" xml:space="preserve">
-    <value>jueves</value>
+  <data name="MustSelectDayWeek" xml:space="preserve">
+    <value>Weekly configuration: must select one or more days of the week</value>
   </data>
-  <data name="tuesday" xml:space="preserve">
-    <value>martes</value>
+  <data name="NotCalculate" xml:space="preserve">
+    <value>Scheluder not calculate</value>
   </data>
-  <data name="TypesEveryDayMonthly.Weekday" xml:space="preserve">
-    <value>entre semana</value>
+  <data name="NotNextExecution" xml:space="preserve">
+    <value>Not next execution time</value>
   </data>
-  <data name="TypesEveryMonthly.First" xml:space="preserve">
-    <value>primer</value>
+  <data name="NumberMustGreaZero" xml:space="preserve">
+    <value>Number of occurs must be great than zero</value>
   </data>
-  <data name="TypesEveryMonthly.Fourth" xml:space="preserve">
-    <value>cuarto</value>
+  <data name="OccursGreatZero" xml:space="preserve">
+    <value>'Occurs every' must be greater or equal than zero</value>
   </data>
-  <data name="TypesEveryMonthly.Last" xml:space="preserve">
-    <value>último</value>
+  <data name="OnceAtValue" xml:space="preserve">
+    <value>'Once at' must have a value</value>
   </data>
-  <data name="TypesEveryMonthly.Second" xml:space="preserve">
-    <value>segundo</value>
+  <data name="StartDateInvalid" xml:space="preserve">
+    <value>Start Date is invalid</value>
   </data>
-  <data name="TypesEveryMonthly.Third" xml:space="preserve">
-    <value>tercero</value>
+  <data name="StartingAtNotHasValue" xml:space="preserve">
+    <value>'Starting at' must have a value</value>
   </data>
-  <data name="TypesEveyDayMonthly.WeekEndDay" xml:space="preserve">
-    <value>fin de semana</value>
-  </data>
-  <data name="TypesOccurs.Daily" xml:space="preserve">
-    <value>día</value>
-  </data>
-  <data name="TypesOccurs.Monthly" xml:space="preserve">
-    <value>mes</value>
-  </data>
-  <data name="TypesOccurs.Weekly" xml:space="preserve">
-    <value>semana</value>
-  </data>
-  <data name="TypesUnitsDailyFrecuency.Hours" xml:space="preserve">
-    <value>horas</value>
-  </data>
-  <data name="TypesUnitsDailyFrecuency.Minutes" xml:space="preserve">
-    <value>minutos</value>
-  </data>
-  <data name="TypesUnitsDailyFrecuency.Seconds" xml:space="preserve">
-    <value>segundos</value>
-  </data>
-  <data name="wednesday" xml:space="preserve">
-    <value>miercoles</value>
+  <data name="WrongConfiguration" xml:space="preserve">
+    <value>wrong configuration</value>
   </data>
 </root>

@@ -11,11 +11,11 @@ namespace Formacion.Validators
             base.Validate(currentDate,config);
             if (config.Type != TypesSchedule.Once)
             {
-                throw new ApplicationException("wrong configuration ");
+                throw new ApplicationException(Texts.WrongConfiguration);
             }
             if (config.DateTime.HasValue == false)
             {
-                throw new ApplicationException("Date Time must have a value ");
+                throw new ApplicationException(Texts.DateTimeMustHasValue);
             }
       
         }

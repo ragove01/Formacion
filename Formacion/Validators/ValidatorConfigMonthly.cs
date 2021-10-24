@@ -12,7 +12,7 @@ namespace Formacion.Validators
         {
             if (configMontly == null)
             {
-                throw new ApplicationException("Config must have a value ");
+                throw new ApplicationException(Texts.ConfigMustHasValue);
             }
 
             if (configMontly.Type == TypesMontlyFrecuency.Day)
@@ -30,15 +30,15 @@ namespace Formacion.Validators
         {
             if (configMontly.DayMonth.HasValue == false)
             {
-                throw new ApplicationException("Montly configuration: must indicate a day of the month ");
+                throw new ApplicationException(Texts.MustIndicateDayOfMonth);
             }
             if (configMontly.DayMonth < 1)
             {
-                throw new ApplicationException("Montly configuration: must indicate a day of the month great than zero ");
+                throw new ApplicationException(Texts.MustIndicateDayGreatZero);
             }
             if (configMontly.DayMonth > 31)
             {
-                throw new ApplicationException("Montly configuration: must indicate a day of the month less or equal than 31 ");
+                throw new ApplicationException(Texts.MustIndicateDayLes31);
             }
         }
 
@@ -46,11 +46,11 @@ namespace Formacion.Validators
         {
             if (configMontly.TypesEvery.HasValue == false)
             {
-                throw new ApplicationException("Montly configuration: must indicate the type every day");
+                throw new ApplicationException(Texts.MustIndicateTypeEveryDay);
             }
             if (configMontly.TypesDayEvery.HasValue == false)
             {
-                throw new ApplicationException("Montly configuration: must indicate a type of day week ");
+                throw new ApplicationException(Texts.MustIndicateTypeOfDayWeek);
             }
 
         }
@@ -58,7 +58,7 @@ namespace Formacion.Validators
         {
             if (configMontly.EveryNumberMonths < 1 || configMontly.EveryNumberMonths > 12)
             {
-                throw new ApplicationException("Montly configuration: month(s) must be between 1 and 12 ");
+                throw new ApplicationException(Texts.MonthBeBetween1And12);
             }
             
         }

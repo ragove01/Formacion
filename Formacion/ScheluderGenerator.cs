@@ -19,7 +19,7 @@ namespace Formacion
             };
         }
 
-        private static void SetCulture(CultureInfo Culture)
+        public static void SetCulture(CultureInfo Culture)
         {
             
             if (Culture != null && CultureInfo.CurrentCulture != Culture)

@@ -40,7 +40,7 @@ namespace Formacion.Calculators
                 DateCalculated = this.GetNextDayInWeek(FirstDayWeek);
                 if (DateCalculated == null)
                 {
-                    throw new ApplicationException("Not next execution time");
+                    throw new ApplicationException(Validators.Texts.NotNextExecution);
                 }
             }
             return this.calculatorNextExecutionTimeDailyFrecuency.GetNextTime(DateCalculated.Value);

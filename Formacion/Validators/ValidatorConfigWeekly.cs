@@ -9,11 +9,11 @@ namespace Formacion.Validators
         {
             if(configWeekly == null)
             {
-                throw new ApplicationException("Config must have a value ");
+                throw new ApplicationException(Texts.ConfigMustHasValue);
             }
             if(configWeekly.Every < 1)
             {
-                throw new ApplicationException("Weekly configuration: 'Every' muste be greater than zero");
+                throw new ApplicationException(Texts.EveryMustGreatZero);
             }
 
             if(!(configWeekly.Monday || 
@@ -24,7 +24,7 @@ namespace Formacion.Validators
                 configWeekly.Saturday ||
                 configWeekly.Sunday))
             {
-                throw new ApplicationException("Weekly configuration: must select one or more days of the week");
+                throw new ApplicationException(Texts.MustSelectDayWeek);
             }
         }
     }
