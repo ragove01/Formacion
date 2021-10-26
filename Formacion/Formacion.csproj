@@ -10,11 +10,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Texts.resx</DependentUpon>
     </Compile>
-    <Compile Update="Validators\Texts.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Texts.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -25,16 +20,6 @@
       <Generator></Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Formatters\Texts.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Texts.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Validators\Texts.en-US.resx">
-      <Generator></Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Validators\Texts.en-GB.resx">
-      <Generator></Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Validators\Texts.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Texts.Designer.cs</LastGenOutput>
     </EmbeddedResource>

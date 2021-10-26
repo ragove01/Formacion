@@ -1,4 +1,5 @@
 ﻿using Formacion.Configs;
+using Formacion.TextsTranslations;
 using System;
 
 namespace Formacion.Validators
@@ -9,11 +10,11 @@ namespace Formacion.Validators
         {
             if(configWeekly == null)
             {
-                throw new ApplicationException(Texts.ConfigMustHasValue);
+                throw new ApplicationException(Translator.GetText(TextsIndex.ConfigMustHasValue));
             }
             if(configWeekly.Every < 1)
             {
-                throw new ApplicationException(Texts.EveryMustGreatZero);
+                throw new ApplicationException(Translator.GetText(TextsIndex.EveryMustGreatZero));
             }
 
             if(!(configWeekly.Monday || 
@@ -24,7 +25,7 @@ namespace Formacion.Validators
                 configWeekly.Saturday ||
                 configWeekly.Sunday))
             {
-                throw new ApplicationException(Texts.MustSelectDayWeek);
+                throw new ApplicationException(Translator.GetText(TextsIndex.MustSelectDayWeek));
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Formacion.Enums;
+using Formacion.TextsTranslations;
 using Formacion.Views;
 
 namespace Formacion.Validators
@@ -11,11 +12,11 @@ namespace Formacion.Validators
             base.Validate(currentDate,config);
             if (config.Type != TypesSchedule.Once)
             {
-                throw new ApplicationException(Texts.WrongConfiguration);
+                throw new ApplicationException(Translator.GetText(TextsIndex.WrongConfiguration));
             }
             if (config.DateTime.HasValue == false)
             {
-                throw new ApplicationException(Texts.DateTimeMustHasValue);
+                throw new ApplicationException(Translator.GetText(TextsIndex.DateTimeMustHasValue));
             }
       
         }

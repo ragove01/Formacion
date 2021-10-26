@@ -1,5 +1,6 @@
 ﻿using Formacion.Configs;
 using Formacion.Enums;
+using Formacion.TextsTranslations;
 using System;
 
 namespace Formacion.Validators
@@ -10,7 +11,7 @@ namespace Formacion.Validators
         {
             if(configDailyFrecuenci == null)
             {
-                throw new ApplicationException(Texts.ConfigMustHasValue);
+                throw new ApplicationException(Translator.GetText(TextsIndex.ConfigMustHasValue));
             }
             if(configDailyFrecuenci.Frecuenci == TypesOccursDailyFrecuency.Once)
             {
@@ -26,7 +27,7 @@ namespace Formacion.Validators
         {
             if(configDailyFrecuenci.OnceTime.HasValue == false)
             {
-                throw new ApplicationException(Texts.OnceAtValue); 
+                throw new ApplicationException(Translator.GetText(TextsIndex.OnceAtValue)); 
             }
         }
 
@@ -34,7 +35,7 @@ namespace Formacion.Validators
         {
             if (configDailyFrecuenci.NumberOccurs < 0)
             {
-                throw new ApplicationException(Texts.OccursGreatZero);
+                throw new ApplicationException(Translator.GetText(TextsIndex.OccursGreatZero));
             }
             if (configDailyFrecuenci.NumberOccurs > 0)
             {
@@ -47,15 +48,15 @@ namespace Formacion.Validators
            
             if(configDailyFrecuenci.StartTime.HasValue == false)
             {
-                throw new ApplicationException(Texts.StartingAtNotHasValue);
+                throw new ApplicationException(Translator.GetText(TextsIndex.StartingAtNotHasValue));
             }
             if (configDailyFrecuenci.EndTime.HasValue == false)
             {
-                throw new ApplicationException(Texts.EndAtNotHasValue);
+                throw new ApplicationException(Translator.GetText(TextsIndex.EndAtNotHasValue));
             }
             if(configDailyFrecuenci.StartTime.Value  > configDailyFrecuenci.EndTime.Value)
             {
-                throw new ApplicationException(Texts.EndAtMinorStartingAt);
+                throw new ApplicationException(Translator.GetText(TextsIndex.EndAtMinorStartingAt));
             }
         }
 

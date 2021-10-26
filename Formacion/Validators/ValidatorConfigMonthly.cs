@@ -1,5 +1,6 @@
 ﻿using Formacion.Configs;
 using Formacion.Enums;
+using Formacion.TextsTranslations;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Formacion.Validators
         {
             if (configMontly == null)
             {
-                throw new ApplicationException(Texts.ConfigMustHasValue);
+                throw new ApplicationException(Translator.GetText(TextsIndex.ConfigMustHasValue));
             }
 
             if (configMontly.Type == TypesMontlyFrecuency.Day)
@@ -30,15 +31,15 @@ namespace Formacion.Validators
         {
             if (configMontly.DayMonth.HasValue == false)
             {
-                throw new ApplicationException(Texts.MustIndicateDayOfMonth);
+                throw new ApplicationException(Translator.GetText(TextsIndex.MustIndicateDayOfMonth));
             }
             if (configMontly.DayMonth < 1)
             {
-                throw new ApplicationException(Texts.MustIndicateDayGreatZero);
+                throw new ApplicationException(Translator.GetText(TextsIndex.MustIndicateDayGreatZero));
             }
             if (configMontly.DayMonth > 31)
             {
-                throw new ApplicationException(Texts.MustIndicateDayLes31);
+                throw new ApplicationException(Translator.GetText(TextsIndex.MustIndicateDayLes31));
             }
         }
 
@@ -46,11 +47,11 @@ namespace Formacion.Validators
         {
             if (configMontly.TypesEvery.HasValue == false)
             {
-                throw new ApplicationException(Texts.MustIndicateTypeEveryDay);
+                throw new ApplicationException(Translator.GetText(TextsIndex.MustIndicateTypeEveryDay));
             }
             if (configMontly.TypesDayEvery.HasValue == false)
             {
-                throw new ApplicationException(Texts.MustIndicateTypeOfDayWeek);
+                throw new ApplicationException(Translator.GetText(TextsIndex.MustIndicateTypeOfDayWeek));
             }
 
         }
@@ -58,7 +59,7 @@ namespace Formacion.Validators
         {
             if (configMontly.EveryNumberMonths < 1 || configMontly.EveryNumberMonths > 12)
             {
-                throw new ApplicationException(Texts.MonthBeBetween1And12);
+                throw new ApplicationException(Translator.GetText(TextsIndex.MonthBeBetween1And12));
             }
             
         }

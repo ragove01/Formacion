@@ -1,5 +1,6 @@
 ﻿using Formacion.Configs;
 using Formacion.Extensions;
+using Formacion.TextsTranslations;
 using Formacion.Views;
 using System;
 
@@ -40,7 +41,7 @@ namespace Formacion.Calculators
                 DateCalculated = this.GetNextDayInWeek(FirstDayWeek);
                 if (DateCalculated == null)
                 {
-                    throw new ApplicationException(Validators.Texts.NotNextExecution);
+                    throw new ApplicationException(Translator.GetText(TextsIndex.NotNextExecution));
                 }
             }
             return this.calculatorNextExecutionTimeDailyFrecuency.GetNextTime(DateCalculated.Value);

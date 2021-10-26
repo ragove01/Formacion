@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Formacion.TextsTranslations;
+using System;
 
 namespace Formacion.Validators
 {
@@ -8,12 +9,12 @@ namespace Formacion.Validators
         {
             if(startDate == DateTime.MaxValue)
             {
-                throw new ApplicationException(Texts.StartDateInvalid);
+                throw new ApplicationException(Translator.GetText(TextsIndex.StartDateInvalid));
             }
             if(endDate.HasValue &&
                 endDate < startDate)
             {
-                throw new ApplicationException(Texts.EndDateGreatStartDate);
+                throw new ApplicationException(Translator.GetText(TextsIndex.EndDateGreatStartDate));
             }
         }
     }

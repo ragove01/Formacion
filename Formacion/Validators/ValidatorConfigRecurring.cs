@@ -1,5 +1,6 @@
 ﻿using System;
 using Formacion.Enums;
+using Formacion.TextsTranslations;
 using Formacion.Views;
 
 namespace Formacion.Validators
@@ -19,11 +20,11 @@ namespace Formacion.Validators
             base.Validate(currentDate, config);
             if (config.Type != TypesSchedule.Recurring)
             {
-                throw new ApplicationException(Texts.WrongConfiguration);
+                throw new ApplicationException(Translator.GetText(TextsIndex.WrongConfiguration));
             }
             if (config.DailyFrecuenci == null && config.Weekly == null && config.Monthly == null && config.NumberOccurs <= 0)
             {
-                throw new ApplicationException(Texts.NumberMustGreaZero);
+                throw new ApplicationException(Translator.GetText(TextsIndex.NumberMustGreaZero));
             }
         }
         private void ValidateSchedulerConfig(SchedulerConfig config)

@@ -7,10 +7,10 @@ using Formacion.Instantiators;
 using Formacion.Validators;
 using Formacion.Views;
 using Formacion.Extensions;
-using Tx = Formacion.Validators.Texts;
 using System;
 using System.Globalization;
 using Xunit;
+using Formacion.TextsTranslations;
 
 namespace Testing
 {
@@ -25,14 +25,14 @@ namespace Testing
         {
             ValidatorConfigOnce validator = new ValidatorConfigOnce();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(DateTime.Now, null));
-            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.ConfigMustHasValue), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigBase_dateTime_Max_value()
         {
             ValidatorConfigBase validator = new ValidatorConfigBase();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(DateTime.MaxValue, new SchedulerConfig()));
-            Assert.Equal(Tx.CurrentDateInvalid, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.CurrentDateInvalid), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigBase_start_dateTime_Max_value()
@@ -41,7 +41,7 @@ namespace Testing
             schedulerData.StartDate = DateTime.MaxValue;
             ValidatorConfigBase validator = new ValidatorConfigBase();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(DateTime.Now, schedulerData));
-            Assert.Equal(Tx.StartDateInvalid, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.StartDateInvalid), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigOnce_type_Config_incorrect()
@@ -51,7 +51,7 @@ namespace Testing
             ValidatorConfigOnce validator = new ValidatorConfigOnce();
             schedulerData.Type = TypesSchedule.Recurring;
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
-            Assert.Equal(Tx.WrongConfiguration, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.WrongConfiguration), TheException.Message);
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace Testing
             ValidatorConfigOnce validator = new ValidatorConfigOnce();
             schedulerData.Type = TypesSchedule.Once;
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
-            Assert.Equal(Tx.DateTimeMustHasValue, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.DateTimeMustHasValue), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigOnce_end_date_must_be_great_than_start_date()
@@ -73,7 +73,7 @@ namespace Testing
             schedulerData.Type = TypesSchedule.Once;
             schedulerData.EndDate = new DateTime(2019, 12, 31);
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
-            Assert.Equal(Tx.EndDateGreatStartDate, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.EndDateGreatStartDate), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigOnce_ok()
@@ -94,7 +94,7 @@ namespace Testing
 
             ValidatorConfigRecurring validator = new ValidatorConfigRecurring();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(DateTime.Now, null));
-            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.ConfigMustHasValue), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigRecurring_type_Config_incorrect()
@@ -102,7 +102,7 @@ namespace Testing
             SchedulerConfig schedulerData = new SchedulerConfig();
             ValidatorConfigRecurring validator = new ValidatorConfigRecurring();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
-            Assert.Equal(Tx.WrongConfiguration, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.WrongConfiguration), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigRecurring_number_occurs_great_zero()
@@ -111,7 +111,7 @@ namespace Testing
             ValidatorConfigRecurring validator = new ValidatorConfigRecurring();
             schedulerData.Type = TypesSchedule.Recurring;
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
-            Assert.Equal(Tx.NumberMustGreaZero, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.NumberMustGreaZero), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigRecurring_number_occurs_great_zero_with_start_date()
@@ -121,7 +121,7 @@ namespace Testing
             schedulerData.Type = TypesSchedule.Recurring;
             schedulerData.StartDate = new DateTime(2020, 1, 1);
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
-            Assert.Equal(Tx.NumberMustGreaZero, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.NumberMustGreaZero), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigRecurring_end_date_be_great_start_date()
@@ -132,7 +132,7 @@ namespace Testing
             schedulerData.StartDate = new DateTime(2020, 1, 1);
             schedulerData.EndDate = new DateTime(2019, 12, 31);
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(new DateTime(2020, 1, 4), schedulerData));
-            Assert.Equal(Tx.EndDateGreatStartDate, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.EndDateGreatStartDate), TheException.Message);
         }
         [Fact]
         public void ValidatorConfig_Recurring_ok()
@@ -149,7 +149,7 @@ namespace Testing
         public void ValidatorConfigDailyFrecuencyOnce_no_config()
         {
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(null));
-            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.ConfigMustHasValue), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigDailyFrecuencyOnce_must_have_value()
@@ -159,7 +159,7 @@ namespace Testing
                 Frecuenci = TypesOccursDailyFrecuency.Once
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal(Tx.OnceAtValue, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.OnceAtValue), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigDailyFrecuency_Once_OK()
@@ -182,7 +182,7 @@ namespace Testing
                 NumberOccurs = -1
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal(Tx.OccursGreatZero, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.OccursGreatZero), TheException.Message);
         }
 
         [Fact]
@@ -194,7 +194,7 @@ namespace Testing
                 NumberOccurs = 1
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal(Tx.StartingAtNotHasValue, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.StartingAtNotHasValue), TheException.Message);
         }
 
         [Fact]
@@ -207,7 +207,7 @@ namespace Testing
                 StartTime = new TimeSpan(1, 0, 0)
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal(Tx.EndAtNotHasValue, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.EndAtNotHasValue), TheException.Message);
 
         }
 
@@ -222,7 +222,7 @@ namespace Testing
                 EndTime = new TimeSpan(0, 0, 0)
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigDailyFrecuency().Validate(configDailyFrecuenci));
-            Assert.Equal(Tx.EndAtMinorStartingAt, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.EndAtMinorStartingAt), TheException.Message);
 
         }
 
@@ -243,7 +243,7 @@ namespace Testing
         public void ValidatorConfigWeekly_no_config()
         {
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigWeekly().Validate(null));
-            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.ConfigMustHasValue), TheException.Message);
         }
 
         [Fact]
@@ -254,7 +254,7 @@ namespace Testing
                 Every = 0
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigWeekly().Validate(configWeekly));
-            Assert.Equal(Tx.EveryMustGreatZero, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.EveryMustGreatZero), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigWeekly_day_of_week_not_select()
@@ -264,7 +264,7 @@ namespace Testing
                 Every = 1
             };
             var TheException = Assert.Throws<ApplicationException>(() => new ValidatorConfigWeekly().Validate(configWeekly));
-            Assert.Equal(Tx.MustSelectDayWeek, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MustSelectDayWeek), TheException.Message);
         }
 
         [Fact]
@@ -689,7 +689,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Weekly;
             CalculatorRecurring Calculator = new CalculatorRecurring();
             var TheException = Assert.Throws<ApplicationException>(() => Calculator.Calculate(new DateTime(2021, 1, 1), TheConfig));
-            Assert.Equal(Tx.EndDateAerlierCurrentDate, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.EndDateAerlierCurrentDate), TheException.Message);
             DateTime result = Calculator.Calculate(new DateTime(2019, 1, 2), TheConfig);
             Assert.Equal<DateTime>(result, new DateTime(2020, 1, 2, 4, 0, 0));
 
@@ -720,7 +720,7 @@ namespace Testing
             TheConfig.Occurs = TypesOccurs.Weekly;
             CalculatorRecurring Calculator = new CalculatorRecurring();
             var TheException = Assert.Throws<ApplicationException>(() => Calculator.Calculate(new DateTime(2020, 12, 31, 8, 0, 0), TheConfig));
-            Assert.Equal(Tx.NotNextExecution, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.NotNextExecution), TheException.Message);
         }
         #endregion
         #region Test Formatters
@@ -1159,7 +1159,7 @@ namespace Testing
         {
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(null));
-            Assert.Equal(Tx.ConfigMustHasValue, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.ConfigMustHasValue), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigMonthly_day_no_day_value()
@@ -1171,7 +1171,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal(Tx.MustIndicateDayOfMonth, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MustIndicateDayOfMonth), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigMonthly_day_zero_day_value()
@@ -1183,7 +1183,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal(Tx.MustIndicateDayGreatZero, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MustIndicateDayGreatZero), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigMonthly_day_graet_30_day_value()
@@ -1195,7 +1195,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal(Tx.MustIndicateDayLes31, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MustIndicateDayLes31), TheException.Message);
         }
 
         [Fact]
@@ -1208,7 +1208,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal(Tx.MonthBeBetween1And12, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MonthBeBetween1And12), TheException.Message);
         }
         [Fact]
         public void ValidatorConfigMonthly_day_months_great_12_value()
@@ -1222,7 +1222,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal(Tx.MonthBeBetween1And12, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MonthBeBetween1And12), TheException.Message);
         }
 
         [Fact]
@@ -1248,7 +1248,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal(Tx.MustIndicateTypeEveryDay, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MustIndicateTypeEveryDay), TheException.Message);
         }
 
         [Fact]
@@ -1262,7 +1262,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal(Tx.MonthBeBetween1And12, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MonthBeBetween1And12), TheException.Message);
         }
 
         [Fact]
@@ -1275,7 +1275,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal(Tx.MustIndicateTypeOfDayWeek, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MustIndicateTypeOfDayWeek), TheException.Message);
         }
 
         [Fact]
@@ -1290,7 +1290,7 @@ namespace Testing
             };
             ValidatorConfigMonthly validator = new ValidatorConfigMonthly();
             var TheException = Assert.Throws<ApplicationException>(() => validator.Validate(config));
-            Assert.Equal(Tx.MonthBeBetween1And12, TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.MonthBeBetween1And12), TheException.Message);
         }
 
         [Fact]
@@ -1917,7 +1917,7 @@ namespace Testing
             
             SchedulerResults result = new SchedulerResults(new FormatterBase(new SchedulerConfig()));
             var TheException = Assert.Throws<ApplicationException>(() => result.NextExecutionTimeString);
-            Assert.Equal(Tx.NotCalculate,TheException.Message);
+            Assert.Equal(Translator.GetText(TextsIndex.NotCalculate),TheException.Message);
             result.NextExecution = DateTime.Now;
             var TheExceptionNotImplemented = Assert.Throws<NotImplementedException>(() => result.NextExecutionTimeString);
         }

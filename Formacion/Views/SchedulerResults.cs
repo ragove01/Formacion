@@ -1,4 +1,5 @@
 ﻿using Formacion.Formatters;
+using Formacion.TextsTranslations;
 using System;
 
 namespace Formacion.Views
@@ -19,7 +20,7 @@ namespace Formacion.Views
             {
                 if (this.NextExecution.HasValue == false)
                 {
-                    throw new ApplicationException(Validators.Texts.NotCalculate);
+                    throw new ApplicationException(Translator.GetText(TextsIndex.NotCalculate));
                 }
                 return this.formatter.Formatter(this.NextExecution.Value);
             }
