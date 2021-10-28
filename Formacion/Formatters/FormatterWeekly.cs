@@ -1,4 +1,5 @@
-﻿using Formacion.Views;
+﻿using Formacion.TextsTranslations;
+using Formacion.Views;
 using System;
 using System.Text;
 
@@ -9,7 +10,7 @@ namespace Formacion.Formatters
         
         private static string[] dayOfWeekNames = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
 
-        public FormatterWeekly(SchedulerConfig TheConfig):base(TheConfig)
+        public FormatterWeekly(SchedulerConfig config):base(config)
         {
            
         }
@@ -18,7 +19,7 @@ namespace Formacion.Formatters
         {
             if(!this.HasConfig()) { return string.Empty; }
             if(!this.HasConfigWeekly()) { return string.Empty; }
-            return string.Format(Texts.FormatterWeekly_TextBase, this.Config.Weekly.Every.ToString(), this.FormatterValue());
+            return string.Format(Translator.GetText(TextsIndex.FormatterWeekly_TextBase), this.Config.Weekly.Every.ToString(), this.FormatterValue());
                
 
         }
@@ -51,12 +52,12 @@ namespace Formacion.Formatters
                 if (this.Config.Weekly.SelectedDays[Index])
                 {
                     LastPositionInsert = this.AppendString(stringBuilder,
-                                    Texts.ResourceManager.GetString(FormatterWeekly.dayOfWeekNames[Index]));
+                                    Translator.GetText(FormatterWeekly.dayOfWeekNames[Index]));
                 }
             }
             if(LastPositionInsert > 0)
             {
-                stringBuilder.Replace(",", Texts.FormatterWeekly_TextAnd, LastPositionInsert, 1);
+                stringBuilder.Replace(",", Translator.GetText(TextsIndex.FormatterWeekly_TextAnd), LastPositionInsert, 1);
                 
             }
             return stringBuilder.ToString();  

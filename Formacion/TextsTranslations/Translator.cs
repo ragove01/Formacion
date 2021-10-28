@@ -1,40 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
 namespace Formacion.TextsTranslations
 {
     public class Translator
     {
-        private static CultureInfo culture = CultureInfo.CurrentCulture;
+        
         private static TextValuesBase textsValues = new TextValuesBase();
         public static string GetText(TextsIndex index)
         {
-            if(CultureInfo.CurrentCulture != culture)
-            {
-                SetValuesTexts(CultureInfo.CurrentCulture);
-            }
-            return textsValues.GetText(index); 
+            InitialiceTexts();
+            return textsValues.GetText(index);
         }
 
-        private static void SetValuesTexts(CultureInfo TheCulture)
+        public static string GetText(string indexString)
         {
-            culture = TheCulture;
+            object index;
+            if (!Enum.TryParse(typeof(TextsIndex), indexString, out index))
+            {
+                throw new ApplicationException(string.Format(GetText(TextsIndex.EnumConversionError), indexString, typeof(TextsIndex).Name));
+            }
+            return GetText((TextsIndex)index);
+        }
 
-            if(TheCulture == CultureInfo.InvariantCulture)
+        private static void InitialiceTexts()
+        {
+            if(CultureInfo.CurrentCulture == textsValues.Culture)
             {
-                SetCultureBase();
+                return;
             }
-            if(TheCulture.Name.Equals("en-GB"))
+            if (CultureInfo.CurrentCulture.Name.Equals("en-GB"))
             {
-                SetCulture_en_GB(); 
+                SetCulture_en_GB();
+                return;
             }
-            if(TheCulture.Name.Equals("en-US"))
+            if (CultureInfo.CurrentCulture.Name.Equals("en-US"))
             {
-                SetCulture_en_US(); 
+                SetCulture_en_US();
+                return;
             }
-
+            SetCultureBase();
         }
 
         private static void SetCultureBase()

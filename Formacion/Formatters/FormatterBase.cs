@@ -1,23 +1,22 @@
-﻿using Formacion.Views;
+﻿using Formacion.TextsTranslations;
+using Formacion.Views;
 using System;
 using System.Globalization;
 using System.Threading;
 
 namespace Formacion.Formatters
 {
-    public class FormatterBase
+    public abstract class FormatterBase
     {
         protected readonly SchedulerConfig Config;
-        public FormatterBase(SchedulerConfig theConfig)
+        public FormatterBase(SchedulerConfig config)
         {
-            this.Config = theConfig;
-            ScheluderGenerator.SetCulture(theConfig?.Culture);
+            this.Config = config;
+            ScheluderGenerator.SetCulture(config?.Culture);
         }
 
-        public virtual string Formatter(DateTime nextExecution)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract string Formatter(DateTime nextExecution);
+        
 
 
        
@@ -25,9 +24,10 @@ namespace Formacion.Formatters
         {
             if (value.GetType().IsEnum == false)
             {
-                throw new ApplicationException("the object isn't a enum value");
+                throw new ApplicationException(string.Format(Translator.GetText(TextsIndex.EnumConversionError),value,"enum value"));
             }
-            return Texts.ResourceManager.GetString($"{value.GetType().Name}.{value.ToString()}");
+            
+            return Translator.GetText($"{value.GetType().Name}_{value.ToString()}");
         }
     }
 }

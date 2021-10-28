@@ -12,62 +12,62 @@ namespace Formacion.Calculators
         private readonly CalculatorNextExecutionTimeDailyFrecuency calculatorNextExecutionTimeDailyFrecuency;
         private readonly DateTime startDate;
         private readonly DateTime endDate;
-        public CalculatorNextExecutionTimeWeekly(SchedulerConfig TheConfig)
+        public CalculatorNextExecutionTimeWeekly(SchedulerConfig config)
         {
-            this.config = TheConfig.Weekly;
-            this.calculatorNextExecutionTimeDailyFrecuency = new CalculatorNextExecutionTimeDailyFrecuency(TheConfig.DailyFrecuenci);
-            this.startDate = TheConfig.StartDate;
-            this.endDate = CalculatorLastDateTimeCalc.GetLastDateTime(TheConfig);  
+            this.config = config.Weekly;
+            this.calculatorNextExecutionTimeDailyFrecuency = new CalculatorNextExecutionTimeDailyFrecuency(config.DailyFrecuenci);
+            this.startDate = config.StartDate;
+            this.endDate = CalculatorLastDateTimeCalc.GetLastDateTime(config);  
         }
 
      
-        public DateTime CalculateNextDate(DateTime CurrentDate)
+        public DateTime CalculateNextDate(DateTime currentDate)
         {
-            DateTime DateCalculate = this.GetNextDayTime(CurrentDate);
-            while(DateCalculate == CurrentDate)
+            DateTime dateCalculate = this.GetNextDayTime(currentDate);
+            while(dateCalculate == currentDate)
             {
-                DateCalculate = this.GetNextDayTime(DateCalculate.AddDays(1).Date);
+                dateCalculate = this.GetNextDayTime(dateCalculate.AddDays(1).Date);
             }
-            return DateCalculate;
+            return dateCalculate;
         }
 
-        private DateTime GetNextDayTime(DateTime CurrentDate)
+        private DateTime GetNextDayTime(DateTime currentDate)
         {
-            DateTime FirstDayWeek = this.GetNextWeekToCalculate(CurrentDate);
-            DateTime? DateCalculated = this.GetNextDayInWeek(FirstDayWeek > CurrentDate ? FirstDayWeek : CurrentDate);
-            if (DateCalculated == null)
+            DateTime firstDayWeek = this.GetNextWeekToCalculate(currentDate);
+            DateTime? dateCalculated = this.GetNextDayInWeek(firstDayWeek > currentDate ? firstDayWeek : currentDate);
+            if (dateCalculated == null)
             {
-                FirstDayWeek = FirstDayWeek.AddDays(this.config.NumberDaysEvery);
-                DateCalculated = this.GetNextDayInWeek(FirstDayWeek);
-                if (DateCalculated == null)
+                firstDayWeek = firstDayWeek.AddDays(this.config.NumberDaysEvery);
+                dateCalculated = this.GetNextDayInWeek(firstDayWeek);
+                if (dateCalculated == null)
                 {
                     throw new ApplicationException(Translator.GetText(TextsIndex.NotNextExecution));
                 }
             }
-            return this.calculatorNextExecutionTimeDailyFrecuency.GetNextTime(DateCalculated.Value);
+            return this.calculatorNextExecutionTimeDailyFrecuency.GetNextTime(dateCalculated.Value);
         }
-        private DateTime GetNextWeekToCalculate(DateTime CurrentDate)
+        private DateTime GetNextWeekToCalculate(DateTime currentDate)
         {
-            DateTime StartDateWeek = this.GetDateInitCalculo();
-            if (CurrentDate < this.startDate)
+            DateTime startDateWeek = this.GetDateInitCalculo();
+            if (currentDate < this.startDate)
             {
                 return this.startDate;
             }
-            return GetFirstDayNextWeek(StartDateWeek, CurrentDate);
+            return GetFirstDayNextWeek(startDateWeek, currentDate);
             
         }
 
-        private DateTime GetFirstDayNextWeek(DateTime StartDayCalculate, DateTime CurrentDate)
+        private DateTime GetFirstDayNextWeek(DateTime startDayCalculate, DateTime currentDate)
         {
-            int Days = (CurrentDate - StartDayCalculate).Days;
-            int Rest = 0;
-            Days = Math.DivRem(Days, this.config.NumberDaysEvery, out Rest);
-            DateTime NextDate = StartDayCalculate.AddDays(Days * this.config.NumberDaysEvery);
-            if (Rest > 6)
+            int days = (currentDate - startDayCalculate).Days;
+            int rest = 0;
+            days = Math.DivRem(days, this.config.NumberDaysEvery, out rest);
+            DateTime nextDate = startDayCalculate.AddDays(days * this.config.NumberDaysEvery);
+            if (rest > 6)
             {
-                NextDate = NextDate.AddDays(this.config.NumberDaysEvery);
+                nextDate = nextDate.AddDays(this.config.NumberDaysEvery);
             }
-            return NextDate;
+            return nextDate;
         }
      
 
@@ -77,16 +77,16 @@ namespace Formacion.Calculators
             {
                 return null;
             }
-            int StartIndex = currentDate.GetIndexDayWeek();
-            for (int Index = StartIndex; Index < 7; Index++)
+            int startIndex = currentDate.GetIndexDayWeek();
+            for (int index = startIndex; index < 7; index++)
             {
-                if (this.config.SelectedDays[Index])
+                if (this.config.SelectedDays[index])
                 {
-                    if(Index == StartIndex)
+                    if(index == startIndex)
                     {
                         return currentDate;
                     }
-                    return currentDate.AddDays(Index - StartIndex).Date;
+                    return currentDate.AddDays(index - startIndex).Date;
                 }
             }
             return null;

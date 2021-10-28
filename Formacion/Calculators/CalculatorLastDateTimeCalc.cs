@@ -19,21 +19,21 @@ namespace Formacion.Calculators
             return config.EndDate.Value.SetTimeToDate(CalculatorLastDateTimeCalc.GetTimeConfigDaily(config.DailyFrecuenci));
         }
 
-        private static TimeSpan GetTimeConfigDaily(ConfigDailyFrecuency DailyFrecuenci)
+        private static TimeSpan GetTimeConfigDaily(ConfigDailyFrecuency configDailyFrecuenci)
         {
-            if (DailyFrecuenci == null)
+            if (configDailyFrecuenci == null)
             {
                 return new TimeSpan(0);
             }
-            if (DailyFrecuenci.Frecuenci == TypesOccursDailyFrecuency.Every &&
-                DailyFrecuenci.EndTime.HasValue)
+            if (configDailyFrecuenci.Frecuenci == TypesOccursDailyFrecuency.Every &&
+                configDailyFrecuenci.EndTime.HasValue)
             {
-                return DailyFrecuenci.EndTime.Value;
+                return configDailyFrecuenci.EndTime.Value;
             }
-            if (DailyFrecuenci.Frecuenci == TypesOccursDailyFrecuency.Once &&
-                DailyFrecuenci.OnceTime.HasValue)
+            if (configDailyFrecuenci.Frecuenci == TypesOccursDailyFrecuency.Once &&
+                configDailyFrecuenci.OnceTime.HasValue)
             {
-                return DailyFrecuenci.OnceTime.Value;
+                return configDailyFrecuenci.OnceTime.Value;
             }
             return new TimeSpan(0);
         }

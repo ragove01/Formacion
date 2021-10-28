@@ -8,16 +8,16 @@ namespace Formacion.Calculators
     {
         private readonly ConfigDailyFrecuency configDailyFrecuenci;
         
-        public CalculatorNextExecutionTimeDailyFrecuency(ConfigDailyFrecuency TheConfigDailyFrecuenci)
+        public CalculatorNextExecutionTimeDailyFrecuency(ConfigDailyFrecuency configDailyFrecuenci)
         {
-            if(TheConfigDailyFrecuenci == null)
+            if(configDailyFrecuenci == null)
             {
-                TheConfigDailyFrecuenci = new ConfigDailyFrecuency()
+                configDailyFrecuenci = new ConfigDailyFrecuency()
                 {
                     Frecuenci = TypesOccursDailyFrecuency.Once
                 };
             }
-            this.configDailyFrecuenci = TheConfigDailyFrecuenci;
+            this.configDailyFrecuenci = configDailyFrecuenci;
             
         }
 
@@ -29,15 +29,15 @@ namespace Formacion.Calculators
         }
         private DateTime GetNextFrecuenly(DateTime date)
         {
-            DateTime StartDate = date.SetTimeToDate(this.configDailyFrecuenci.StartTime.Value);
-            DateTime EndTime = date.SetTimeToDate(this.configDailyFrecuenci.EndTime.Value);
-            while (StartDate <= EndTime)
+            DateTime startDate = date.SetTimeToDate(this.configDailyFrecuenci.StartTime.Value);
+            DateTime endTime = date.SetTimeToDate(this.configDailyFrecuenci.EndTime.Value);
+            while (startDate <= endTime)
             {
-                if (StartDate > date)
+                if (startDate > date)
                 {
-                    return StartDate;
+                    return startDate;
                 }
-                StartDate = StartDate.AddInteval(this.configDailyFrecuenci.TypeUnit, this.configDailyFrecuenci.NumberOccurs);
+                startDate = startDate.AddInteval(this.configDailyFrecuenci.TypeUnit, this.configDailyFrecuenci.NumberOccurs);
             }
 
             return date;

@@ -1,4 +1,5 @@
 ﻿using Formacion.Enums;
+using Formacion.TextsTranslations;
 using Formacion.Views;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Formacion.Formatters
     {
         
 
-        public FormatterMonthly(SchedulerConfig TheConfig) : base(TheConfig)
+        public FormatterMonthly(SchedulerConfig config) : base(config)
         {
 
         }
@@ -20,7 +21,7 @@ namespace Formacion.Formatters
             if (!this.HasConfig()) { return string.Empty; }
             if (!this.HasConfigMonthly()) { return string.Empty; }
             return string.Format(
-                Texts.FormatterMonthly_TextBase, this.FormatterType(), this.Config.Monthly.EveryNumberMonths);
+                Translator.GetText(TextsIndex.FormatterMonthly_TextBase), this.FormatterType(), this.Config.Monthly.EveryNumberMonths);
         }
 
         private bool HasConfig()
@@ -50,12 +51,12 @@ namespace Formacion.Formatters
 
         private string FormatterTypeDay()
         {
-            return string.Format(Texts.FormatterMonthly_TextTypeDay, this.Config.Monthly.DayMonth);
+            return string.Format(Translator.GetText(TextsIndex.FormatterMonthly_TextTypeDay), this.Config.Monthly.DayMonth);
             
         }
         private string FormatterTypeEvery()
         {
-            return string.Format(Texts.FormatterMonthly_TextTypeEvery,
+            return string.Format(Translator.GetText(TextsIndex.FormatterMonthly_TextTypeEvery),
                 this.GetStringEnum(this.Config.Monthly.TypesEvery.Value),
                 this.GetStringEnumTypesDayEvery(this.Config.Monthly.TypesDayEvery.Value));
         }
@@ -67,7 +68,7 @@ namespace Formacion.Formatters
             {
                 return this.GetStringEnum(value);
             }
-            return Texts.ResourceManager.GetString(value.ToString().ToLower());
+            return Translator.GetText(value.ToString().ToLower());
         }
        
     }

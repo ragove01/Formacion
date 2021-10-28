@@ -8,21 +8,21 @@ namespace Formacion.Calculators
 {
     public class CalculatorNextExecutionTimeMonthlyDay:CalculatorNextExecutionTimeMonthly
     {
-        public CalculatorNextExecutionTimeMonthlyDay(SchedulerConfig TheConfig):base(TheConfig)
+        public CalculatorNextExecutionTimeMonthlyDay(SchedulerConfig config):base(config)
         {
            
         }
 
-        public override DateTime CalculateNextDate(DateTime CurrentDate)
+        public override DateTime CalculateNextDate(DateTime currentDate)
         {
-            DateTime DateInitCalc = this.GetFirstDayInitCalculo();
-            DateTime DateCalculate = CurrentDate < DateInitCalc ? DateInitCalc : CurrentDate;
-            while ((DateCalculate = this.CalculateDayInMonth(this.CalculateNextMonth(DateInitCalc,
-                DateCalculate), DateCalculate)) <= CurrentDate)
+            DateTime dateInitCalc = this.GetFirstDayInitCalculo();
+            DateTime dateCalculate = currentDate < dateInitCalc ? dateInitCalc : currentDate;
+            while ((dateCalculate = this.CalculateDayInMonth(this.CalculateNextMonth(dateInitCalc,
+                dateCalculate), dateCalculate)) <= currentDate)
             {
-                DateCalculate = DateCalculate.AddDays(1).Date;
+                dateCalculate = dateCalculate.AddDays(1).Date;
             }
-            return DateCalculate;
+            return dateCalculate;
         }
 
         private DateTime GetFirstDayInitCalculo()
@@ -35,13 +35,13 @@ namespace Formacion.Calculators
             return this.SetDayMonth(new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1));
         }
 
-        protected override DateTime SetDayMonth(DateTime Date)
+        protected override DateTime SetDayMonth(DateTime date)
         {
-            if (DateTime.DaysInMonth(Date.Year, Date.Month) < this.config.Monthly.DayMonth)
+            if (DateTime.DaysInMonth(date.Year, date.Month) < this.config.Monthly.DayMonth)
             {
-                return new DateTime(Date.Year, Date.Month, DateTime.DaysInMonth(Date.Year, Date.Month)).AddDays(1);
+                return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month)).AddDays(1);
             }
-            return new DateTime(Date.Year, Date.Month, this.config.Monthly.DayMonth.Value);
+            return new DateTime(date.Year, date.Month, this.config.Monthly.DayMonth.Value);
         }
     }
 }

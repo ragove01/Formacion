@@ -10,22 +10,22 @@ namespace Formacion.Calculators
     public class CalculatorNextExecutionTimeMonthlyEvery : CalculatorNextExecutionTimeMonthly
     {
         
-        public CalculatorNextExecutionTimeMonthlyEvery(SchedulerConfig TheConfig):base(TheConfig)
+        public CalculatorNextExecutionTimeMonthlyEvery(SchedulerConfig config):base(config)
         {
             
         }
 
-        public override DateTime CalculateNextDate(DateTime CurrentDate)
+        public override DateTime CalculateNextDate(DateTime currentDate)
         {
             
-            DateTime DateInitCalc = this.GetFirstDayInitCalculo();
-            DateTime DateCalculate = CurrentDate < DateInitCalc ? DateInitCalc : CurrentDate;
-            while ((DateCalculate = this.CalculateDayInMonth(this.CalculateNextMonth(DateInitCalc,
-              DateCalculate), DateCalculate)) <= CurrentDate)
+            DateTime dateInitCalc = this.GetFirstDayInitCalculo();
+            DateTime dateCalculate = currentDate < dateInitCalc ? dateInitCalc : currentDate;
+            while ((dateCalculate = this.CalculateDayInMonth(this.CalculateNextMonth(dateInitCalc,
+              dateCalculate), dateCalculate)) <= currentDate)
             {
-                DateCalculate = DateCalculate.AddDays(1).Date;
+                dateCalculate = dateCalculate.AddDays(1).Date;
             }
-            return DateCalculate;
+            return dateCalculate;
         }
 
         private DateTime GetFirstDayInitCalculo()
@@ -44,147 +44,147 @@ namespace Formacion.Calculators
 
         private DateTime GetFirstDayInitCalculoWeekAnyDay()
         {
-            DateTime DateInitCalc = this.GetDayInMonth(this.config.StartDate);
-            if (DateInitCalc < this.config.StartDate)
+            DateTime dateInitCalc = this.GetDayInMonth(this.config.StartDate);
+            if (dateInitCalc < this.config.StartDate)
             {
-                DateInitCalc = this.GetDayInMonth(new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1).AddMonths(1));
+                dateInitCalc = this.GetDayInMonth(new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1).AddMonths(1));
             }
-            return DateInitCalc;
+            return dateInitCalc;
         }
 
         private DateTime GetFirstDayInitCalculoWeekDay()
         {
-            DateTime DateCalc = new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1);
-            if(DateCalc.GetIndexDayWeek() >= 5)
+            DateTime dateCalc = new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1);
+            if(dateCalc.GetIndexDayWeek() >= 5)
             {
-                return DateCalc.AddDays(7 - DateCalc.GetIndexDayWeek());
+                return dateCalc.AddDays(7 - dateCalc.GetIndexDayWeek());
             }
           
-            return DateCalc;
+            return dateCalc;
         }
 
        
         private DateTime GetFirstDayInitCalculoWeekEndDay()
         {
-            DateTime DateCalc = new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1);
-            if(DateCalc.GetIndexDayWeek() < 5 )
+            DateTime dateCalc = new DateTime(this.config.StartDate.Year, this.config.StartDate.Month, 1);
+            if(dateCalc.GetIndexDayWeek() < 5 )
             {
-                DateCalc.AddMonths(5 - DateCalc.GetIndexDayWeek());
+                dateCalc.AddMonths(5 - dateCalc.GetIndexDayWeek());
             }
-            return DateCalc;
+            return dateCalc;
         }
 
-        protected override DateTime SetDayMonth(DateTime Date)
+        protected override DateTime SetDayMonth(DateTime date)
         {
             if(this.config.Monthly.TypesEvery == TypesEveryMonthly.Last)
             {
-                return this.GetLastDayMonth(Date);
+                return this.GetLastDayMonth(date);
             }
-           return this.GetDayInMonth(Date);
+           return this.GetDayInMonth(date);
         }
-        private DateTime GetDayInMonth(DateTime DateCalc)
+        private DateTime GetDayInMonth(DateTime dateCalc)
         {
             if(this.config.Monthly.TypesDayEvery == TypesEveryDayMonthly.Weekday)
             {
-                return GetDayInMonthDayOfWeek(DateCalc);
+                return GetDayInMonthDayOfWeek(dateCalc);
             }
             if(this.config.Monthly.TypesDayEvery == TypesEveryDayMonthly.Weekend)
             {
-                return this.GetDayInMonthDayOfWeekend(DateCalc);
+                return this.GetDayInMonthDayOfWeekend(dateCalc);
             }
-            return this.GetDayInMonthAnyDayOfWeek(DateCalc);
+            return this.GetDayInMonthAnyDayOfWeek(dateCalc);
            
         }
 
-        private DateTime GetDayInMonthAnyDayOfWeek(DateTime DateCalc)
+        private DateTime GetDayInMonthAnyDayOfWeek(DateTime dateCalc)
         {
-            DateTime FirstDayMonth = new DateTime(DateCalc.Year, DateCalc.Month, 1);
-            int Index = FirstDayMonth.GetIndexDayWeek();
-            int Day = this.GetIndexDayWeekConfig();
-            if (Index <= Day)
+            DateTime firstDayMonth = new DateTime(dateCalc.Year, dateCalc.Month, 1);
+            int Index = firstDayMonth.GetIndexDayWeek();
+            int day = this.GetIndexDayWeekConfig();
+            if (Index <= day)
             {
-                FirstDayMonth = FirstDayMonth.AddDays(Day - Index);
+                firstDayMonth = firstDayMonth.AddDays(day - Index);
             }
             else
             {
-                FirstDayMonth = FirstDayMonth.AddDays(7 - Index + Day);
+                firstDayMonth = firstDayMonth.AddDays(7 - Index + day);
             }
             if (this.HasCalculateWeek())
             {
-                FirstDayMonth = this.GetNextWeek(FirstDayMonth, DateCalc);
+                firstDayMonth = this.GetNextWeek(firstDayMonth);
             }
-            return FirstDayMonth;
+            return firstDayMonth;
         }
 
-        private DateTime GetDayInMonthDayOfWeek(DateTime DateCalc)
+        private DateTime GetDayInMonthDayOfWeek(DateTime dateCalc)
         {
-            DateTime FirstDayMonth = new DateTime(DateCalc.Year, DateCalc.Month, 1);
-            int Index = FirstDayMonth.GetIndexDayWeek();
+            DateTime firstDayMonth = new DateTime(dateCalc.Year, dateCalc.Month, 1);
+            int Index = firstDayMonth.GetIndexDayWeek();
 
             if ((Index + (int)this.config.Monthly.TypesEvery) > 4)
             {
-                FirstDayMonth = FirstDayMonth.AddDays((4 - Index) + 2 + (((int)this.config.Monthly.TypesEvery) - (4 - Index)));
+                firstDayMonth = firstDayMonth.AddDays((4 - Index) + 2 + (((int)this.config.Monthly.TypesEvery) - (4 - Index)));
             }
             else
             {
-                FirstDayMonth = FirstDayMonth.AddDays((int)this.config.Monthly.TypesEvery);
+                firstDayMonth = firstDayMonth.AddDays((int)this.config.Monthly.TypesEvery);
             }
-            return FirstDayMonth;
+            return firstDayMonth;
         }
 
-        private DateTime GetDayInMonthDayOfWeekend(DateTime DateCalc)
+        private DateTime GetDayInMonthDayOfWeekend(DateTime dateCalc)
         {
-            DateTime FirstDayMonth = new DateTime(DateCalc.Year, DateCalc.Month, 1);
-            return FirstDayMonth.AddDays((5 + (int)this.config.Monthly.TypesEvery) - FirstDayMonth.GetIndexDayWeek());
+            DateTime firstDayMonth = new DateTime(dateCalc.Year, dateCalc.Month, 1);
+            return firstDayMonth.AddDays((5 + (int)this.config.Monthly.TypesEvery) - firstDayMonth.GetIndexDayWeek());
         }
 
-        private DateTime GetLastDayMonth(DateTime DateCalc)
+        private DateTime GetLastDayMonth(DateTime dateCalc)
         {
-            DateTime LastDayMonth = new DateTime(DateCalc.Year, DateCalc.Month, DateTime.DaysInMonth(DateCalc.Year, DateCalc.Month));
+            DateTime lastDayMonth = new DateTime(dateCalc.Year, dateCalc.Month, DateTime.DaysInMonth(dateCalc.Year, dateCalc.Month));
             
             if(this.config.Monthly.TypesDayEvery == TypesEveryDayMonthly.Weekday)
             {
-                return this.GetLastDayMonthWeekday(LastDayMonth);
+                return this.GetLastDayMonthWeekday(lastDayMonth);
             }
             if(this.config.Monthly.TypesDayEvery == TypesEveryDayMonthly.Weekend)
             {
-                return this.GetLastDayMonthWeekEndDay(LastDayMonth); 
+                return this.GetLastDayMonthWeekEndDay(lastDayMonth); 
             }
-            return this.GetLastDayMonthAnyDay(LastDayMonth);
+            return this.GetLastDayMonthAnyDay(lastDayMonth);
         }
 
-        private DateTime GetLastDayMonthWeekday(DateTime DateCalculate)
+        private DateTime GetLastDayMonthWeekday(DateTime dateCalculate)
         {
-            int Indice = DateCalculate.GetIndexDayWeek();
-            if (Indice > 4)
+            int index = dateCalculate.GetIndexDayWeek();
+            if (index > 4)
             {
-                DateCalculate = DateCalculate.AddDays(-(Indice - 4));
+                dateCalculate = dateCalculate.AddDays(-(index - 4));
             }
-            return DateCalculate;
+            return dateCalculate;
         }
-        private DateTime GetLastDayMonthWeekEndDay(DateTime DateCalculate)
+        private DateTime GetLastDayMonthWeekEndDay(DateTime dateCalculate)
         {
-            int Indice = DateCalculate.GetIndexDayWeek();
-            if (Indice < 5)
+            int index = dateCalculate.GetIndexDayWeek();
+            if (index < 5)
             {
-                DateCalculate = DateCalculate.AddDays(-(Indice + 1));
+                dateCalculate = dateCalculate.AddDays(-(index + 1));
             }
-            return DateCalculate;
+            return dateCalculate;
         }
-        private DateTime GetLastDayMonthAnyDay(DateTime DateCalculate)
+        private DateTime GetLastDayMonthAnyDay(DateTime dateCalculate)
         {
-            while(DateCalculate.GetIndexDayWeek() > (int)this.config.Monthly.TypesDayEvery)
+            while(dateCalculate.GetIndexDayWeek() > (int)this.config.Monthly.TypesDayEvery)
             {
-                DateCalculate = DateCalculate.AddDays(-1);  
+                dateCalculate = dateCalculate.AddDays(-1);  
             }
-            return DateCalculate;
+            return dateCalculate;
         }
 
-        private DateTime GetNextWeek(DateTime DateToCalc, DateTime DateCalculated)
+        private DateTime GetNextWeek(DateTime dateToCalc)
         {
-            DateToCalc = DateToCalc.AddDays((7 * (int)this.config.Monthly.TypesEvery));
+            dateToCalc = dateToCalc.AddDays((7 * (int)this.config.Monthly.TypesEvery));
           
-            return DateToCalc;
+            return dateToCalc;
         }
 
         private int GetIndexDayWeekConfig()

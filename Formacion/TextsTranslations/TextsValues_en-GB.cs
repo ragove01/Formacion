@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Globalization;
 
 namespace Formacion.TextsTranslations
 {
     internal class TextsValues_en_GB:TextValuesBase 
     {
+        internal TextsValues_en_GB():base(CultureInfo.GetCultureInfo("en-US"))
+        {
+
+        }
         protected override Dictionary<TextsIndex, string> LoadTexts()
         {
             return new Dictionary<TextsIndex, string>() {
@@ -40,7 +43,7 @@ namespace Formacion.TextsTranslations
             {TextsIndex.FormatterOnce_TextBase,"Occurs once. Schedule will be used on {0} at {1} starting on {2}"},
             {TextsIndex.FormatterRecurring_TextBase,"{0} starting on {1}"},
             {TextsIndex.FormatterRecurring_TextNoConfigWeekly,"Occurs every {0}{1}{2}. Schedule will be used on {3} at {4}"},
-            {TextsIndex.FormatterWeekly_TextAnd,"and"},
+            {TextsIndex.FormatterWeekly_TextAnd," and "},
             {TextsIndex.FormatterWeekly_TextBase,"Occurs every {0} weeks on {1}"},
             {TextsIndex.friday,"friday"},
             {TextsIndex.monday,"monday"},
@@ -54,14 +57,15 @@ namespace Formacion.TextsTranslations
             {TextsIndex.TypesEveryMonthly_Last,"last"},
             {TextsIndex.TypesEveryMonthly_Second,"second"},
             {TextsIndex.TypesEveryMonthly_Third,"third"},
-            {TextsIndex.TypesEveyDayMonthly_WeekEndDay,"weekendday"},
+            {TextsIndex.TypesEveryDayMonthly_Weekend,"weekend"},
             {TextsIndex.TypesOccurs_Daily,"daily"},
             {TextsIndex.TypesOccurs_Monthly,"monthly"},
             {TextsIndex.TypesOccurs_Weekly,"weekly"},
             {TextsIndex.TypesUnitsDailyFrecuency_Hours,"hours"},
             {TextsIndex.TypesUnitsDailyFrecuency_Minutes,"minutes"},
             {TextsIndex.TypesUnitsDailyFrecuency_Seconds,"seconds"},
-            {TextsIndex.wednesday,"wednesday"}};
+            {TextsIndex.wednesday,"wednesday"},
+            {TextsIndex.EnumConversionError,"Error to convert {0} at {1}"}};
         }
     }
 }

@@ -7,9 +7,9 @@ namespace Formacion.Views
     public class SchedulerResults
     {
         private readonly FormatterBase formatter;
-        public SchedulerResults(FormatterBase TheFormatter)
+        public SchedulerResults(FormatterBase formatterArgs)
         {
-            this.formatter = TheFormatter;
+            this.formatter = formatterArgs;
         }
 
        

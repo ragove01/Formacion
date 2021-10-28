@@ -51,13 +51,14 @@ namespace Formacion.TextsTranslations
         TypesEveryMonthly_Last,
         TypesEveryMonthly_Second,
         TypesEveryMonthly_Third,
-        TypesEveyDayMonthly_WeekEndDay,
+        TypesEveryDayMonthly_Weekend,
         TypesOccurs_Daily,
         TypesOccurs_Monthly,
         TypesOccurs_Weekly,
         TypesUnitsDailyFrecuency_Hours,
         TypesUnitsDailyFrecuency_Minutes,
         TypesUnitsDailyFrecuency_Seconds,
-        wednesday
+        wednesday,
+        EnumConversionError
     }
 }

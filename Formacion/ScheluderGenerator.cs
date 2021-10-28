@@ -19,13 +19,13 @@ namespace Formacion
             };
         }
 
-        public static void SetCulture(CultureInfo Culture)
+        public static void SetCulture(CultureInfo culture)
         {
             
-            if (Culture != null && CultureInfo.CurrentCulture != Culture)
+            if (culture != null && CultureInfo.CurrentCulture != culture)
             {
-                Thread.CurrentThread.CurrentCulture = Culture;
-                Thread.CurrentThread.CurrentUICulture = Culture;
+                Thread.CurrentThread.CurrentCulture = culture;
+                Thread.CurrentThread.CurrentUICulture = culture;
             }
         }
 

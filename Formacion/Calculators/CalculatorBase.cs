@@ -4,7 +4,7 @@ using System;
 
 namespace Formacion.Calculators
 {
-    public class CalculatorBase 
+    public abstract class CalculatorBase 
     {
         private readonly ValidatorConfigBase validator;
         public ValidatorConfigBase Validator => validator;
@@ -12,10 +12,8 @@ namespace Formacion.Calculators
         {
             this.validator = theValidator;
         }
-        public virtual DateTime Calculate(DateTime currentDate, SchedulerConfig config)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract DateTime Calculate(DateTime currentDate, SchedulerConfig config);
+        
         protected virtual void Validate(DateTime currentDate, SchedulerConfig config)
         {
             if(this.Validator == null)

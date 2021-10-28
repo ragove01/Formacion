@@ -4,73 +4,69 @@ using System;
 
 namespace Formacion.Calculators
 {
-    public class CalculatorNextExecutionTimeMonthly
+    public abstract class CalculatorNextExecutionTimeMonthly
     {
         protected readonly SchedulerConfig config;
-        protected CalculatorNextExecutionTimeMonthly(SchedulerConfig TheConfig)
+        protected CalculatorNextExecutionTimeMonthly(SchedulerConfig configArgs)
         {
-            this.config = TheConfig;
+            this.config = configArgs;
         }
 
-        public virtual DateTime CalculateNextDate(DateTime CurrentDate)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract DateTime CalculateNextDate(DateTime currentDate);
+       
 
        
-        protected DateTime CalculateDayInMonth(DateTime DateMonth, DateTime CurrentDate)
+        protected DateTime CalculateDayInMonth(DateTime dateMonth, DateTime currentDate)
         {
-            DateTime NextDate;
-            while ((NextDate = this.SetDayMonth(DateMonth)) < CurrentDate.Date)
+            DateTime nextDate;
+            while ((nextDate = this.SetDayMonth(dateMonth)) < currentDate.Date)
             {
-                DateMonth = DateMonth.AddMonths(this.config.Monthly.EveryNumberMonths);
+                dateMonth = dateMonth.AddMonths(this.config.Monthly.EveryNumberMonths);
             }
-            return this.SetHourOfDay(NextDate<CurrentDate?CurrentDate:NextDate);
+            return this.SetHourOfDay(nextDate<currentDate?currentDate:nextDate);
         }
 
-        protected DateTime CalculateNextMonth(DateTime DateInitCalc, DateTime CurrentDate)
+        protected DateTime CalculateNextMonth(DateTime dateInitCalc, DateTime currentDate)
         {
            
-            int Months = this.GetDiffMonth(DateInitCalc,CurrentDate);
-            if(Months == 0)
+            int months = this.GetDiffMonth(dateInitCalc,currentDate);
+            if(months == 0)
             {
-                return new DateTime(DateInitCalc.Year, DateInitCalc.Month, 1);
+                return new DateTime(dateInitCalc.Year, dateInitCalc.Month, 1);
             }
-            int Rest = 0;
-            Months = Math.DivRem(Months, this.config.Monthly.EveryNumberMonths, out Rest);
-            DateTime NextDate = new DateTime(DateInitCalc.Year,DateInitCalc.Month,1).AddMonths(Months * this.config.Monthly.EveryNumberMonths);
-            if (Rest > 0)
+            int rest = 0;
+            months = Math.DivRem(months, this.config.Monthly.EveryNumberMonths, out rest);
+            DateTime nextDate = new DateTime(dateInitCalc.Year,dateInitCalc.Month,1).AddMonths(months * this.config.Monthly.EveryNumberMonths);
+            if (rest > 0)
             {
-                NextDate = NextDate.AddMonths(this.config.Monthly.EveryNumberMonths);
+                nextDate = nextDate.AddMonths(this.config.Monthly.EveryNumberMonths);
             }
-            return NextDate;
+            return nextDate;
         }
 
-        protected int GetDiffMonth(DateTime DateIni, DateTime DateFin)
+        protected int GetDiffMonth(DateTime dateIni, DateTime dateFin)
         {
-            if(DateIni.Year == DateFin.Year)
+            if(dateIni.Year == dateFin.Year)
             {
-                return DateFin.Month - DateIni.Month;  
+                return dateFin.Month - dateIni.Month;  
             }
-            int NumberMonth = ((DateFin.Year - DateIni.Year) * 12) + DateFin.Month - DateIni.Month;
-            if(DateFin.Day < DateIni.Day)
+            int numberMonth = ((dateFin.Year - dateIni.Year) * 12) + dateFin.Month - dateIni.Month;
+            if(dateFin.Day < dateIni.Day)
             {
-                NumberMonth--; 
+                numberMonth--; 
             }
-            return NumberMonth; 
+            return numberMonth; 
         }
-       
-        protected virtual DateTime SetDayMonth(DateTime Date)
-        {
-            throw new NotImplementedException();
-        }
-        private DateTime SetHourOfDay(DateTime Date)
+
+        protected abstract DateTime SetDayMonth(DateTime date);
+        
+        private DateTime SetHourOfDay(DateTime date)
         {
             if(this.config.DailyFrecuenci == null)
             {
-                return Date;
+                return date;
             }
-            return new CalculatorNextExecutionTimeDailyFrecuency(this.config.DailyFrecuenci).GetNextTime(Date);   
+            return new CalculatorNextExecutionTimeDailyFrecuency(this.config.DailyFrecuenci).GetNextTime(date);   
         }
     }
 }

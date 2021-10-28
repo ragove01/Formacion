@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Globalization;
 
 namespace Formacion.TextsTranslations
 {
     internal class TextValuesBase
     {
         protected Dictionary<TextsIndex, string> textsValues;
+        internal readonly CultureInfo Culture;
 
-        internal TextValuesBase()
+        internal TextValuesBase():this(CultureInfo.GetCultureInfo("es-ES"))
         {
+            
+            
+        }
+        protected TextValuesBase(CultureInfo culture)
+        {
+            this.Culture = culture;
             this.textsValues = this.LoadTexts();
         }
         internal string GetText(TextsIndex text)
@@ -51,7 +57,7 @@ namespace Formacion.TextsTranslations
             {TextsIndex.FormatterOnce_TextBase,"Ocurre una vez. El horario se utilizará el {0} a las {1} comenzando el {2}"},
             {TextsIndex.FormatterRecurring_TextBase,"{0} empezando el {1}"},
             {TextsIndex.FormatterRecurring_TextNoConfigWeekly,"Ocurre cada {0}{1}{2}. El horario se utilizará el {3} a las {4}"},
-            {TextsIndex.FormatterWeekly_TextAnd,"y"},
+            {TextsIndex.FormatterWeekly_TextAnd," y"},
             {TextsIndex.FormatterWeekly_TextBase,"Ocurre cada {0} semanas en {1}"},
             {TextsIndex.friday,"viernes"},
             {TextsIndex.monday,"lunes"},
@@ -65,14 +71,15 @@ namespace Formacion.TextsTranslations
             {TextsIndex.TypesEveryMonthly_Last,"último"},
             {TextsIndex.TypesEveryMonthly_Second,"segundo"},
             {TextsIndex.TypesEveryMonthly_Third,"tercero"},
-            {TextsIndex.TypesEveyDayMonthly_WeekEndDay,"fin de semana"},
+            {TextsIndex.TypesEveryDayMonthly_Weekend,"fin de semana"},
             {TextsIndex.TypesOccurs_Daily,"día"},
             {TextsIndex.TypesOccurs_Monthly,"mes"},
             {TextsIndex.TypesOccurs_Weekly,"semana"},
             {TextsIndex.TypesUnitsDailyFrecuency_Hours,"horas"},
             {TextsIndex.TypesUnitsDailyFrecuency_Minutes,"minutos"},
             {TextsIndex.TypesUnitsDailyFrecuency_Seconds,"segundos"},
-            {TextsIndex.wednesday,"miercoles"}};
+            {TextsIndex.wednesday,"miercoles"},
+            {TextsIndex.EnumConversionError,"Error al convertir el valor {0} en {1}"}};
 
         }
     

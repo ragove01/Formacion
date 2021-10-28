@@ -16,12 +16,12 @@ namespace Formacion.Calculators
 
        
 
-        public CalculatorNextExecutionTime(SchedulerConfig TheConfig)
+        public CalculatorNextExecutionTime(SchedulerConfig config)
         {
-            this.config = TheConfig;
-            this.configDailyFrecuenci = TheConfig.DailyFrecuenci??new ConfigDailyFrecuency() { Frecuenci = TypesOccursDailyFrecuency.Once };
-            this.configWeekly = config.Weekly;
-            this.configMontly = config.Monthly;
+            this.config = config;
+            this.configDailyFrecuenci = config.DailyFrecuenci??new ConfigDailyFrecuency() { Frecuenci = TypesOccursDailyFrecuency.Once };
+            this.configWeekly = this.config.Weekly;
+            this.configMontly = this.config.Monthly;
             
           
         }
@@ -46,10 +46,10 @@ namespace Formacion.Calculators
 
         private DateTime GetNextDateNotWeeklyConfiguration(DateTime dateCalc)
         {
-            DateTime NextDate = new CalculatorNextExecutionTimeDailyFrecuency(this.configDailyFrecuenci).GetNextTime(dateCalc);
-            if(NextDate > dateCalc)
+            DateTime nextDate = new CalculatorNextExecutionTimeDailyFrecuency(this.configDailyFrecuenci).GetNextTime(dateCalc);
+            if(nextDate > dateCalc)
             {
-                return NextDate;
+                return nextDate;
             }
             if (this.config.Occurs == TypesOccurs.Weekly)
             {
