@@ -99,15 +99,15 @@ namespace Formacion.Calculators
         private DateTime GetDayInMonthAnyDayOfWeek(DateTime dateCalc)
         {
             DateTime firstDayMonth = new DateTime(dateCalc.Year, dateCalc.Month, 1);
-            int Index = firstDayMonth.GetIndexDayWeek();
+            int index = firstDayMonth.GetIndexDayWeek();
             int day = this.GetIndexDayWeekConfig();
-            if (Index <= day)
+            if (index <= day)
             {
-                firstDayMonth = firstDayMonth.AddDays(day - Index);
+                firstDayMonth = firstDayMonth.AddDays(day - index);
             }
             else
             {
-                firstDayMonth = firstDayMonth.AddDays(7 - Index + day);
+                firstDayMonth = firstDayMonth.AddDays(7 - index + day);
             }
             if (this.HasCalculateWeek())
             {
@@ -119,11 +119,11 @@ namespace Formacion.Calculators
         private DateTime GetDayInMonthDayOfWeek(DateTime dateCalc)
         {
             DateTime firstDayMonth = new DateTime(dateCalc.Year, dateCalc.Month, 1);
-            int Index = firstDayMonth.GetIndexDayWeek();
+            int index = firstDayMonth.GetIndexDayWeek();
 
-            if ((Index + (int)this.config.Monthly.TypesEvery) > 4)
+            if ((index + (int)this.config.Monthly.TypesEvery) > 4)
             {
-                firstDayMonth = firstDayMonth.AddDays((4 - Index) + 2 + (((int)this.config.Monthly.TypesEvery) - (4 - Index)));
+                firstDayMonth = firstDayMonth.AddDays((4 - index) + 2 + (((int)this.config.Monthly.TypesEvery) - (4 - index)));
             }
             else
             {

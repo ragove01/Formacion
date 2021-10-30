@@ -61,14 +61,14 @@ namespace Formacion.Formatters
                 this.GetStringEnumTypesDayEvery(this.Config.Monthly.TypesDayEvery.Value));
         }
 
-        private string GetStringEnumTypesDayEvery(TypesEveryDayMonthly value)
+        private string GetStringEnumTypesDayEvery(TypesEveryDayMonthly typeDayWeek)
         {
-           if(value == TypesEveryDayMonthly.Weekday ||
-                value == TypesEveryDayMonthly.Weekend)
+           if(typeDayWeek == TypesEveryDayMonthly.Weekday ||
+                typeDayWeek == TypesEveryDayMonthly.Weekend)
             {
-                return this.GetStringEnum(value);
+                return this.GetStringEnum(typeDayWeek);
             }
-            return Translator.GetText(value.ToString().ToLower());
+            return Translator.GetText(typeDayWeek.ToString().ToLower());
         }
        
     }

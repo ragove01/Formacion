@@ -8,9 +8,9 @@ namespace Formacion.Calculators
     {
         private readonly ValidatorConfigBase validator;
         public ValidatorConfigBase Validator => validator;
-        public CalculatorBase(ValidatorConfigBase theValidator)
+        public CalculatorBase(ValidatorConfigBase validator)
         {
-            this.validator = theValidator;
+            this.validator = validator;
         }
         public abstract DateTime Calculate(DateTime currentDate, SchedulerConfig config);
         

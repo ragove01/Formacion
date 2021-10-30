@@ -20,14 +20,14 @@ namespace Formacion.Formatters
 
 
        
-        public string GetStringEnum(object value)
+        public string GetStringEnum(object enumValue)
         {
-            if (value.GetType().IsEnum == false)
+            if (enumValue.GetType().IsEnum == false)
             {
-                throw new ApplicationException(string.Format(Translator.GetText(TextsIndex.EnumConversionError),value,"enum value"));
+                throw new ApplicationException(string.Format(Translator.GetText(TextsIndex.EnumConversionError),enumValue,"enum value"));
             }
             
-            return Translator.GetText($"{value.GetType().Name}_{value.ToString()}");
+            return Translator.GetText($"{enumValue.GetType().Name}_{enumValue.ToString()}");
         }
     }
 }
