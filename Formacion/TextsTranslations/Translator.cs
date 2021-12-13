@@ -29,17 +29,18 @@ namespace Formacion.TextsTranslations
             {
                 return;
             }
-            if (CultureInfo.CurrentCulture.Name.Equals("en-GB"))
-            {
-                SetCulture_en_GB();
-                return;
-            }
-            if (CultureInfo.CurrentCulture.Name.Equals("en-US"))
-            {
-                SetCulture_en_US();
-                return;
-            }
-            SetCultureBase();
+            textsValues = new TextValuesBd(CultureInfo.CurrentCulture);
+            //if (CultureInfo.CurrentCulture.Name.Equals("en-GB"))
+            //{
+            //    SetCulture_en_GB();
+            //    return;
+            //}
+            //if (CultureInfo.CurrentCulture.Name.Equals("en-US"))
+            //{
+            //    SetCulture_en_US();
+            //    return;
+            //}
+            //SetCultureBase();
         }
 
         private static void SetCultureBase()

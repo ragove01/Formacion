@@ -7,6 +7,7 @@ namespace Formacion.TextsTranslations
     {
         protected Dictionary<TextsIndex, string> textsValues;
         internal readonly CultureInfo Culture;
+        internal bool IsLoadDed { get; set; }
 
         internal TextValuesBase():this(CultureInfo.GetCultureInfo("es-ES"))
         {
@@ -15,8 +16,10 @@ namespace Formacion.TextsTranslations
         }
         protected TextValuesBase(CultureInfo culture)
         {
+            this.IsLoadDed = false;
             this.Culture = culture;
             this.textsValues = this.LoadTexts();
+            this.IsLoadDed = true;
         }
         internal string GetText(TextsIndex text)
         {

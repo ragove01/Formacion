@@ -11,6 +11,7 @@ using System;
 using System.Globalization;
 using Xunit;
 using Formacion.TextsTranslations;
+using Formacion.Controller;
 
 namespace Testing
 {
@@ -275,6 +276,17 @@ namespace Testing
                 Monday = true
             };
             new ValidatorConfigWeekly().Validate(configWeekly);
+        }
+
+        [Fact]
+        public void test_instantiator_validator()
+        {
+            var validator = InstantiatorValidator.GetValidator(TypesSchedule.Once);
+            Assert.NotNull(validator);
+            Assert.IsType<ValidatorConfigOnce>(validator);
+            validator = InstantiatorValidator.GetValidator(TypesSchedule.Recurring);
+            Assert.NotNull(validator);
+            Assert.IsType<ValidatorConfigRecurring>(validator);
         }
         #endregion
         #endregion
@@ -721,7 +733,7 @@ namespace Testing
         public void Validator_Formatter_Once()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             config.StartDate = new DateTime(2020, 1, 1);
             var formatter = InstantiatorFormatter.GetFormatter(config);
             DateTime dateToFormat = new DateTime(2020, 1, 4, 14, 0, 0);
@@ -734,7 +746,7 @@ namespace Testing
         public void Validator_Formatter_Recurring()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             config.StartDate = new DateTime(2020, 1, 1);
             config.Type = TypesSchedule.Recurring;
             config.NumberOccurs = 1;
@@ -749,7 +761,7 @@ namespace Testing
         public void Validator_Formatter_Recurring_Number_Occurs_great_one()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             config.StartDate = new DateTime(2020, 1, 1);
             config.Type = TypesSchedule.Recurring;
             config.NumberOccurs = 3;
@@ -764,7 +776,7 @@ namespace Testing
         public void Validator_Formatter_Recurring_Daily_Config()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
             {
                 Frecuenci = TypesOccursDailyFrecuency.Every,
@@ -788,7 +800,7 @@ namespace Testing
         public void Validator_Formatter_Recurring_Daily_once_time_Config()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
             {
                 Frecuenci = TypesOccursDailyFrecuency.Once,
@@ -811,7 +823,7 @@ namespace Testing
         public void Validator_Formatter_Recurring_Weekly_Daily_Config()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             ConfigWeekly configWeekly = new ConfigWeekly()
             {
                 Every = 2,
@@ -863,7 +875,7 @@ namespace Testing
         public void Validator_Formatter_Recurring_Weekly_Config()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             ConfigWeekly configWeekly = new ConfigWeekly()
             {
                 Every = 2,
@@ -889,7 +901,7 @@ namespace Testing
         public void Validator_Formatter_Recurring_Monthly_Daily_Config()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             ConfigMonthly configMonthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Day,
@@ -940,7 +952,7 @@ namespace Testing
         public void Validator_Formatter_Recurring_Monthly_Config()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             config.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
@@ -963,7 +975,7 @@ namespace Testing
         public void Validator_Formatter_Recurring_Monthly_Config_weekly()
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             config.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
@@ -993,9 +1005,9 @@ namespace Testing
         [InlineData(TypesSchedule.Recurring, "05/01/2020 00:00:00")]
         public void Generator_no_daily_no_weekly_config(TypesSchedule type, string nextdateExpected)
         {
-            var generator = new ScheluderGenerator();
+            var generator = new SchedulerGenerator();
             var config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-GB");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-GB");
             config.Type = type;
             config.Active = true;
             config.StartDate = new DateTime(2020, 1, 1);
@@ -1017,7 +1029,7 @@ namespace Testing
         public void Generator_frecuency_daly_config_no_weekly_config(string culture, string textExpected)
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo(culture);
+            config.Culture = CultureInfo.CreateSpecificCulture(culture);
             config.Type = TypesSchedule.Recurring;
 
             config.StartDate = new DateTime(2020, 1, 1);
@@ -1030,7 +1042,7 @@ namespace Testing
                 StartTime = new TimeSpan(4, 0, 0),
                 EndTime = new TimeSpan(8, 0, 0)
             };
-            var generator = new ScheluderGenerator();
+            var generator = new SchedulerGenerator();
             DateTime currentDate = new DateTime(2020, 1, 4);
             var result = generator.Calculate(currentDate, config);
             Assert.NotNull(result);
@@ -1038,8 +1050,12 @@ namespace Testing
             DateTime dateExpected = new DateTime(2020, 1, 4, 4, 0, 0);
             Assert.Equal(dateExpected, result.NextExecution.Value);
             Assert.Equal(textExpected, result.NextExecutionTimeString);
+            //Assert.True(generator.SaveConfiguration("Prueba_" + culture, config).Result);
+            //config = generator.LoadConfiguration("Prueba_" + culture).Result;
+            //Assert.NotNull(config);
+            //Assert.True(generator.RemoveConfiguration("Prueba_" + culture).Result);
         }
-
+        
         [Theory]
         [InlineData("en-GB", "Occurs every 2 weeks on monday, thursday and  friday ever 2 hours between 04:00 and 08:00. starting on 01/01/2020")]
         [InlineData("en-US", "Occurs every 2 weeks on monday, thursday and  friday ever 2 hours between 04:00 and 08:00. starting on 1/1/2020")]
@@ -1047,7 +1063,7 @@ namespace Testing
         public void Generator_frecuency_daly_weekly_config(string culture, string textExpected)
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo(culture);
+            config.Culture = CultureInfo.CreateSpecificCulture(culture);
             ConfigWeekly configWeekly = new ConfigWeekly()
             {
                 Every = 2,
@@ -1069,7 +1085,7 @@ namespace Testing
             config.Active = true;
             config.DailyFrecuenci = configDailyFrecuenci;
             config.StartDate = new DateTime(2020, 1, 1);
-            var generator = new ScheluderGenerator();
+            var generator = new SchedulerGenerator();
             DateTime currentDate = new DateTime(2020, 1, 1);
             DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
             var result = generator.Calculate(currentDate, config);
@@ -1086,7 +1102,7 @@ namespace Testing
         public void Generator_frecuency_daly_monthly_config_first_thursday(string culture, string textExpected)
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo(culture);
+            config.Culture = CultureInfo.CreateSpecificCulture(culture);
             config.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
@@ -1107,7 +1123,7 @@ namespace Testing
             config.Active = true;
             config.DailyFrecuenci = configDailyFrecuenci;
             config.StartDate = new DateTime(2020, 1, 1);
-            var generator = new ScheluderGenerator();
+            var generator = new SchedulerGenerator();
             DateTime currentDate = new DateTime(2020, 1, 1);
             DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
             var result = generator.Calculate(currentDate, config);
@@ -1127,7 +1143,7 @@ namespace Testing
         public void Generator_frecuency_daly_monthly_second_Weekend_config(string dateCalculate, string dateEspected)
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-US");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-US");
             config.Monthly = new ConfigMonthly()
             {
                 Type = TypesMontlyFrecuency.Every,
@@ -1148,7 +1164,7 @@ namespace Testing
             config.Active = true;
             config.DailyFrecuenci = configDailyFrecuenci;
             config.StartDate = new DateTime(2020, 1, 1);
-            var generator = new ScheluderGenerator();
+            var generator = new SchedulerGenerator();
             DateTime currentDate = new DateTime(2020, 1, 1);
             DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
             var result = generator.Calculate(ParseSpanish(dateCalculate), config);
@@ -1431,7 +1447,7 @@ namespace Testing
         public void CalculatorRecurring_next_Monthly_config_on_day_Month_daily_config_start_date_greater(string dateCalculate, string dateEspected)
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-US");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-US");
 
             ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
             {
@@ -1494,7 +1510,7 @@ namespace Testing
         public void CalculatorRecurring_next_Monthly_config_on_the_Month_daily_config_last_date(string dateCalculate, string dateEspected)
         {
             SchedulerConfig config = new SchedulerConfig();
-            config.Culture = CultureInfo.GetCultureInfo("en-US");
+            config.Culture = CultureInfo.CreateSpecificCulture("en-US");
             config.Type = TypesSchedule.Recurring;
             config.Occurs = TypesOccurs.Monthly;
             config.Active = true;
@@ -1892,13 +1908,57 @@ namespace Testing
             Assert.Equal<DateTime>(new DateTime(2020, 12, 31, 0, 0, 0), CalculatorLastDateTimeCalc.GetLastDateTime(config));
         }
         #endregion
+        #region Test persistence configuration
 
+        [Fact]
+        public void  persistence_config_one()
+        {
+            SchedulerConfig config = new SchedulerConfig();
+            
+            config.DateTime = new DateTime(2020, 1, 8, 14, 0, 0);
+            config.StartDate = new DateTime(2020, 1, 1);
+            config.Active = true;
+            SchedulerGenerator generator = new SchedulerGenerator(); 
+            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
+            // Solo para asegurar que no se han quedado otras pruebas incorrectas.
+            try
+            {
+                int? configId = controller.GetConfigId("Test_config_one");
+                if (configId.HasValue)
+                {
+                    controller.RemoveConfig(configId.Value).Wait();
+                }
+            }
+            catch(AggregateException)
+            {
+
+            }
+            var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+            Assert.Equal(config.DateTime, resultCalculation.NextExecution);
+            config.Name = "Test_config_one";
+            config = controller.SaveConfig( config).Result;
+            Assert.NotNull(config);
+            config = null;
+            config = controller.GetSchedulerConfiguration("Test_config_one").Result;
+            Assert.NotNull(config);
+            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+            Assert.Equal(config.DateTime, resultCalculation.NextExecution);
+            config.DateTime = new DateTime(2020, 1, 9, 14, 0, 0);
+            bool result = controller.UpdateConfig(config).Result;
+            Assert.True(result);
+            config = controller.GetSchedulerConfiguration(config.SchedulerConfigId.GetValueOrDefault()).Result;
+            Assert.NotNull(config);
+            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+            Assert.Equal(config.DateTime, resultCalculation.NextExecution);
+            Assert.True(controller.RemoveConfig(config.SchedulerConfigId.GetValueOrDefault()).Result);  
+        }
+        #endregion
         [Fact]
         public void TextStringsEnums()
         {
             FormatterBase formatter = new FormatterOnce(new SchedulerConfig()
             {
-                Culture = CultureInfo.GetCultureInfo("es-ES")
+                Culture = CultureInfo.CreateSpecificCulture("es-ES")
             });
             var exception = Assert.Throws<ApplicationException>(() => formatter.GetStringEnum("Hours"));
             Assert.Equal("horas", formatter.GetStringEnum(TypesUnitsDailyFrecuency.Hours));

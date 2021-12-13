@@ -12,7 +12,7 @@ namespace Formacion.Formatters
         public FormatterBase(SchedulerConfig config)
         {
             this.Config = config;
-            ScheluderGenerator.SetCulture(config?.Culture);
+            SchedulerGenerator.SetCulture(config?.Culture);
         }
 
         public abstract string Formatter(DateTime nextExecution);

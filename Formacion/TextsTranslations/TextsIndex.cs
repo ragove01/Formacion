@@ -59,6 +59,9 @@ namespace Formacion.TextsTranslations
         TypesUnitsDailyFrecuency_Minutes,
         TypesUnitsDailyFrecuency_Seconds,
         wednesday,
-        EnumConversionError
+        EnumConversionError,
+        NameConfigNotFound,
+        NameRequired,
+        NameDuplicate
     }
 }

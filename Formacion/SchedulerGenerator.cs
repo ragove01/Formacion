@@ -6,9 +6,9 @@ using Formacion.Views;
 
 namespace Formacion
 {
-    public class ScheluderGenerator
+    public class SchedulerGenerator
     {
-       
+
         public SchedulerResults Calculate(DateTime currentDate, SchedulerConfig scheduleConfig)
         {
             SetCulture(scheduleConfig?.Culture);
@@ -21,14 +21,12 @@ namespace Formacion
 
         public static void SetCulture(CultureInfo culture)
         {
-            
+
             if (culture != null && CultureInfo.CurrentCulture != culture)
             {
                 Thread.CurrentThread.CurrentCulture = culture;
                 Thread.CurrentThread.CurrentUICulture = culture;
             }
         }
-
-
     }
 }

@@ -11,6 +11,8 @@ namespace Formacion.Views
         {
             this.Culture = CultureInfo.CurrentCulture;
         }
+        public int? SchedulerConfigId { get; set; }
+        public string Name { get; set; }
         public TypesSchedule Type { get; set; }
         public bool Active { get; set; }
         public DateTime? DateTime { get; set; }
@@ -23,6 +25,7 @@ namespace Formacion.Views
         public ConfigWeekly Weekly { get; set; }
         public ConfigMonthly Monthly { get; set; }
         public CultureInfo Culture { get; set; }
+        
 
     }
 }
