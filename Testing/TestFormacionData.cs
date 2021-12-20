@@ -116,6 +116,77 @@ namespace Testing
         }
 
         [Fact]
+        public void test_context_scheduler_daily_config()
+        {
+            SchedulerConfigContext context = new SchedulerConfigContext();
+            SchedulerConfig config = this.CreateConfig();
+            config.DailyConfig = this.CreateDailyConfig(); 
+            context.Configs.Add(config);
+            context.DailyConfigs.Add(config.DailyConfig); 
+            context.SaveChanges();
+            SchedulerDailyConfig dailyConfig = context.DailyConfigs.FirstOrDefault(D => D.SchedulerConfigId == config.SchedulerConfigId);
+            Assert.NotNull(dailyConfig);  
+            dailyConfig.Frecuency = 2;
+            context.SaveChanges();
+            config.DailyConfig = null;
+            context.DailyConfigs.Remove(dailyConfig);
+            context.SaveChanges();
+            int numberConfigs = context.DailyConfigs.Count(D => D.SchedulerConfigId == config.SchedulerConfigId);
+            Assert.Equal(0, numberConfigs);
+            context.Configs.Remove(config);
+            context.SaveChanges();
+            numberConfigs = context.Configs.Count(C => C.SchedulerConfigId == config.SchedulerConfigId);
+            Assert.Equal(0, numberConfigs);
+        }
+
+        [Fact]
+        public void test_context_scheduler_weekly_config()
+        {
+            SchedulerConfigContext context = new SchedulerConfigContext();
+            SchedulerConfig config = this.CreateConfig();
+            config.WeeklyConfig  = this.CreateWeeklyConfig();
+            context.Configs.Add(config);
+            context.WeeklyConfigs.Add(config.WeeklyConfig);
+            context.SaveChanges();
+            SchedulerWeeklyConfig weeklyConfig = context.WeeklyConfigs.FirstOrDefault(W => W.SchedulerConfigId == config.SchedulerConfigId);
+            Assert.NotNull(weeklyConfig);
+            weeklyConfig.Every  = 4;
+            context.SaveChanges();
+            config.WeeklyConfig = null;
+            context.WeeklyConfigs.Remove(weeklyConfig);
+            context.SaveChanges();
+            int numberConfigs = context.WeeklyConfigs.Count(W => W.SchedulerConfigId == config.SchedulerConfigId);
+            Assert.Equal(0, numberConfigs);
+            context.Configs.Remove(config);
+            context.SaveChanges();
+            numberConfigs = context.Configs.Count(C => C.SchedulerConfigId == config.SchedulerConfigId);
+            Assert.Equal(0, numberConfigs);
+        }
+
+        [Fact]
+        public void test_context_scheduler_moonthly_config()
+        {
+            SchedulerConfigContext context = new SchedulerConfigContext();
+            SchedulerConfig config = this.CreateConfig();
+            config.MonthlyConfig = this.CreateMonthlyConfig();
+            context.Configs.Add(config);
+            context.MonthlyConfigs.Add(config.MonthlyConfig);
+            context.SaveChanges();
+            SchedulerMonthlyConfig monthlyConfig = context.MonthlyConfigs.FirstOrDefault(M => M.SchedulerConfigId == config.SchedulerConfigId);
+            Assert.NotNull(monthlyConfig);
+            monthlyConfig.EveryNumberMonths = 10;
+            context.SaveChanges();
+            config.MonthlyConfig = null;
+            context.MonthlyConfigs.Remove(monthlyConfig);
+            context.SaveChanges();
+            int numberConfigs = context.MonthlyConfigs.Count(M => M.SchedulerConfigId == config.SchedulerConfigId);
+            Assert.Equal(0, numberConfigs);
+            context.Configs.Remove(config);
+            context.SaveChanges();
+            numberConfigs = context.Configs.Count(C => C.SchedulerConfigId == config.SchedulerConfigId);
+            Assert.Equal(0, numberConfigs);
+        }
+        [Fact]
         public void test_getter_setter_scheduler_config()
         {
             SchedulerConfig config = new SchedulerConfig();
@@ -233,10 +304,7 @@ namespace Testing
                 Type = 1,
                 NumberOccurs = 1,
                 StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(365),
-                DailyConfig = this.CreateDailyConfig(),
-                WeeklyConfig = this.CreateWeeklyConfig(),
-                MonthlyConfig = this.CreateMonthlyConfig()
+                EndDate = DateTime.Now.AddDays(365)
             };
         }
 

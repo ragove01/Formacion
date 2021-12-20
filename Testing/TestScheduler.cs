@@ -1050,10 +1050,6 @@ namespace Testing
             DateTime dateExpected = new DateTime(2020, 1, 4, 4, 0, 0);
             Assert.Equal(dateExpected, result.NextExecution.Value);
             Assert.Equal(textExpected, result.NextExecutionTimeString);
-            //Assert.True(generator.SaveConfiguration("Prueba_" + culture, config).Result);
-            //config = generator.LoadConfiguration("Prueba_" + culture).Result;
-            //Assert.NotNull(config);
-            //Assert.True(generator.RemoveConfiguration("Prueba_" + culture).Result);
         }
         
         [Theory]
@@ -1952,6 +1948,206 @@ namespace Testing
             Assert.Equal(config.DateTime, resultCalculation.NextExecution);
             Assert.True(controller.RemoveConfig(config.SchedulerConfigId.GetValueOrDefault()).Result);  
         }
+
+        [Fact]
+        public void persistence_config_recurring_daily_config()
+        {
+            SchedulerConfig config = new SchedulerConfig();
+            config.Type = TypesSchedule.Recurring;
+            config.StartDate = new DateTime(2020, 1, 1);
+            config.Active = true;
+            config.DailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 2,
+                StartTime = new TimeSpan(4, 0, 0),
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+
+            SchedulerGenerator generator = new SchedulerGenerator();
+            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
+            // Solo para asegurar que no se han quedado otras pruebas incorrectas.
+            try
+            {
+                int? configId = controller.GetConfigId("Test_config_daily");
+                if (configId.HasValue)
+                {
+                    controller.RemoveConfig(configId.Value).Wait();
+                }
+            }
+            catch (AggregateException)
+            {
+
+            }
+            var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+            DateTime dateExpected = new DateTime(2020, 1, 4, 4, 0, 0);
+            Assert.Equal(dateExpected, resultCalculation.NextExecution);
+            config.Name = "Test_config_daily";
+            config = controller.SaveConfig(config).Result;
+            Assert.NotNull(config);
+            config = null;
+            config = controller.GetSchedulerConfiguration("Test_config_daily").Result;
+            Assert.NotNull(config);
+            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+            Assert.Equal(dateExpected, resultCalculation.NextExecution);
+            config.StartDate = new DateTime(2020, 1, 9, 0, 0, 0);
+            bool result = controller.UpdateConfig(config).Result;
+            Assert.True(result);
+            config = controller.GetSchedulerConfiguration(config.SchedulerConfigId.GetValueOrDefault()).Result;
+            Assert.NotNull(config);
+            resultCalculation = generator.Calculate(new DateTime(2020, 1, 9), config);
+            dateExpected = new DateTime(2020, 1, 9, 4, 0, 0);
+            Assert.Equal(dateExpected, resultCalculation.NextExecution);
+            Assert.True(controller.RemoveConfig(config.SchedulerConfigId.GetValueOrDefault()).Result);
+        }
+
+        [Fact]
+        public void persistence_config_recurring_daily_weekly_config()
+        {
+            SchedulerConfig config = new SchedulerConfig();
+            config.Type = TypesSchedule.Recurring;
+            config.StartDate = new DateTime(2020, 1, 1);
+            config.Active = true;
+            config.Weekly = new ConfigWeekly()
+            {
+                Every = 2,
+                Monday = true,
+                Thursday = true,
+                Friday = true
+            };
+
+            config.DailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 2,
+                StartTime = new TimeSpan(4, 0, 0),
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+
+            SchedulerGenerator generator = new SchedulerGenerator();
+            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
+            // Solo para asegurar que no se han quedado otras pruebas incorrectas.
+            try
+            {
+                int? configId = controller.GetConfigId("Test_config_daily_weekly");
+                if (configId.HasValue)
+                {
+                    controller.RemoveConfig(configId.Value).Wait();
+                }
+            }
+            catch (AggregateException)
+            {
+
+            }
+            var resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), config);
+            DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
+            Assert.Equal(dateExpected, resultCalculation.NextExecution);
+            config.Name = "Test_config_daily_weekly";
+            config = controller.SaveConfig(config).Result;
+            Assert.NotNull(config);
+            config = null;
+            config = controller.GetSchedulerConfiguration("Test_config_daily_weekly").Result;
+            Assert.NotNull(config);
+            resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), config);
+            Assert.Equal(dateExpected, resultCalculation.NextExecution);
+            config.StartDate = new DateTime(2020, 1, 9, 0, 0, 0);
+            bool result = controller.UpdateConfig(config).Result;
+            Assert.True(result);
+            config = controller.GetSchedulerConfiguration(config.SchedulerConfigId.GetValueOrDefault()).Result;
+            Assert.NotNull(config);
+            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+            dateExpected = new DateTime(2020, 1, 9, 4, 0, 0);
+            Assert.Equal(dateExpected, resultCalculation.NextExecution);
+            Assert.True(controller.RemoveConfig(config.SchedulerConfigId.GetValueOrDefault()).Result);
+        }
+
+        [Fact]
+        public void persistence_config_null()
+        {
+            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
+            Assert.False(controller.UpdateConfig(null).Result);
+            SchedulerConfig config = new SchedulerConfig();
+            Assert.False(controller.UpdateConfig(config).Result);
+            config.SchedulerConfigId = -1;
+            config.Name = "Test_no_value";
+            config.DateTime = new DateTime(2020, 1, 8, 14, 0, 0);
+            config.StartDate = new DateTime(2020, 1, 1);
+            config.Active = true;
+
+            Assert.False(controller.UpdateConfig(config).Result);
+
+        }
+
+        [Fact]
+        public void persistence_get_config_fail()
+        {
+            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
+            Assert.Throws(typeof(AggregateException), () => controller.GetSchedulerConfiguration(" No Name Value").Result);
+            Assert.Throws(typeof(AggregateException), () => controller.GetSchedulerConfiguration(-1).Result);
+        }
+
+        [Fact]
+        public void persistence_config_recurring_daily_monthly_config()
+        {
+            SchedulerConfig config = new SchedulerConfig();
+            config.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Every,
+                TypesEvery = TypesEveryMonthly.First,
+                TypesDayEvery = TypesEveryDayMonthly.Thursday,
+                EveryNumberMonths = 3
+            };
+            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 2,
+                StartTime = new TimeSpan(4, 0, 0),
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+
+            config.Type = TypesSchedule.Recurring;
+            config.Occurs = TypesOccurs.Daily;
+            config.Active = true;
+            config.DailyFrecuenci = configDailyFrecuenci;
+            config.StartDate = new DateTime(2020, 1, 1);
+            SchedulerGenerator generator = new SchedulerGenerator();
+            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
+            // Solo para asegurar que no se han quedado otras pruebas incorrectas.
+            try
+            {
+                int? configId = controller.GetConfigId("Test_config_daily_monthly");
+                if (configId.HasValue)
+                {
+                    controller.RemoveConfig(configId.Value).Wait();
+                }
+            }
+            catch (AggregateException)
+            {
+
+            }
+            DateTime currentDate = new DateTime(2020, 1, 1);
+            DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
+            var resultCalculation = generator.Calculate(currentDate, config);
+            Assert.Equal(dateExpected, resultCalculation.NextExecution);
+            config.Name = "Test_config_daily_monthly";
+            config = controller.SaveConfig(config).Result;
+            Assert.NotNull(config);
+            config = null;
+            config = controller.GetSchedulerConfiguration("Test_config_daily_monthly").Result;
+            Assert.NotNull(config);
+            resultCalculation = generator.Calculate(currentDate, config);
+            Assert.Equal(dateExpected, resultCalculation.NextExecution);
+            config.StartDate = new DateTime(2020, 1, 9, 0, 0, 0);
+            bool result = controller.UpdateConfig(config).Result;
+            Assert.True(result);
+            config = controller.GetSchedulerConfiguration(config.SchedulerConfigId.GetValueOrDefault()).Result;
+            Assert.NotNull(config);
+            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+            dateExpected = new DateTime(2020, 2, 6, 4, 0, 0);
+            Assert.Equal(dateExpected, resultCalculation.NextExecution);
+            Assert.True(controller.RemoveConfig(config.SchedulerConfigId.GetValueOrDefault()).Result);
+        }
+
         #endregion
         [Fact]
         public void TextStringsEnums()

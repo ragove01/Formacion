@@ -3,18 +3,18 @@ using Formacion.Data.Context.Resources;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
 namespace Formacion.Data.Migrations.Resources
 {
-    [ExcludeFromCodeCoverage]
     [DbContext(typeof(ResourcesContext))]
-    partial class ResourcesContextModelSnapshot : ModelSnapshot
+    [Migration("20211220201613_NewResources")]
+    partial class NewResources
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

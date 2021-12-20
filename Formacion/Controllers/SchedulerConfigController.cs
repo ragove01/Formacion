@@ -66,6 +66,8 @@ namespace Formacion.Controller
                 return false;
             }
             configRecovered = this.SetViewConfigToDataConfig(config, configRecovered);
+            this.UpdateDailyConfig(configRecovered);
+            this.UpdateWeeklConfig(configRecovered); 
             await this.context.SaveChangesAsync();
             return true;
         }
@@ -176,7 +178,7 @@ namespace Formacion.Controller
                 throw new ApplicationException(Translator.GetText(TextsIndex.NameConfigNotFound));
             }
             int? schedulerConfigId = this.GetConfigId(config.Name);
-            if (schedulerConfigId != config.SchedulerConfigId)
+            if (schedulerConfigId.HasValue && schedulerConfigId != config.SchedulerConfigId)
             {
                 throw new ApplicationException(Translator.GetText(TextsIndex.NameDuplicate));
             }
@@ -274,12 +276,12 @@ namespace Formacion.Controller
                 Active = config.Active,
                 Type = (TypesSchedule)config.Type,
                 Occurs = (TypesOccurs)config.Occurs,
-                DateTime = (DateTime)config.DateTime,
+                DateTime = config.DateTime,
                 StartDate = config.StartDate,
                 EndDate = config.EndDate,
                 NumberOccurs = (int)config.NumberOccurs,
                 DailyFrecuenci = this.SetDataDailyConfigToViewDataDailyConfig(config),
-                Weekly = this.SetDatraWeeklyConfigToViewWeeklyConfig(config),
+                Weekly = this.SetDataWeeklyConfigToViewWeeklyConfig(config),
                 Monthly = this.SetDataMonthlyConfigToViewMonthlyConfig(config)
             };
         }
@@ -301,7 +303,7 @@ namespace Formacion.Controller
             };
         }
 
-        private ConfigWeekly SetDatraWeeklyConfigToViewWeeklyConfig(D.SchedulerConfig config)
+        private ConfigWeekly SetDataWeeklyConfigToViewWeeklyConfig(D.SchedulerConfig config)
         {
             if (config == null || config.WeeklyConfig == null)
             {
@@ -335,6 +337,77 @@ namespace Formacion.Controller
                 TypesDayEvery = (TypesEveryDayMonthly?)config.MonthlyConfig.TypesDayEvery,
                 TypesEvery = (TypesEveryMonthly?)config.MonthlyConfig.TypesEvery
             };
+        }
+        #endregion
+
+        #region Methods to update details configurations
+
+        private void UpdateDailyConfig(D.SchedulerConfig config)
+        {
+            if(config == null)
+            {
+                return;
+            }
+            D.SchedulerDailyConfig dailyConfig = config.DailyConfig;
+            if(config.DailyConfig == null)
+            {
+                this.RemoveDailyConfig(config.SchedulerConfigId); 
+                return;
+            }
+                this.AddDailyConfig(config.DailyConfig, config.SchedulerConfigId); 
+        }
+
+        private void RemoveDailyConfig(int schedulerConfigId)
+        {
+            D.SchedulerDailyConfig dailyConfig = this.context.DailyConfigs.FirstOrDefault(D => D.SchedulerConfigId == schedulerConfigId);
+            if (dailyConfig != null)
+            {
+                this.context.DailyConfigs.Remove(dailyConfig);
+            }
+        }
+        private void AddDailyConfig(D.SchedulerDailyConfig dailyConfig, int schedulerConfigId)
+        {
+            if(dailyConfig == null || dailyConfig.SchedulerDailyConfigId != 0)
+            {
+                return;
+            }
+            dailyConfig.SchedulerConfigId = schedulerConfigId;
+            this.context.DailyConfigs.Add(dailyConfig);
+        }
+
+
+        private void UpdateWeeklConfig(D.SchedulerConfig config)
+        {
+            if (config == null)
+            {
+                return;
+            }
+            D.SchedulerWeeklyConfig dailyConfig = config.WeeklyConfig;
+            if (config.WeeklyConfig == null)
+            {
+                this.RemoveWeeklyConfig(config.SchedulerConfigId);
+                return;
+            }
+            this.AddDailyConfig(config.DailyConfig, config.SchedulerConfigId);
+            
+        }
+
+        private void RemoveWeeklyConfig(int schedulerConfigId)
+        {
+            D.SchedulerWeeklyConfig weeklyConfig = this.context.WeeklyConfigs.FirstOrDefault(D => D.SchedulerConfigId == schedulerConfigId);
+            if (weeklyConfig != null)
+            {
+                this.context.WeeklyConfigs.Remove(weeklyConfig);
+            }
+        }
+        private void AddWeeklyConfig(D.SchedulerWeeklyConfig weeklyConfig, int schedulerConfigId)
+        {
+            if (weeklyConfig == null || weeklyConfig.SchedulerWeeklyConfigId != 0)
+            {
+                return;
+            }
+            weeklyConfig.SchedulerConfigId = schedulerConfigId;
+            this.context.WeeklyConfigs.Add(weeklyConfig);
         }
         #endregion
 

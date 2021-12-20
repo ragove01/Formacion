@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Formacion.Data.Migrations.Scheduler
 {
+    [ExcludeFromCodeCoverage]
     public partial class AddDateTimeColumn : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
