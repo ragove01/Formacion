@@ -2150,6 +2150,17 @@ namespace Testing
 
         #endregion
         [Fact]
+        public void SchedulerResults_null_value()
+        {
+            FormatterBase formatter = new FormatterOnce(new SchedulerConfig()
+            {
+                Culture = CultureInfo.CreateSpecificCulture("es-ES")
+            });
+            SchedulerResults result = new SchedulerResults(formatter);
+            var exception = Assert.Throws<ApplicationException>(() => result.NextExecutionTimeString);
+        }
+
+        [Fact]
         public void TextStringsEnums()
         {
             FormatterBase formatter = new FormatterOnce(new SchedulerConfig()

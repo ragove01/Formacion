@@ -30,33 +30,10 @@ namespace Formacion.TextsTranslations
                 return;
             }
             textsValues = new TextValuesBd(CultureInfo.CurrentCulture);
-            //if (CultureInfo.CurrentCulture.Name.Equals("en-GB"))
-            //{
-            //    SetCulture_en_GB();
-            //    return;
-            //}
-            //if (CultureInfo.CurrentCulture.Name.Equals("en-US"))
-            //{
-            //    SetCulture_en_US();
-            //    return;
-            //}
-            //SetCultureBase();
+            
         }
 
-        private static void SetCultureBase()
-        {
-            textsValues = new TextValuesBase();
-        }
-        private static void SetCulture_en_GB()
-        {
-            textsValues = new TextsValues_en_GB(); 
-        }
-
-        private static void SetCulture_en_US()
-        {
-            textsValues = new TextsVaues_en_US(); 
-        }
-
+      
 
     }
 }
