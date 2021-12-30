@@ -1,29 +1,38 @@
 ﻿using Formacion.Data.Context.Resources;
 using Formacion.Data.Context.Scheduler;
-using Formacion.Controller;
+using Formacion.Controllers;
 using Formacion.Data.Models.Resources;
-using Formacion.Data.Models.Scheluder;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using Microsoft.EntityFrameworkCore;
+using Formacion.Data.Models.Scheduler;
+using Formacion.Data;
 
 namespace Testing
 {
     public class TestFormacionData
     {
 
-        private readonly ResourcesContext context;
+       
         public TestFormacionData()
         {
-            this.context = new ResourcesContext();
+            DataBaseConections<ResourcesContext>.InitializeContext(new DbContextOptionsBuilder<ResourcesContext>()
+                    .UseInMemoryDatabase(databaseName: "Test")
+                    .Options);
+            DataBaseConections<SchedulerConfigurationContext>.InitializeContext(new DbContextOptionsBuilder<SchedulerConfigurationContext>()
+                    .UseInMemoryDatabase(databaseName: "Test")
+                    .Options);
+
         }
         #region testing Resources 
         [Fact]
         public void Validate_Context_Initailize()
         {
-            ResourcesContext context = new ResourcesContext();
-            var resources = context.TextResources.ToList();
+            using (ResourcesContext context = this.CreateResourcesContext())
+            {
+                var resources = context.TextResources.ToList();
+            }
         }
         [Fact]
         public void test_getter_setter_text_resources()
@@ -71,7 +80,7 @@ namespace Testing
         [Fact]
         public void Test_get_resurces()
         {
-            var resources = new ResourceController(this.context).GetResources();
+            var resources = new ResourceController(this.CreateResourcesContext()).GetResources();
             Assert.NotNull(resources);
 
         }
@@ -79,7 +88,7 @@ namespace Testing
         [Fact]
         public async void Test_get_resurces_cultures()
         {
-            ResourceController resourceController = new ResourceController(this.context);
+            ResourceController resourceController = new ResourceController(this.CreateResourcesContext());
             var resources = await resourceController.GetResources("es-ES");
             Assert.Null(resources);
           
@@ -93,107 +102,105 @@ namespace Testing
         [Fact]
         public void Test_create_update_scheduler_config()
         {
-            SchedulerConfigContext context = new SchedulerConfigContext();
-            SchedulerConfig config = new SchedulerConfig()
+            using (SchedulerConfigurationContext context = this.CreateSchedulerContext())
             {
-                Name = "Test create",
-                Active = true,
-                Occurs = 0,
-                NumberOccurs = 1,
-                StartDate = DateTime.Now
-            };
-            context.Configs.Add(config);
-            context.SaveChanges();
-            config.Name = "Test create modified";
-            context.SaveChanges();
-            config = context.Configs.FirstOrDefault(c => c.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.Equal("Test create modified", config.Name);
-            context.Configs.Remove(config);
-            context.SaveChanges();
-            int numberConfigs = context.Configs.Count(C => C.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.Equal(0, numberConfigs);
+                SchedulerConfiguration config = new SchedulerConfiguration()
+                {
+                    Active = true,
+                    Occurs = 0,
+                    NumberOccurs = 1,
+                    StartDate = DateTime.Now
+                };
+                context.SchedulerConfigurations.Add(config);
+                context.SaveChanges();
+                int configId = config.SchedulerId;
+                config = null;
+                config = context.SchedulerConfigurations.FirstOrDefault(c => c.SchedulerId == configId);
+                Assert.NotNull(config);
+                context.SchedulerConfigurations.Remove(config);
+                context.SaveChanges();
+                int numberConfigs = context.SchedulerConfigurations.Count(C => C.SchedulerId == config.SchedulerId);
+                Assert.Equal(0, numberConfigs);
+            }
 
         }
 
         [Fact]
         public void test_context_scheduler_daily_config()
         {
-            SchedulerConfigContext context = new SchedulerConfigContext();
-            SchedulerConfig config = this.CreateConfig();
-            config.DailyConfig = this.CreateDailyConfig(); 
-            context.Configs.Add(config);
-            context.DailyConfigs.Add(config.DailyConfig); 
-            context.SaveChanges();
-            SchedulerDailyConfig dailyConfig = context.DailyConfigs.FirstOrDefault(D => D.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.NotNull(dailyConfig);  
-            dailyConfig.Frecuency = 2;
-            context.SaveChanges();
-            config.DailyConfig = null;
-            context.DailyConfigs.Remove(dailyConfig);
-            context.SaveChanges();
-            int numberConfigs = context.DailyConfigs.Count(D => D.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.Equal(0, numberConfigs);
-            context.Configs.Remove(config);
-            context.SaveChanges();
-            numberConfigs = context.Configs.Count(C => C.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.Equal(0, numberConfigs);
+            using (SchedulerConfigurationContext context = this.CreateSchedulerContext())
+            {
+                SchedulerConfiguration config = this.CreateConfig();
+                this.SetDailyConfig(config);
+                context.SchedulerConfigurations.Add(config);
+                context.SaveChanges();
+                int configId = config.SchedulerId;
+                config = null;
+                config = context.SchedulerConfigurations.FirstOrDefault(D => D.SchedulerId == configId);
+                Assert.NotNull(config.NumberOccursDailyConfiguration);
+                context.SchedulerConfigurations.Remove(config);
+                context.SaveChanges();
+                int numberConfigs = context.SchedulerConfigurations.Count(C => C.SchedulerId == config.SchedulerId);
+                Assert.Equal(0, numberConfigs);
+            }
         }
 
         [Fact]
         public void test_context_scheduler_weekly_config()
         {
-            SchedulerConfigContext context = new SchedulerConfigContext();
-            SchedulerConfig config = this.CreateConfig();
-            config.WeeklyConfig  = this.CreateWeeklyConfig();
-            context.Configs.Add(config);
-            context.WeeklyConfigs.Add(config.WeeklyConfig);
-            context.SaveChanges();
-            SchedulerWeeklyConfig weeklyConfig = context.WeeklyConfigs.FirstOrDefault(W => W.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.NotNull(weeklyConfig);
-            weeklyConfig.Every  = 4;
-            context.SaveChanges();
-            config.WeeklyConfig = null;
-            context.WeeklyConfigs.Remove(weeklyConfig);
-            context.SaveChanges();
-            int numberConfigs = context.WeeklyConfigs.Count(W => W.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.Equal(0, numberConfigs);
-            context.Configs.Remove(config);
-            context.SaveChanges();
-            numberConfigs = context.Configs.Count(C => C.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.Equal(0, numberConfigs);
+            using (SchedulerConfigurationContext context = this.CreateSchedulerContext())
+            {
+                SchedulerConfiguration config = this.CreateConfig();
+                this.SetWeeklyConfig(config);
+                context.SchedulerConfigurations.Add(config);
+                context.SaveChanges();
+                int configId = config.SchedulerId;
+                config = null;
+                config = context.SchedulerConfigurations.FirstOrDefault(C => C.SchedulerId == configId);
+                Assert.NotNull(config.Every);
+                config.Every = 4;
+                context.SaveChanges();
+                config = null;
+                config = context.SchedulerConfigurations.FirstOrDefault(C => C.SchedulerId == configId);
+                Assert.Equal((short)4, config.Every);
+                context.SchedulerConfigurations.Remove(config);
+                context.SaveChanges();
+                int numberConfigs = context.SchedulerConfigurations.Count(C => C.SchedulerId == configId);
+                Assert.Equal(0, numberConfigs);
+            }
         }
 
         [Fact]
         public void test_context_scheduler_moonthly_config()
         {
-            SchedulerConfigContext context = new SchedulerConfigContext();
-            SchedulerConfig config = this.CreateConfig();
-            config.MonthlyConfig = this.CreateMonthlyConfig();
-            context.Configs.Add(config);
-            context.MonthlyConfigs.Add(config.MonthlyConfig);
-            context.SaveChanges();
-            SchedulerMonthlyConfig monthlyConfig = context.MonthlyConfigs.FirstOrDefault(M => M.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.NotNull(monthlyConfig);
-            monthlyConfig.EveryNumberMonths = 10;
-            context.SaveChanges();
-            config.MonthlyConfig = null;
-            context.MonthlyConfigs.Remove(monthlyConfig);
-            context.SaveChanges();
-            int numberConfigs = context.MonthlyConfigs.Count(M => M.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.Equal(0, numberConfigs);
-            context.Configs.Remove(config);
-            context.SaveChanges();
-            numberConfigs = context.Configs.Count(C => C.SchedulerConfigId == config.SchedulerConfigId);
-            Assert.Equal(0, numberConfigs);
+            using (SchedulerConfigurationContext context = this.CreateSchedulerContext())
+            {
+                SchedulerConfiguration config = this.CreateConfig();
+                this.SetMonthlyConfig(config);
+                context.SchedulerConfigurations.Add(config);
+
+                context.SaveChanges();
+                int configId = config.SchedulerId;
+                config = null;
+                config = context.SchedulerConfigurations.FirstOrDefault(C => C.SchedulerId == configId);
+                Assert.NotNull(config.EveryNumberMonths);
+                config.EveryNumberMonths = 10;
+                config = null;
+                config = context.SchedulerConfigurations.FirstOrDefault(C => C.SchedulerId == configId);
+                context.SaveChanges();
+                Assert.Equal((short)10,config.EveryNumberMonths);
+                context.SchedulerConfigurations.Remove(config);
+                context.SaveChanges();
+                int numberConfigs = context.SchedulerConfigurations.Count(C => C.SchedulerId == config.SchedulerId);
+                Assert.Equal(0, numberConfigs);
+            }
         }
         [Fact]
         public void test_getter_setter_scheduler_config()
         {
-            SchedulerConfig config = new SchedulerConfig();
-            config.SchedulerConfigId = 0;
-            Assert.Equal(0, config.SchedulerConfigId);
-            config.Name = "Name";
-            Assert.Equal("Name", config.Name);
+            SchedulerConfiguration config = new SchedulerConfiguration();
+            config.SchedulerId = 0;
+            Assert.Equal(0, config.SchedulerId);
             config.Type = 1;
             Assert.Equal(1, config.Type);
             config.Active = true;
@@ -208,97 +215,56 @@ namespace Testing
             Assert.Equal(new DateTime(2020, 1, 1), config.StartDate);
             config.EndDate = new DateTime(2020, 1, 1);
             Assert.Equal(new DateTime(2020, 1, 1), config.EndDate);
-            config.DailyConfig = new SchedulerDailyConfig();
-            Assert.NotNull(config.DailyConfig);
-            config.WeeklyConfig = new SchedulerWeeklyConfig();
-            Assert.NotNull(config.WeeklyConfig);
-            config.MonthlyConfig = new SchedulerMonthlyConfig();
-            Assert.NotNull(config.MonthlyConfig);
+            config.DateTimeNextExecution = new DateTime(2020, 1, 1);
+            Assert.Equal(new DateTime(2020, 1, 1), config.DateTimeNextExecution);
+
+            config.Frecuency = 1;
+            Assert.Equal((short)1, config.Frecuency);
+            config.OneTime = new TimeSpan(16, 0, 0);
+            Assert.Equal(new TimeSpan(16, 0, 0), config.OneTime);
+            config.TypeUnit = 1;
+            Assert.Equal((short?)1, config.TypeUnit);
+            config.NumberOccurs = 1;
+            Assert.Equal(1, config.NumberOccurs);
+            config.StartTime = new TimeSpan(16, 0, 0);
+            Assert.Equal(new TimeSpan(16, 0, 0), config.StartTime);
+            config.EndTime = new TimeSpan(16, 0, 0);
+            Assert.Equal(new TimeSpan(16, 0, 0), config.EndTime);
+            config.Every = 1;
+            Assert.Equal((short)1, config.Every);
+            config.Monday = true;
+            Assert.True(config.Monday);
+            config.Tuesday = true;
+            Assert.True(config.Tuesday);
+            config.Wednesday = true;
+            Assert.True(config.Wednesday);
+            config.Thursday = true;
+            Assert.True(config.Thursday);
+            config.Friday = true;
+            Assert.True(config.Friday);
+            config.Saturday = true;
+            Assert.True(config.Saturday);
+            config.Sunday = true;
+            Assert.True(config.Sunday);
+            config.TypeMonthlyConfiguration = 1;
+            Assert.Equal((short)1, config.TypeMonthlyConfiguration);
+            config.DayMonth = 1;
+            Assert.Equal((short)1, config.DayMonth);
+            config.EveryNumberMonths = 1;
+            Assert.Equal((short)1, config.EveryNumberMonths);
+            config.TypesEvery = 1;
+            Assert.Equal((short)1, config.TypesEvery);
+            config.TypesDayEvery = 1;
+            Assert.Equal((short)1, config.TypesDayEvery);
         }
 
-        [Fact]
-        public void test_getter_setter_daily_config()
+      
+
+        private SchedulerConfiguration CreateConfig()
         {
-            SchedulerDailyConfig dailyConfig = new SchedulerDailyConfig();
-            dailyConfig.SchedulerDailyConfigId = 1;
-            Assert.Equal(1, dailyConfig.SchedulerDailyConfigId);
-            dailyConfig.SchedulerConfigId = 1;
-            Assert.Equal(1, dailyConfig.SchedulerConfigId);
-            dailyConfig.Frecuency = 1;
-            Assert.Equal(1, dailyConfig.Frecuency);
-            dailyConfig.OneTime = new TimeSpan(16, 0, 0);
-            Assert.Equal(new TimeSpan(16, 0, 0), dailyConfig.OneTime);
-            dailyConfig.TypeUnit = 1;
-            Assert.Equal((short?)1, dailyConfig.TypeUnit);
-            dailyConfig.NumberOccurs = 1;
-            Assert.Equal(1, dailyConfig.NumberOccurs);
-            dailyConfig.StartTime = new TimeSpan(16, 0, 0);
-            Assert.Equal(new TimeSpan(16, 0, 0), dailyConfig.StartTime);
-            dailyConfig.EndTime = new TimeSpan(16, 0, 0);
-            Assert.Equal(new TimeSpan(16, 0, 0), dailyConfig.EndTime);
-
-            dailyConfig.Config = new SchedulerConfig();
-            Assert.NotNull(dailyConfig.Config); 
-
-
-        }
-
-        [Fact]
-        public void test_getter_setter_weekly_config()
-        {
-            SchedulerWeeklyConfig weeklyConfig = new SchedulerWeeklyConfig();
-            weeklyConfig.SchedulerWeeklyConfigId = 1;
-            Assert.Equal(1, weeklyConfig.SchedulerWeeklyConfigId);
-            weeklyConfig.SchedulerConfigId = 1;
-            Assert.Equal(1, weeklyConfig.SchedulerConfigId);
-            weeklyConfig.Every = 1;
-            Assert.Equal(1, weeklyConfig.Every);
-
-            weeklyConfig.Monday = true;
-            Assert.True(weeklyConfig.Monday); 
-            weeklyConfig.Tuesday = true;
-            Assert.True(weeklyConfig.Tuesday);
-            weeklyConfig.Wednesday = true;
-            Assert.True(weeklyConfig.Wednesday);
-            weeklyConfig.Thursday = true;
-            Assert.True(weeklyConfig.Thursday);
-            weeklyConfig.Friday = true;
-            Assert.True(weeklyConfig.Friday);
-            weeklyConfig.Saturday = true;
-            Assert.True(weeklyConfig.Saturday);
-            weeklyConfig.Sunday = true;
-            Assert.True(weeklyConfig.Sunday);
-            weeklyConfig.Config = new SchedulerConfig();
-            Assert.NotNull(weeklyConfig.Config);
-        }
-
-        [Fact]
-        public void test_getter_setter_monthly_config()
-        {
-            SchedulerMonthlyConfig monthlyConfig = new SchedulerMonthlyConfig();
-            monthlyConfig.SchedulerMonthlyConfigId = 1;
-            Assert.Equal(1, monthlyConfig.SchedulerMonthlyConfigId);
-            monthlyConfig.SchedulerConfigId = 1;
-            Assert.Equal(1, monthlyConfig.SchedulerConfigId);
-            monthlyConfig.Type = 1;
-            Assert.Equal(1, monthlyConfig.Type);
-            monthlyConfig.DayMonth = 1;
-            Assert.Equal((short)1, monthlyConfig.DayMonth);
-            monthlyConfig.EveryNumberMonths = 1;
-            Assert.Equal((short)1, monthlyConfig.EveryNumberMonths);
-            monthlyConfig.TypesEvery = 1;
-            Assert.Equal((short)1, monthlyConfig.TypesEvery);
-            monthlyConfig.TypesDayEvery = 1;
-            Assert.Equal((short)1, monthlyConfig.TypesDayEvery);
-            monthlyConfig.Config = new SchedulerConfig();
-            Assert.NotNull(monthlyConfig.Config);
-        }
-
-        private SchedulerConfig CreateConfig()
-        {
-            return new SchedulerConfig()
+            return new SchedulerConfiguration()
             {
-                Name = "Test create",
+                
                 Active = true,
                 Occurs = 0,
                 Type = 1,
@@ -308,42 +274,54 @@ namespace Testing
             };
         }
 
-        private SchedulerDailyConfig CreateDailyConfig()
+        private void SetDailyConfig(SchedulerConfiguration config)
         {
-            return new SchedulerDailyConfig()
-            {
-                Frecuency = 4,
-                OneTime = new TimeSpan(12, 0, 0),
-                TypeUnit = 0,
-                NumberOccurs = 1,
-                StartTime = new TimeSpan(0, 0, 0),
-                EndTime = new TimeSpan(23, 59, 59)
-            };
+            config.Frecuency = 4;
+            config.OneTime = new TimeSpan(12, 0, 0);
+            config.TypeUnit = 0;
+            config.NumberOccursDailyConfiguration = 1;
+            config.StartTime = new TimeSpan(0, 0, 0);
+            config.EndTime = new TimeSpan(23, 59, 59);
+            
         }
-        private SchedulerWeeklyConfig CreateWeeklyConfig()
+        private void SetWeeklyConfig(SchedulerConfiguration config)
         {
-            return new SchedulerWeeklyConfig()
-            {
-                Every = 1,
-                Monday = true,
-                Tuesday = true,
-                Wednesday = true,
-                Thursday = true,
-                Friday = true,
-                Saturday = true,
-                Sunday = true
-            };
+            config.Every = 1;
+            config.Monday = true;
+            config.Tuesday = true;
+            config.Wednesday = true;
+            config.Thursday = true;
+            config.Friday = true;
+            config.Saturday = true;
+            config.Sunday = true;
         }
-        private SchedulerMonthlyConfig CreateMonthlyConfig()
+        private void SetMonthlyConfig(SchedulerConfiguration config)
         {
-            return new SchedulerMonthlyConfig()
-            {
-                Type = 1,
-                DayMonth = 15,
-                EveryNumberMonths = 1,
-                TypesEvery = 0,
-                TypesDayEvery = 0
-            };
+            config.TypeMonthlyConfiguration = 1;
+            config.DayMonth = 15;
+            config.EveryNumberMonths = 1;
+            config.TypesEvery = 0;
+            config.TypesDayEvery = 0;
+        }
+
+        private ResourcesContext CreateResourcesContext()
+        {
+            var options = new DbContextOptionsBuilder<ResourcesContext>()
+                    .UseInMemoryDatabase(databaseName: "Test")
+                    .Options;
+            ResourcesContext context = new ResourcesContext(DataBaseConections<ResourcesContext>.ContextOptions);
+            context.Database.EnsureCreated();
+            return context;
+        }
+
+        private SchedulerConfigurationContext CreateSchedulerContext()
+        {
+            var options = new DbContextOptionsBuilder<SchedulerConfigurationContext>()
+                    .UseInMemoryDatabase(databaseName: "Test")
+                    .Options;
+            SchedulerConfigurationContext context = new SchedulerConfigurationContext(DataBaseConections<SchedulerConfigurationContext>.ContextOptions);
+            context.Database.EnsureCreated();
+            return context;
         }
         #endregion
     }
