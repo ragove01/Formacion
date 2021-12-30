@@ -1,13 +1,11 @@
 ﻿using Formacion.Data.Context.Resources;
 using Formacion.Data.Models.Resources;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Formacion.Controller
+namespace Formacion.Controllers
 {
     public class ResourceController
     {

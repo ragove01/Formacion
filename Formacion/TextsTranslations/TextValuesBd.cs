@@ -1,11 +1,9 @@
 ﻿using Formacion.Data.Context.Resources;
-using Formacion.Controller;
+using Formacion.Controllers;
 using Formacion.Data.Models.Resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Formacion.TextsTranslations

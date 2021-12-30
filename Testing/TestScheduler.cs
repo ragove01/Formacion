@@ -11,12 +11,36 @@ using System;
 using System.Globalization;
 using Xunit;
 using Formacion.TextsTranslations;
-using Formacion.Controller;
+using Formacion.Data;
+using Formacion.Data.Context.Resources;
+using Microsoft.EntityFrameworkCore;
+using Formacion.Data.Context.Scheduler;
+using Formacion.Controllers;
 
 namespace Testing
 {
     public class TestScheduler
     {
+        public TestScheduler()
+        {
+            DataBaseConections<ResourcesContext>.InitializeContext(new DbContextOptionsBuilder<ResourcesContext>()
+                        .UseInMemoryDatabase(databaseName: "Test")
+                        .Options);
+            DataBaseConections<SchedulerConfigurationContext>.InitializeContext(new DbContextOptionsBuilder<SchedulerConfigurationContext>()
+                    .UseInMemoryDatabase(databaseName: "Test")
+                    .Options);
+           
+            this.InitializeResources();
+        }
+
+        private void InitializeResources()
+        {
+            using (ResourcesContext context = new ResourcesContext(DataBaseConections<ResourcesContext>.ContextOptions))
+            {
+                context.Database.EnsureCreated();
+            }
+
+        }
         #region Validations
         #region Validations config once
         private static readonly DateTimeFormatInfo formaterDateTimeSpanish = CultureInfo.GetCultureInfo("es-ES").DateTimeFormat;
@@ -1906,47 +1930,117 @@ namespace Testing
         #endregion
         #region Test persistence configuration
 
+        #region Test persistence new configuration
+
         [Fact]
-        public void  persistence_config_one()
+        public void persistence_config_null()
+        {
+
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+
+
+                Assert.Null(controller.SaveConfiguration(null, null).Result);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+
+
+                Assert.False(controller.UpdateConfig(null, null).Result);
+            }
+            SchedulerConfig config = new SchedulerConfig();
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+
+                Assert.False(controller.UpdateConfig(config, null).Result);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                config.SchedulerId = -1;
+
+                config.DateTime = new DateTime(2020, 1, 8, 14, 0, 0);
+                config.StartDate = new DateTime(2020, 1, 1);
+                config.Active = true;
+
+                Assert.False(controller.UpdateConfig(config, null).Result);
+            }
+
+        }
+
+        [Fact]
+        public void persistence_get_update_delete_config_fail()
+        {
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                Assert.Throws(typeof(AggregateException), () => controller.GetSchedulerConfiguration(-1).Result);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                SchedulerConfig config = new SchedulerConfig();
+
+                config.DateTime = new DateTime(2020, 1, 8, 14, 0, 0);
+                config.StartDate = new DateTime(2020, 1, 1);
+                config.Active = true;
+                SchedulerGenerator generator = new SchedulerGenerator();
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+                config.SchedulerId = 1;
+                Assert.False(controller.UpdateConfig(config, resultCalculation).Result);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                Assert.False(controller.DeleteConfig(-1).Result);
+            }
+        }
+
+        [Fact]
+        public void persistence_config_one()
         {
             SchedulerConfig config = new SchedulerConfig();
-            
+
             config.DateTime = new DateTime(2020, 1, 8, 14, 0, 0);
             config.StartDate = new DateTime(2020, 1, 1);
             config.Active = true;
-            SchedulerGenerator generator = new SchedulerGenerator(); 
-            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
-            // Solo para asegurar que no se han quedado otras pruebas incorrectas.
-            try
+            SchedulerGenerator generator = new SchedulerGenerator();
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
-                int? configId = controller.GetConfigId("Test_config_one");
-                if (configId.HasValue)
-                {
-                    controller.RemoveConfig(configId.Value).Wait();
-                }
-            }
-            catch(AggregateException)
-            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
 
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+                Assert.Equal(config.DateTime, resultCalculation.NextExecution);
+                config = controller.SaveConfiguration(config, resultCalculation).Result;
+
+                Assert.NotNull(config);
             }
-            var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
-            Assert.Equal(config.DateTime, resultCalculation.NextExecution);
-            config.Name = "Test_config_one";
-            config = controller.SaveConfig( config).Result;
-            Assert.NotNull(config);
-            config = null;
-            config = controller.GetSchedulerConfiguration("Test_config_one").Result;
-            Assert.NotNull(config);
-            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
-            Assert.Equal(config.DateTime, resultCalculation.NextExecution);
-            config.DateTime = new DateTime(2020, 1, 9, 14, 0, 0);
-            bool result = controller.UpdateConfig(config).Result;
-            Assert.True(result);
-            config = controller.GetSchedulerConfiguration(config.SchedulerConfigId.GetValueOrDefault()).Result;
-            Assert.NotNull(config);
-            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
-            Assert.Equal(config.DateTime, resultCalculation.NextExecution);
-            Assert.True(controller.RemoveConfig(config.SchedulerConfigId.GetValueOrDefault()).Result);  
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                int configId = config.SchedulerId.Value;
+                config = null;
+                config = controller.GetSchedulerConfiguration(configId).Result;
+                Assert.NotNull(config);
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+                Assert.Equal(config.DateTime, resultCalculation.NextExecution);
+                config.DateTime = new DateTime(2020, 1, 9, 14, 0, 0);
+                resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+                bool result = controller.UpdateConfig(config, resultCalculation).Result;
+                Assert.True(result);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                config = controller.GetSchedulerConfiguration(config.SchedulerId.GetValueOrDefault()).Result;
+                Assert.NotNull(config);
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+                Assert.Equal(config.DateTime, resultCalculation.NextExecution);
+                Assert.True(controller.DeleteConfig(config.SchedulerId.GetValueOrDefault()).Result);
+            }
         }
 
         [Fact]
@@ -1964,41 +2058,63 @@ namespace Testing
                 EndTime = new TimeSpan(8, 0, 0)
             };
 
-            SchedulerGenerator generator = new SchedulerGenerator();
-            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
-            // Solo para asegurar que no se han quedado otras pruebas incorrectas.
-            try
+            SchedulerGenerator generator = new SchedulerGenerator(); using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
-                int? configId = controller.GetConfigId("Test_config_daily");
-                if (configId.HasValue)
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+                Assert.Equal(new DateTime(2020, 1, 4, 4, 0, 0), resultCalculation.NextExecution);
+                config = controller.SaveConfiguration(config, resultCalculation).Result;
+                Assert.NotNull(config);
+                resultCalculation = generator.Calculate(resultCalculation.NextExecution.Value, config);
+                Assert.Equal(new DateTime(2020, 1, 4, 6, 0, 0), resultCalculation.NextExecution);
+                config = controller.SaveConfiguration(config, resultCalculation).Result;
+                Assert.NotNull(config);
+                resultCalculation = generator.Calculate(resultCalculation.NextExecution.Value, config);
+                Assert.Equal(new DateTime(2020, 1, 4, 8, 0, 0), resultCalculation.NextExecution);
+                config = controller.SaveConfiguration(config, resultCalculation).Result;
+                Assert.NotNull(config);
+                resultCalculation = generator.Calculate(resultCalculation.NextExecution.Value, config);
+                Assert.Equal(new DateTime(2020, 1, 5, 4, 0, 0), resultCalculation.NextExecution);
+                config = controller.SaveConfiguration(config, resultCalculation).Result;
+                Assert.NotNull(config);
+            }
+
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var configs = controller.GetSchedulerConfigurations(new DateTime(2020, 1, 4, 8, 0, 0)).Result;
+                Assert.Equal(3, configs.Length);
+
+                Assert.Equal(new DateTime(2020, 1, 4, 4, 0, 0), configs[0].DateTimeNextExecution);
+                Assert.Equal(new DateTime(2020, 1, 4, 6, 0, 0), configs[1].DateTimeNextExecution);
+                Assert.Equal(new DateTime(2020, 1, 4, 8, 0, 0), configs[2].DateTimeNextExecution);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var configs = controller.GetSchedulerConfigurations(new DateTime(2020, 1, 4, 8, 0, 0)).Result;
+                foreach(SchedulerConfig item in configs)
                 {
-                    controller.RemoveConfig(configId.Value).Wait();
+                    controller.DeleteConfig(item.SchedulerId.Value);
+
                 }
             }
-            catch (AggregateException)
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
-
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var configs = controller.GetSchedulerConfigurations(new DateTime(2020, 1, 4, 8, 0, 0)).Result;
+                Assert.Empty(configs);
             }
-            var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
-            DateTime dateExpected = new DateTime(2020, 1, 4, 4, 0, 0);
-            Assert.Equal(dateExpected, resultCalculation.NextExecution);
-            config.Name = "Test_config_daily";
-            config = controller.SaveConfig(config).Result;
-            Assert.NotNull(config);
-            config = null;
-            config = controller.GetSchedulerConfiguration("Test_config_daily").Result;
-            Assert.NotNull(config);
-            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
-            Assert.Equal(dateExpected, resultCalculation.NextExecution);
-            config.StartDate = new DateTime(2020, 1, 9, 0, 0, 0);
-            bool result = controller.UpdateConfig(config).Result;
-            Assert.True(result);
-            config = controller.GetSchedulerConfiguration(config.SchedulerConfigId.GetValueOrDefault()).Result;
-            Assert.NotNull(config);
-            resultCalculation = generator.Calculate(new DateTime(2020, 1, 9), config);
-            dateExpected = new DateTime(2020, 1, 9, 4, 0, 0);
-            Assert.Equal(dateExpected, resultCalculation.NextExecution);
-            Assert.True(controller.RemoveConfig(config.SchedulerConfigId.GetValueOrDefault()).Result);
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var configs = controller.GetSchedulerConfigurations(DateTime.Now).Result;
+                foreach (SchedulerConfig item in configs)
+                {
+                    controller.DeleteConfig(item.SchedulerId.Value);
+
+                }
+            }
         }
 
         [Fact]
@@ -2025,65 +2141,38 @@ namespace Testing
             };
 
             SchedulerGenerator generator = new SchedulerGenerator();
-            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
-            // Solo para asegurar que no se han quedado otras pruebas incorrectas.
-            try
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
-                int? configId = controller.GetConfigId("Test_config_daily_weekly");
-                if (configId.HasValue)
-                {
-                    controller.RemoveConfig(configId.Value).Wait();
-                }
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), config);
+                DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
+                Assert.Equal(new DateTime(2020, 1, 2, 4, 0, 0), resultCalculation.NextExecution);
+                config = controller.SaveConfiguration(config,resultCalculation).Result;
+                Assert.NotNull(config);
             }
-            catch (AggregateException)
+
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
-
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                config = controller.GetSchedulerConfiguration(config.SchedulerId.Value).Result;
+                Assert.NotNull(config);
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), config);
+                Assert.Equal(new DateTime(2020, 1, 2, 4, 0, 0), resultCalculation.NextExecution);
+                config.StartDate = new DateTime(2020, 1, 9, 0, 0, 0);
+                resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+                Assert.Equal(new DateTime(2020, 1, 9, 4, 0, 0), resultCalculation.NextExecution);
+                bool result = controller.UpdateConfig(config, resultCalculation).Result;
+                Assert.True(result);
             }
-            var resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), config);
-            DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
-            Assert.Equal(dateExpected, resultCalculation.NextExecution);
-            config.Name = "Test_config_daily_weekly";
-            config = controller.SaveConfig(config).Result;
-            Assert.NotNull(config);
-            config = null;
-            config = controller.GetSchedulerConfiguration("Test_config_daily_weekly").Result;
-            Assert.NotNull(config);
-            resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), config);
-            Assert.Equal(dateExpected, resultCalculation.NextExecution);
-            config.StartDate = new DateTime(2020, 1, 9, 0, 0, 0);
-            bool result = controller.UpdateConfig(config).Result;
-            Assert.True(result);
-            config = controller.GetSchedulerConfiguration(config.SchedulerConfigId.GetValueOrDefault()).Result;
-            Assert.NotNull(config);
-            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
-            dateExpected = new DateTime(2020, 1, 9, 4, 0, 0);
-            Assert.Equal(dateExpected, resultCalculation.NextExecution);
-            Assert.True(controller.RemoveConfig(config.SchedulerConfigId.GetValueOrDefault()).Result);
-        }
-
-        [Fact]
-        public void persistence_config_null()
-        {
-            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
-            Assert.False(controller.UpdateConfig(null).Result);
-            SchedulerConfig config = new SchedulerConfig();
-            Assert.False(controller.UpdateConfig(config).Result);
-            config.SchedulerConfigId = -1;
-            config.Name = "Test_no_value";
-            config.DateTime = new DateTime(2020, 1, 8, 14, 0, 0);
-            config.StartDate = new DateTime(2020, 1, 1);
-            config.Active = true;
-
-            Assert.False(controller.UpdateConfig(config).Result);
-
-        }
-
-        [Fact]
-        public void persistence_get_config_fail()
-        {
-            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
-            Assert.Throws(typeof(AggregateException), () => controller.GetSchedulerConfiguration(" No Name Value").Result);
-            Assert.Throws(typeof(AggregateException), () => controller.GetSchedulerConfiguration(-1).Result);
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                config = controller.GetSchedulerConfiguration(config.SchedulerId.Value).Result;
+                Assert.NotNull(config);
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+                Assert.Equal(new DateTime(2020, 1, 9, 4, 0, 0), resultCalculation.NextExecution);
+                Assert.True(controller.DeleteConfig(config.SchedulerId.GetValueOrDefault()).Result);
+            }
         }
 
         [Fact]
@@ -2110,43 +2199,72 @@ namespace Testing
             config.Active = true;
             config.DailyFrecuenci = configDailyFrecuenci;
             config.StartDate = new DateTime(2020, 1, 1);
+            DateTime currentDate = new DateTime(2020, 1, 1);
+            int schedulerId = 0;
             SchedulerGenerator generator = new SchedulerGenerator();
-            SchedulerConfigController controller = new SchedulerConfigController(new Formacion.Data.Context.Scheduler.SchedulerConfigContext());
-            // Solo para asegurar que no se han quedado otras pruebas incorrectas.
-            try
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
-                int? configId = controller.GetConfigId("Test_config_daily_monthly");
-                if (configId.HasValue)
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var resultCalculation = generator.Calculate(currentDate, config);
+                Assert.Equal(new DateTime(2020, 1, 2, 4, 0, 0), resultCalculation.NextExecution);
+                config = controller.SaveConfiguration(config, resultCalculation).Result;
+                Assert.NotNull(config);
+                schedulerId = config.SchedulerId.Value;
+                resultCalculation = generator.Calculate(resultCalculation.NextExecution.Value, config);
+                Assert.Equal(new DateTime(2020, 1, 2, 6, 0, 0), resultCalculation.NextExecution);
+                config = controller.SaveConfiguration(config, resultCalculation).Result;
+                Assert.NotNull(config);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                config = controller.GetSchedulerConfiguration(schedulerId).Result;
+                Assert.NotNull(config);
+                Assert.NotNull(config.Monthly);
+                var resultCalculation = generator.Calculate(currentDate, config);
+                Assert.Equal(new DateTime(2020, 1, 2, 4, 0, 0), resultCalculation.NextExecution);
+                config.StartDate = new DateTime(2020, 1, 9, 0, 0, 0);
+                bool result = controller.UpdateConfig(config, resultCalculation).Result;
+                Assert.True(result);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                config = controller.GetSchedulerConfiguration(schedulerId).Result;
+                Assert.NotNull(config);
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
+                Assert.Equal(new DateTime(2020, 2, 6, 4, 0, 0), resultCalculation.NextExecution);
+                Assert.True(controller.UpdateConfig(config,resultCalculation).Result);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var configs = controller.GetSchedulerConfigurations(DateTime.Now).Result;
+                Assert.NotNull(configs);
+                Assert.Equal(2, configs.Length);
+                Assert.Equal(new DateTime(2020, 2, 6, 4, 0, 0), configs[0].DateTimeNextExecution);
+                Assert.Equal(new DateTime(2020, 1, 2, 6, 0, 0), configs[1].DateTimeNextExecution);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var configs = controller.GetSchedulerConfigurations(DateTime.Now).Result;
+                Assert.NotNull(configs);
+                foreach (SchedulerConfig item in configs)
                 {
-                    controller.RemoveConfig(configId.Value).Wait();
+                    Assert.True(controller.DeleteConfig(item.SchedulerId.Value).Result);
                 }
             }
-            catch (AggregateException)
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
-
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                Assert.Empty(controller.GetSchedulerConfigurations(DateTime.Now).Result);
             }
-            DateTime currentDate = new DateTime(2020, 1, 1);
-            DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
-            var resultCalculation = generator.Calculate(currentDate, config);
-            Assert.Equal(dateExpected, resultCalculation.NextExecution);
-            config.Name = "Test_config_daily_monthly";
-            config = controller.SaveConfig(config).Result;
-            Assert.NotNull(config);
-            config = null;
-            config = controller.GetSchedulerConfiguration("Test_config_daily_monthly").Result;
-            Assert.NotNull(config);
-            resultCalculation = generator.Calculate(currentDate, config);
-            Assert.Equal(dateExpected, resultCalculation.NextExecution);
-            config.StartDate = new DateTime(2020, 1, 9, 0, 0, 0);
-            bool result = controller.UpdateConfig(config).Result;
-            Assert.True(result);
-            config = controller.GetSchedulerConfiguration(config.SchedulerConfigId.GetValueOrDefault()).Result;
-            Assert.NotNull(config);
-            resultCalculation = generator.Calculate(new DateTime(2020, 1, 4), config);
-            dateExpected = new DateTime(2020, 2, 6, 4, 0, 0);
-            Assert.Equal(dateExpected, resultCalculation.NextExecution);
-            Assert.True(controller.RemoveConfig(config.SchedulerConfigId.GetValueOrDefault()).Result);
+
+
         }
+        #endregion
+
 
         #endregion
         [Fact]

@@ -10,14 +10,17 @@ namespace Formacion.Data.Context.Resources
         public DbSet<ResourceCulture> ResourceCultures { get; set; }
         public DbSet<TextResourceCulture> TextResourcesCulture { get; set; }
 
-        public ResourcesContext():base()
+        public ResourcesContext():base(DataBaseConections<ResourcesContext>.ContextOptions)
         {
             
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-    => options.UseSqlServer($@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Formacion;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        public ResourcesContext(DbContextOptions<ResourcesContext> options)
+            : base(options)
+        {
+        }
 
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration<TextResource>(new TextResourcesConfiguration());
