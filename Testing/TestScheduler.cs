@@ -1052,20 +1052,8 @@ namespace Testing
         [InlineData("es-ES", "Ocurre cada día cada 2 horas entre las 04:00 y las 08:00. El horario se utilizará el 04/01/2020 a las 04:00 empezando el 01/01/2020")]
         public void Generator_frecuency_daly_config_no_weekly_config(string culture, string textExpected)
         {
-            SchedulerConfig config = new SchedulerConfig();
+            SchedulerConfig config = this.SchedulersCreator(TypesSchedule.Recurring, TypesOccurs.Daily, false);
             config.Culture = CultureInfo.CreateSpecificCulture(culture);
-            config.Type = TypesSchedule.Recurring;
-
-            config.StartDate = new DateTime(2020, 1, 1);
-            config.Active = true;
-            config.NumberOccurs = 1;
-            config.DailyFrecuenci = new ConfigDailyFrecuency()
-            {
-                Frecuenci = TypesOccursDailyFrecuency.Every,
-                NumberOccurs = 2,
-                StartTime = new TimeSpan(4, 0, 0),
-                EndTime = new TimeSpan(8, 0, 0)
-            };
             var generator = new SchedulerGenerator();
             DateTime currentDate = new DateTime(2020, 1, 4);
             var result = generator.Calculate(currentDate, config);
@@ -1082,29 +1070,8 @@ namespace Testing
         [InlineData("es-ES", "Ocurre cada 2 semanas en lunes, jueves y viernes cada 2 horas entre las 04:00 y las 08:00. empezando el 01/01/2020")]
         public void Generator_frecuency_daly_weekly_config(string culture, string textExpected)
         {
-            SchedulerConfig config = new SchedulerConfig();
+            SchedulerConfig config = this.SchedulersCreator(TypesSchedule.Recurring, TypesOccurs.Weekly, true);
             config.Culture = CultureInfo.CreateSpecificCulture(culture);
-            ConfigWeekly configWeekly = new ConfigWeekly()
-            {
-                Every = 2,
-                Monday = true,
-                Thursday = true,
-                Friday = true
-            };
-            config.Weekly = configWeekly;
-            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
-            {
-                Frecuenci = TypesOccursDailyFrecuency.Every,
-                NumberOccurs = 2,
-                StartTime = new TimeSpan(4, 0, 0),
-                EndTime = new TimeSpan(8, 0, 0)
-            };
-
-            config.Type = TypesSchedule.Recurring;
-            config.Occurs = TypesOccurs.Daily;
-            config.Active = true;
-            config.DailyFrecuenci = configDailyFrecuenci;
-            config.StartDate = new DateTime(2020, 1, 1);
             var generator = new SchedulerGenerator();
             DateTime currentDate = new DateTime(2020, 1, 1);
             DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
@@ -1121,28 +1088,8 @@ namespace Testing
         [InlineData("es-ES", "Ocurre el primer jueves cada 3 meses cada 2 horas entre las 04:00 y las 08:00. empezando el 01/01/2020")]
         public void Generator_frecuency_daly_monthly_config_first_thursday(string culture, string textExpected)
         {
-            SchedulerConfig config = new SchedulerConfig();
+            SchedulerConfig config = this.SchedulersCreator(TypesSchedule.Recurring, TypesOccurs.Monthly, true);
             config.Culture = CultureInfo.CreateSpecificCulture(culture);
-            config.Monthly = new ConfigMonthly()
-            {
-                Type = TypesMontlyFrecuency.Every,
-                TypesEvery = TypesEveryMonthly.First,
-                TypesDayEvery = TypesEveryDayMonthly.Thursday,
-                EveryNumberMonths = 3
-            };
-            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
-            {
-                Frecuenci = TypesOccursDailyFrecuency.Every,
-                NumberOccurs = 2,
-                StartTime = new TimeSpan(4, 0, 0),
-                EndTime = new TimeSpan(8, 0, 0)
-            };
-
-            config.Type = TypesSchedule.Recurring;
-            config.Occurs = TypesOccurs.Daily;
-            config.Active = true;
-            config.DailyFrecuenci = configDailyFrecuenci;
-            config.StartDate = new DateTime(2020, 1, 1);
             var generator = new SchedulerGenerator();
             DateTime currentDate = new DateTime(2020, 1, 1);
             DateTime dateExpected = new DateTime(2020, 1, 2, 4, 0, 0);
@@ -2002,11 +1949,7 @@ namespace Testing
         [Fact]
         public void persistence_config_one()
         {
-            SchedulerConfig config = new SchedulerConfig();
-
-            config.DateTime = new DateTime(2020, 1, 8, 14, 0, 0);
-            config.StartDate = new DateTime(2020, 1, 1);
-            config.Active = true;
+            SchedulerConfig config = this.SchedulersCreator(TypesSchedule.Once,TypesOccurs.Daily,false);
             SchedulerGenerator generator = new SchedulerGenerator();
             using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
@@ -2046,18 +1989,7 @@ namespace Testing
         [Fact]
         public void persistence_config_recurring_daily_config()
         {
-            SchedulerConfig config = new SchedulerConfig();
-            config.Type = TypesSchedule.Recurring;
-            config.StartDate = new DateTime(2020, 1, 1);
-            config.Active = true;
-            config.DailyFrecuenci = new ConfigDailyFrecuency()
-            {
-                Frecuenci = TypesOccursDailyFrecuency.Every,
-                NumberOccurs = 2,
-                StartTime = new TimeSpan(4, 0, 0),
-                EndTime = new TimeSpan(8, 0, 0)
-            };
-
+            SchedulerConfig config = this.SchedulersCreator(TypesSchedule.Recurring, TypesOccurs.Daily, false); 
             SchedulerGenerator generator = new SchedulerGenerator(); using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
                 SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
@@ -2120,26 +2052,7 @@ namespace Testing
         [Fact]
         public void persistence_config_recurring_daily_weekly_config()
         {
-            SchedulerConfig config = new SchedulerConfig();
-            config.Type = TypesSchedule.Recurring;
-            config.StartDate = new DateTime(2020, 1, 1);
-            config.Active = true;
-            config.Weekly = new ConfigWeekly()
-            {
-                Every = 2,
-                Monday = true,
-                Thursday = true,
-                Friday = true
-            };
-
-            config.DailyFrecuenci = new ConfigDailyFrecuency()
-            {
-                Frecuenci = TypesOccursDailyFrecuency.Every,
-                NumberOccurs = 2,
-                StartTime = new TimeSpan(4, 0, 0),
-                EndTime = new TimeSpan(8, 0, 0)
-            };
-
+            SchedulerConfig config = this.SchedulersCreator(TypesSchedule.Recurring, TypesOccurs.Weekly, true);
             SchedulerGenerator generator = new SchedulerGenerator();
             using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
             {
@@ -2178,27 +2091,8 @@ namespace Testing
         [Fact]
         public void persistence_config_recurring_daily_monthly_config()
         {
-            SchedulerConfig config = new SchedulerConfig();
-            config.Monthly = new ConfigMonthly()
-            {
-                Type = TypesMontlyFrecuency.Every,
-                TypesEvery = TypesEveryMonthly.First,
-                TypesDayEvery = TypesEveryDayMonthly.Thursday,
-                EveryNumberMonths = 3
-            };
-            ConfigDailyFrecuency configDailyFrecuenci = new ConfigDailyFrecuency()
-            {
-                Frecuenci = TypesOccursDailyFrecuency.Every,
-                NumberOccurs = 2,
-                StartTime = new TimeSpan(4, 0, 0),
-                EndTime = new TimeSpan(8, 0, 0)
-            };
-
-            config.Type = TypesSchedule.Recurring;
-            config.Occurs = TypesOccurs.Daily;
-            config.Active = true;
-            config.DailyFrecuenci = configDailyFrecuenci;
-            config.StartDate = new DateTime(2020, 1, 1);
+            SchedulerConfig config = this.SchedulersCreator(TypesSchedule.Recurring, TypesOccurs.Monthly, true); 
+            
             DateTime currentDate = new DateTime(2020, 1, 1);
             int schedulerId = 0;
             SchedulerGenerator generator = new SchedulerGenerator();
@@ -2263,6 +2157,179 @@ namespace Testing
 
 
         }
+
+
+        [Fact]
+        public void persistence_saving_distinct_configs()
+        {
+            SchedulerConfig configOne = this.SchedulersCreator(TypesSchedule.Once, TypesOccurs.Daily, false);
+            SchedulerConfig configDaily = this.SchedulersCreator(TypesSchedule.Recurring, TypesOccurs.Daily, false);
+            SchedulerConfig configWeekly = this.SchedulersCreator(TypesSchedule.Recurring, TypesOccurs.Weekly, true);
+            SchedulerConfig configMonthly = this.SchedulersCreator(TypesSchedule.Recurring, TypesOccurs.Monthly, true);
+
+            SchedulerGenerator generator = new SchedulerGenerator();
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), configOne);
+                configOne = controller.SaveConfiguration(configOne, resultCalculation).Result;
+                Assert.NotNull(configOne);
+                resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), configDaily);
+                configDaily = controller.SaveConfiguration(configDaily, resultCalculation).Result;
+                Assert.NotNull(configDaily);
+                resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), configWeekly);
+                configWeekly = controller.SaveConfiguration(configWeekly, resultCalculation).Result;
+                Assert.NotNull(configWeekly);
+                resultCalculation = generator.Calculate(new DateTime(2020, 1, 1), configMonthly);
+                configMonthly = controller.SaveConfiguration(configMonthly, resultCalculation).Result;
+                Assert.NotNull(configMonthly);
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var configs = controller.GetSchedulerConfigurations(DateTime.Now).Result;
+                Assert.NotNull(configs);
+                Assert.NotEmpty(configs);
+                foreach (var config in configs)
+                {
+                    Assert.Equal(config.DateTimeNextExecution, 
+                        generator.Calculate(new DateTime(2020, 1, 1), config).NextExecution); 
+                }
+
+
+            }
+
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                var configs = controller.GetSchedulerConfigurations(DateTime.Now).Result;
+                Assert.NotNull(configs);
+                foreach (SchedulerConfig item in configs)
+                {
+                    Assert.True(controller.DeleteConfig(item.SchedulerId.Value).Result);
+                }
+            }
+            using (SchedulerConfigurationContext context = new SchedulerConfigurationContext())
+            {
+                SchedulerConfigurationController controller = new SchedulerConfigurationController(context);
+                Assert.Empty(controller.GetSchedulerConfigurations(DateTime.Now).Result);
+            }
+        }
+
+            /// <summary>
+            /// This method can 
+            /// </summary>
+            /// <param name="type"></param>
+            /// <param name="typesOccurs"></param>
+            /// <returns></returns>
+            private SchedulerConfig SchedulersCreator(TypesSchedule type, TypesOccurs typesOccurs, bool hasDailyConfiguration)
+        {
+            if(type == TypesSchedule.Once)
+            {
+                return this.SchedulerCreatorOneTime(); 
+            }
+            return this.SchedulerCreatorRecurring(typesOccurs, hasDailyConfiguration); 
+        }
+
+        private SchedulerConfig SchedulerCreatorOneTime()
+        {
+            return new SchedulerConfig()
+            {
+                DateTime = new DateTime(2020, 1, 8, 14, 0, 0),
+                StartDate = new DateTime(2020, 1, 1),
+                Active = true
+            };
+
+        }
+        private SchedulerConfig SchedulerCreatorRecurring(TypesOccurs typesOccurs, bool hasDailyConfiguration)
+        {
+            if(typesOccurs == TypesOccurs.Daily)
+            {
+                return SchedulerCreatorDaily(); 
+            }
+
+            if (typesOccurs == TypesOccurs.Weekly)
+            {
+                return this.SchedulerCreatorWeekly(hasDailyConfiguration); 
+            }
+            if (typesOccurs == TypesOccurs.Monthly)
+            {
+                return this.SchedulerCreatorWonthly(hasDailyConfiguration); 
+            }
+            throw new InvalidOperationException();
+
+        }
+
+        private SchedulerConfig SchedulerCreatorDaily()
+        {
+            SchedulerConfig config = new SchedulerConfig();
+            config.Type = TypesSchedule.Recurring;
+            config.StartDate = new DateTime(2020, 1, 1);
+            config.Active = true;
+            config.DailyFrecuenci = new ConfigDailyFrecuency()
+            {
+                Frecuenci = TypesOccursDailyFrecuency.Every,
+                NumberOccurs = 2,
+                StartTime = new TimeSpan(4, 0, 0),
+                EndTime = new TimeSpan(8, 0, 0)
+            };
+            return config;
+        }
+
+        private SchedulerConfig SchedulerCreatorWeekly(bool hasDailyConfiguration)
+        {
+            SchedulerConfig config = new SchedulerConfig();
+            config.Type = TypesSchedule.Recurring;
+            config.StartDate = new DateTime(2020, 1, 1);
+            config.Active = true;
+            config.Weekly = new ConfigWeekly()
+            {
+                Every = 2,
+                Monday = true,
+                Thursday = true,
+                Friday = true
+            };
+            if (hasDailyConfiguration)
+            {
+                config.DailyFrecuenci = new ConfigDailyFrecuency()
+                {
+                    Frecuenci = TypesOccursDailyFrecuency.Every,
+                    NumberOccurs = 2,
+                    StartTime = new TimeSpan(4, 0, 0),
+                    EndTime = new TimeSpan(8, 0, 0)
+                };
+            }
+            return config;
+        }
+
+        private SchedulerConfig SchedulerCreatorWonthly(bool hasDailyConfiguration)
+        {
+            SchedulerConfig config = new SchedulerConfig();
+            config.Type = TypesSchedule.Recurring;
+            config.Occurs = TypesOccurs.Monthly;
+            config.StartDate = new DateTime(2020, 1, 1);
+            config.Active = true;
+            config.Monthly = new ConfigMonthly()
+            {
+                Type = TypesMontlyFrecuency.Every,
+                TypesEvery = TypesEveryMonthly.First,
+                TypesDayEvery = TypesEveryDayMonthly.Thursday,
+                EveryNumberMonths = 3
+            };
+            if (hasDailyConfiguration)
+            {
+                config.DailyFrecuenci = new ConfigDailyFrecuency()
+                {
+                    Frecuenci = TypesOccursDailyFrecuency.Every,
+                    NumberOccurs = 2,
+                    StartTime = new TimeSpan(4, 0, 0),
+                    EndTime = new TimeSpan(8, 0, 0)
+                };
+            }
+            return config;
+
+        }
+
         #endregion
 
 
